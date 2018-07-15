@@ -1,0 +1,35 @@
+{
+  "Page": {
+    "Home": "Accueil",
+    "SignIn": "Connexion",
+    "SignUp": "Inscription",
+    "Profile": "Profil",
+    "Chat": "Discussion",
+    "Chatrooms": "Discussions"
+  },
+  "Nav": {
+    "Home": "Accueil",
+    "SignIn": "Connexion",
+    "SignUp": "Inscription",
+    "StartAChat": "Discussions",
+    "YourProfile": "Compte",
+    "Chatrooms": "Discussions"
+  },
+  "language": {
+    "fr" : "Francais",
+    "en" : "English"
+  },
+  "user": {
+    "Login": "Connexion",
+    "SignUp": "Inscription",
+    "Register": "S'inscrire",
+    "ForgotPassword": "Mot de passe oublié"
+  },
+  "SignUp": {
+    "ClickOrDropToUpdateYourProfilePicture": "Vous pouvez cliquer ou dropper une image pour mettre à jour votre image de profil.",
+    "SignInIfYouHaveAnAccount": "Vous avez déjà un compte?",
+    "Register": "S'inscrire"
+  },
+  "Network Error" : "Erreur de reseau",
+  "You need to be login" : "Vous devez être connecté."
+}

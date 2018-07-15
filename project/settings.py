@@ -15,7 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
@@ -27,81 +26,142 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
-    'webpack_loader',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+  'webpack_loader',
+  'django.contrib.admin',
+  'django.contrib.auth',
+  'django.contrib.contenttypes',
+  'django.contrib.sessions',
+  'django.contrib.messages',
+  'django.contrib.staticfiles',
+  'oauth2_provider',
+  'rest_framework',
+  'corsheaders',
+  'rest_framework.authtoken',
+  'social_django',
+  'rest_social_auth',
+  'rest_framework_social_oauth2',
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+  'django.middleware.security.SecurityMiddleware',
+  'django.contrib.sessions.middleware.SessionMiddleware',
+  'django.middleware.common.CommonMiddleware',
+  'django.middleware.csrf.CsrfViewMiddleware',
+  'django.contrib.auth.middleware.AuthenticationMiddleware',
+  'django.contrib.messages.middleware.MessageMiddleware',
+  'django.middleware.clickjacking.XFrameOptionsMiddleware',
+  'corsheaders.middleware.CorsMiddleware',
+  'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'project.urls'
 
 TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(BASE_DIR, 'templates'),
-        ],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
+  {
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': [
+      os.path.join(BASE_DIR, 'templates'),
+    ],
+    'APP_DIRS': True,
+    'OPTIONS': {
+      'context_processors': [
+        'django.template.context_processors.debug',
+        'django.template.context_processors.request',
+        'django.contrib.auth.context_processors.auth',
+        'django.contrib.messages.context_processors.messages',
+        'social_django.context_processors.backends',
+        'social_django.context_processors.login_redirect',
+      ],
     },
+  },
 ]
 
 WSGI_APPLICATION = 'project.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+  'default': {
+    #'ENGINE': 'django.db.backends.sqlite3',
+    #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'NAME': 'd2las8b9lr1kdu',
+    'USER': 'postgres',
+    'PASSWORD': 'grimoire',
+    'HOST': 'localhost',
+    'PORT': 5432,
+  }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+  {
+    'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+  },
+  {
+    'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+  },
+  {
+    'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+  },
+  {
+    'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+  },
 ]
 
+REST_FRAMEWORK = {
+  'DEFAULT_FILTER_BACKENDS': (
+    'django_filters.rest_framework.DjangoFilterBackend',
+  ),
+  'DEFAULT_AUTHENTICATION_CLASSES': (
+    'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+    'rest_framework_social_oauth2.authentication.SocialAuthentication',
+    'rest_framework.authentication.TokenAuthentication',
+  ),
+}
+
+AUTHENTICATION_BACKENDS = (
+
+  # Facebook OAuth2
+  'social_core.backends.facebook.FacebookAppOAuth2',
+  'social_core.backends.facebook.FacebookOAuth2',
+
+  # Google OAuth2
+  'social_core.backends.google.GoogleOAuth2',
+
+  # django-rest-framework-social-oauth2
+  'rest_framework_social_oauth2.backends.DjangoOAuth2',
+
+  # Django
+  'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_RAISE_EXCEPTIONS = True
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+# Facebook configuration
+SOCIAL_AUTH_FACEBOOK_KEY = '585737338256884'
+SOCIAL_AUTH_FACEBOOK_SECRET = '17858bbbc932545d99b10eb15ed7492a'
+# Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from facebook.
+# Email is not sent by default, to get it, you must request the email permission:
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+  'fields': 'id, name, email'
+}
+
+# Google configuration
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '338829541691-14vtulpp1bav75s243cr6cfo0dvojkjl.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'OZ4l8gCq3faYOTGlOieYzEXV'
+SOCIAL_AUTH_GOOGLE_OAUTH2_FIELDS = ['email', 'username']
+
+CSRF_COOKIE_SECURE = True
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
@@ -116,19 +176,18 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'dist'),
-    os.path.join(BASE_DIR, 'static'),
+  os.path.join(BASE_DIR, 'dist'),
+  os.path.join(BASE_DIR, 'static'),
 )
 STATIC_ROOT = os.path.join(BASE_DIR, 'public')
 WEBPACK_LOADER = {
-    'DEFAULT': {
-        'BUNDLE_DIR_NAME': '',
-        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
-    }
+  'DEFAULT': {
+    'BUNDLE_DIR_NAME': '',
+    'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+  }
 }

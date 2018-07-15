@@ -1,0 +1,36 @@
+{
+  "Page": {
+    "Home": "Home",
+    "SignIn": "Sign in",
+    "SignUp": "Sign up",
+    "Profile": "Profile",
+    "Chat": "Chat",
+    "Chatrooms": "Choose a chat"
+  },
+  "Nav": {
+    "Home": "Home",
+    "SignIn": "Sign in",
+    "SignUp": "Sign up",
+    "StartAChat": "Chat",
+    "YourProfile": "Profile",
+    "Chatrooms": "Start a Chat"
+  },
+  "language": {
+    "fr" : "Francais",
+    "en" : "English"
+  },
+  "user": {
+    "Login": "Login",
+    "SignUp": "Sign up",
+    "Register": "Register",
+    "ForgotPassword": "Forgot Password"
+  },
+  "SignUp": {
+    "ClickOrDropToUpdateYourProfilePicture": "You can click or drop an image to update your profile.",
+    "SignInIfYouHaveAnAccount": "Already have an account?",
+    "Register": "Register"
+  },
+  "Network Error" : "Network Error",
+  "You need to be login" : "You need to sign in."
+
+}
