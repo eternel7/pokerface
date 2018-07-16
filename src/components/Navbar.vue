@@ -18,9 +18,13 @@
 
 <script>
   import LocalizerChooser from '@/components/localizer-chooser'
+  import PageBase from '@/components/pages/Page'
+
   require('material-design-lite')
+
   export default {
     name: 'navbar',
+    extends: PageBase,
     components: {
       localizerChooser: LocalizerChooser
     },
@@ -32,3 +36,16 @@
     }
   }
 </script>
+
+<style>
+  .mdl-layout__drawer-button > i {
+    vertical-align: middle;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-12px, -12px);
+    transform: translate(-12px, -12px);
+    line-height: 24px;
+    width: 24px
+  }
+</style>
