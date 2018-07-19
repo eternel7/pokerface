@@ -57,6 +57,7 @@
       logout: function () {
         this.authenticated = false
         authMixin.methods.logout()
+        this.hideMenu()
       }
     },
     watch: {
