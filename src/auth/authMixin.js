@@ -2,20 +2,6 @@ import axios from 'axios'
 
 export const authMixin = {
   methods: {
-    checkToken: function (provider, redirect) {
-      const that = this
-      const token = localStorage.getItem('vue-authenticate.vueauth_token')
-      axios.post('http://localhost:8000/api/check/',
-        {'token': token}, {headers: {authorization: 'JWT ' + token}}).then((response) => {
-          let path = (response.data.status) ? true : '/'
-          if (path !== true) {
-            that.authError('server side no authentication')
-          }
-          redirect({path: path})
-        }).catch((error) => {
-          that.authError(error)
-        })
-    },
     authenticate: function (provider) {
       let authProvider = provider
       if (provider === 'google') {
@@ -23,7 +9,6 @@ export const authMixin = {
       }
       const that = this
       this.$auth.authenticate(provider, {provider: authProvider}).then(function (response) {
-        console.log(response)
         that.authSuccess({
           email: response.data.email,
           first_name: response.data.first_name,
@@ -45,6 +30,28 @@ export const authMixin = {
     logout: function () {
       localStorage.removeItem('vue-authenticate.vueauth_token')
       localStorage.removeItem('auth-user')
+    },
+    isAuthenticated: function (onSuccess, onError) {
+      const token = localStorage.getItem('vue-authenticate.vueauth_token')
+      axios.post('http://localhost:8000/api/check/',
+        {'token': token}, {headers: {authorization: 'JWT ' + token}}).then((response) => {
+          if (response.data.status) {
+            onSuccess()
+          } else {
+            onError('server side no authentication')
+          }
+        }).catch((error) => {
+          onError(error)
+        })
+    },
+    checkToken: function (provider, redirect) {
+      let that = this
+      this.isAuthenticated(() => {
+        redirect({path: true})
+      }, (error) => {
+        redirect({path: '/'})
+        that.authError(error)
+      })
     }
   }
 }
