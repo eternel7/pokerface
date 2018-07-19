@@ -133,6 +133,9 @@ AUTHENTICATION_BACKENDS = (
   # Google OAuth2
   'social_core.backends.google.GoogleOAuth2',
 
+  # Twitter OAuth
+  'social_core.backends.twitter.TwitterOAuth',
+
   # django-rest-framework-social-oauth2
   'rest_framework_social_oauth2.backends.DjangoOAuth2',
 
@@ -157,6 +160,9 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '338829541691-14vtulpp1bav75s243cr6cfo0dvojkjl.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'OZ4l8gCq3faYOTGlOieYzEXV'
 SOCIAL_AUTH_GOOGLE_OAUTH2_FIELDS = ['email', 'username']
+# Twitter configuration
+SOCIAL_AUTH_TWITTER_KEY = 'nF5AOvrq4l8FmvjeRgEPpk6ID'
+SOCIAL_AUTH_TWITTER_SECRET = 'siZZjbSdoZLI2DnsqOmGcHba92ExtIsI5cJlIsOiNftrzEQz9h'
 
 CSRF_COOKIE_SECURE = True
 CORS_ORIGIN_ALLOW_ALL = True

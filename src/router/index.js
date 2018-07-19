@@ -32,7 +32,7 @@ export default new Router({
       name: 'Profile',
       component: Profile,
       beforeEnter: (to, from, next) => {
-        authMixin.methods.checkToken('google', next)
+        authMixin.methods.checkToken('all', next)
       }
     },
     {
@@ -40,7 +40,7 @@ export default new Router({
       name: 'Chat',
       component: Chat,
       beforeEnter: (to, from, next) => {
-        authMixin.methods.checkToken('google', next)
+        authMixin.methods.checkToken('all', next)
       }
     },
     {
