@@ -9,21 +9,14 @@
       <input class="mdl-textfield__input" type="password" id="password" required
              v-model.trim="sync_password"/>
       <label class="mdl-textfield__label" for="password">Password</label>
-      <div v-if="showPasswordStrength" id="meter" v-bind:value="valuePasswordStrength">{{textPassword}}</div>
+      <pwdMeter v-bind:pwd="sync_password"></pwdMeter>
     </div>
   </div>
 </template>
 
 <script>
-  import zxcvbn from 'zxcvbn'
+  import PwdMeter from '@/components/pwd-components/Pwd-helper'
 
-  function strToIdNum (str) {
-    let n = 0
-    for (let st of str) {
-      n += st.charCodeAt()
-    }
-    return n
-  }
   export default {
     props: {
       'email': '',
@@ -31,18 +24,11 @@
       'userTitle': {
         default: 'user.Login',
         type: String
-      },
-      showPasswordStrength: {
-        default: true,
-        type: Boolean
       }
     },
     name: 'usermainfields',
-    data () {
-      return {
-        valuePasswordStrength: 0,
-        textPassword: ''
-      }
+    components: {
+      pwdMeter: PwdMeter
     },
     computed: {
       sync_email: {
@@ -59,23 +45,6 @@
         },
         set (val) {
           this.$emit('update:password', val)
-          this.testPasswordStrength(val)
-        }
-      }
-    },
-    methods: {
-      testPasswordStrength (val) {
-        let vm = this
-        let result = zxcvbn(val)
-
-        // Update the password strength meter
-        vm.valuePasswordStrength = result.score
-
-        // Update the text indicator
-        if (val !== '') {
-          vm.textPassword = (strToIdNum(this.sync_password) % 36).toString(36)
-        } else {
-          vm.textPassword = ''
         }
       }
     }

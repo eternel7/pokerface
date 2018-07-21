@@ -7,6 +7,7 @@
         <input class="mdl-textfield__input" type="password" id="passwordConfirm" required
                v-model.trim="register.confirmPassword"/>
         <label class="mdl-textfield__label" for="passwordConfirm">Confirm password</label>
+        <pwdMeter v-bind:pwd="register.confirmPassword"></pwdMeter>
       </div>
       <div class="link" v-on:click="askForAnImage"
            v-on:dragover.prevent="onDragOver" v-on:drop.prevent="onDrop">
@@ -39,6 +40,7 @@
   import UserFields from '@/components/user-components/Main-fields'
   import CardFabTitle from '@/components/sub-components/Card-fab-title'
   import ErrorMessages from '@/components/sub-components/ErrorMessages'
+  import PwdMeter from '@/components/pwd-components/Pwd-helper'
 
   function validateEmail (email) {
     // eslint-disable-next-line
@@ -53,7 +55,8 @@
     components: {
       userFields: UserFields,
       cardFabTitle: CardFabTitle,
-      errorMessages: ErrorMessages
+      errorMessages: ErrorMessages,
+      pwdMeter: PwdMeter
     },
     data () {
       return {
