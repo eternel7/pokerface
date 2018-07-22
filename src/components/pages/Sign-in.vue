@@ -12,9 +12,9 @@
     </div>
     <div class="mdl-card__actions">
       <router-link id='secondary-button' class="mdl-button mdl-button--primary" to="/signup">
-        {{$t('user.Register')}}
+        {{$t('user.SignUp')}}
       </router-link>
-      <router-link id='third-button' class="mdl-button mdl-button--primary" to="/forgetpassword">
+      <router-link id='third-button' class="mdl-button mdl-button--primary" to="/forgotpassword">
         {{$t('user.ForgotPassword')}}
       </router-link>
     </div>

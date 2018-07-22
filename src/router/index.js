@@ -5,6 +5,7 @@ import Home from '@/components/pages/Home'
 import SignInPage from '@/components/pages/Sign-in'
 import SignUp from '@/components/pages/Sign-up'
 import Profile from '@/components/pages/Profile'
+import ForgotPassword from '@/components/pages/Forgot-password'
 import Chat from '@/components/pages/Chat'
 import Chatrooms from '@/components/pages/Chatrooms'
 
@@ -34,6 +35,11 @@ export default new Router({
       beforeEnter: (to, from, next) => {
         authMixin.methods.checkToken('all', next)
       }
+    },
+    {
+      path: '/forgotpassword',
+      name: 'Forgotpassword',
+      component: ForgotPassword
     },
     {
       path: '/chat/:id',

@@ -27,7 +27,7 @@
       <router-link id='secondary-button' class="mdl-button mdl-button--primary" to="/signin">
         {{$t('Nav.SignIn')}}
       </router-link>
-      <router-link id='third-button' class="mdl-button mdl-button--primary" to="/forgetpassword">
+      <router-link id='third-button' class="mdl-button mdl-button--primary" to="/forgotpassword">
         {{$t('user.ForgotPassword')}}
       </router-link>
     </div>
@@ -42,12 +42,7 @@
   import ErrorMessages from '@/components/sub-components/ErrorMessages'
   import PwdMeter from '@/components/pwd-components/Pwd-helper'
   import {authMixin} from '@/auth/authMixin'
-
-  function validateEmail (email) {
-    // eslint-disable-next-line
-    let re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i
-    return re.test(email)
-  }
+  import {validateEmail} from '@/auth/validateEmail'
 
   export default {
     name: 'signUp',
