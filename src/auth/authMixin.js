@@ -14,14 +14,14 @@ export const authMixin = {
           first_name: response.data.first_name || '',
           last_name: response.data.last_name || '',
           username: response.data.username
-        }, that, response)
+        }, that, false) // Authenticate manage the local update of token
       }).catch(function (error) {
         that.authError(error)
       })
     },
-    authSuccess: function (user, vm, response) {
-      if (response.data.token) {
-        window.localStorage.setItem('vue-authenticate.vueauth_token', response.data.token)
+    authSuccess: function (user, vm, token) {
+      if (token) {
+        window.localStorage.setItem('vue-authenticate.vueauth_token', token)
       }
       window.localStorage.setItem('auth-user', JSON.stringify(user))
       vm.$router.push({name: 'Profile', params: {id: user.email}})

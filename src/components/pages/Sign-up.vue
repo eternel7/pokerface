@@ -103,7 +103,6 @@
           }
           vm.$auth.register(user).then(response => {
             vm.errors = []
-            console.log('success', response)
             if (!response.data.token) {
               for (let field in response.data) {
                 for (let erOnfield in response.data[field]) {
@@ -116,7 +115,7 @@
                 first_name: response.data.first_name || '',
                 last_name: response.data.last_name || '',
                 username: response.data.username
-              }, vm, response)
+              }, vm, response.data.token)
             }
           }).catch(e => {
             console.log('catch error in register', e)
