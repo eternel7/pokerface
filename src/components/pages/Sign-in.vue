@@ -27,13 +27,14 @@
   import SocialLogin from '@/components/user-components/Social-login'
   import ErrorMessages from '@/components/sub-components/ErrorMessages'
   import CardFabTitle from '@/components/sub-components/Card-fab-title'
-  import axios from 'axios'
+  import {authMixin} from '@/auth/authMixin'
 
   require('material-design-lite')
 
   export default {
     name: 'signInDetails',
     extends: PageBase,
+    mixins: [authMixin],
     components: {
       userFields: UserFields,
       socialLogin: SocialLogin,
@@ -53,17 +54,27 @@
       login: function (e) {
         let vm = this
         vm.errors = []
-        axios.post(`http://localhost:8000/api/login/`, this.user)
-          .then(response => {
-            vm.errors = []
-            console.log(response)
-            localStorage.setItem('vue-authenticate.vueauth_token', response.data.token)
-          })
-          .catch(e => {
-            console.log(e)
-            vm.errors = []
-            vm.errors.push(e)
-          })
+        vm.$auth.login(vm.user).then(response => {
+          vm.errors = []
+          if (response.data.token) {
+            vm.authSuccess({
+              email: response.data.email,
+              first_name: response.data.first_name || '',
+              last_name: response.data.last_name || '',
+              username: response.data.username
+            }, vm, response.data.token)
+          } else {
+            vm.authError(response.data.message)
+            if (response.data.message) {
+              vm.errors = []
+              vm.errors.push({message: response.data.message})
+            }
+          }
+        }).catch(e => {
+          vm.authError(e)
+          vm.errors = []
+          vm.errors.push(e)
+        })
       }
     }
   }

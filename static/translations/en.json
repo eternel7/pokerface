@@ -36,6 +36,10 @@
     "ConfirmedPasswordIncorrect": "Confirmed password incorrect.",
     "Register": "Register"
   },
+  "SignIn": {
+    "No_user_for_the_given_email_and_password": "No user for the given email and password. Please try again.",
+    "User_has_been_deactivated": "User has been deactivated. Contact support if you don't know why."
+  },
   "password": {
     "meter": "Password complexity indicator. The letter corresponds to an aid for checking the correct password input.",
     "Ensure_this_field_has_at_least_6_characters": "Ensure password has at least 6 characters."

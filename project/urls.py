@@ -27,5 +27,6 @@ urlpatterns = [
   re_path(r'^auth/', include('rest_framework_social_oauth2.urls')),
   re_path(r'api/check/', check_token),
   re_path(r'^auth/register', account_views.user_create, name='signup'),
+  re_path(r'^auth/login', account_views.user_login, name='signin'),
   re_path(r'^$', TemplateView.as_view(template_name='project/spa.html'), name='home'),
 ]
