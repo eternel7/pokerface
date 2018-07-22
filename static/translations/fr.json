@@ -31,5 +31,8 @@
     "Register": "S'inscrire"
   },
   "Network Error" : "Erreur de reseau",
-  "You need to be login" : "Vous devez être connecté."
+  "You need to be login" : "Vous devez être connecté.",
+  "Password": {
+    "meter": "Indice de complexité du mot de passe. La lettre correspond à une aide pour la vérification de la bonne saisie du mot de passe."
+  }
 }

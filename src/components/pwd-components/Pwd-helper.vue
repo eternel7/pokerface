@@ -1,5 +1,5 @@
 <template>
-      <span class="pwdMeter" v-bind:value="valuePasswordStrength">{{textPassword}}</span>
+      <span v-bind:title="$t('Password.meter')" class="pwdMeter" v-bind:value="valuePasswordStrength">{{textPassword}}</span>
 </template>
 
 <script>
@@ -51,7 +51,7 @@
 
 <style scoped>
   .pwdMeter {
-    border-radius: 50%;
+    border-radius: 25%;
     font-size: 0.8em;
     width: 1.5em;
     height: 1.5em;
@@ -86,7 +86,7 @@
 
   /* Webkit based browsers */
   .pwdMeter[value="0"] {
-    background: #FF5252;
+    background: #f44336;
     color: white;
   }
 

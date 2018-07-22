@@ -31,7 +31,7 @@
 <script>
   import PageBase from '@/components/pages/Page'
   import NavBar from '@/components/Navbar'
-  
+
   export default {
     name: 'app',
     extends: PageBase,
@@ -43,6 +43,6 @@
 
 <style>
   #app{
-    background: #1b1818;
+    background: #585858;
   }
 </style>

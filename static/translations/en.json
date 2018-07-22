@@ -16,8 +16,8 @@
     "Chatrooms": "Start a Chat"
   },
   "language": {
-    "fr" : "Francais",
-    "en" : "English"
+    "fr": "Francais",
+    "en": "English"
   },
   "user": {
     "Login": "Login",
@@ -30,7 +30,9 @@
     "SignInIfYouHaveAnAccount": "Already have an account?",
     "Register": "Register"
   },
-  "Network Error" : "Network Error",
-  "You need to be login" : "You need to sign in."
-
+  "Network Error": "Network Error",
+  "You need to be login": "You need to sign in.",
+  "Password": {
+    "meter": "Password complexity indicator. The letter corresponds to an aid for checking the correct password input."
+  }
 }
