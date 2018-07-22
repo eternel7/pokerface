@@ -13,26 +13,40 @@
     "SignUp": "Sign up",
     "StartAChat": "Chat",
     "YourProfile": "Profile",
-    "Chatrooms": "Start a Chat"
+    "Chatrooms": "Start a Chat",
+    "Logout": "Log out"
   },
   "language": {
     "fr": "Francais",
     "en": "English"
   },
   "user": {
+    "Email": "Email",
+    "Password": "Password",
     "Login": "Login",
     "SignUp": "Sign up",
     "Register": "Register",
     "ForgotPassword": "Forgot Password"
   },
   "SignUp": {
+    "ConfirmPassword": "Confirm password",
     "ClickOrDropToUpdateYourProfilePicture": "You can click or drop an image to update your profile.",
     "SignInIfYouHaveAnAccount": "Already have an account?",
+    "EnterACorrectEmailAddress": "Enter a correct email address.",
+    "ConfirmedPasswordIncorrect": "Confirmed password incorrect.",
     "Register": "Register"
+  },
+  "password": {
+    "meter": "Password complexity indicator. The letter corresponds to an aid for checking the correct password input.",
+    "Ensure_this_field_has_at_least_6_characters": "Ensure password has at least 6 characters."
+  },
+  "email": {
+    "This_field_must_be_unique": "Email already used. If you forget your password use the \"Forgot Password\" button."
+  },
+  "username": {
+    "A_user_with_that_username_already_exists": ""
   },
   "Network Error": "Network Error",
   "You need to be login": "You need to sign in.",
-  "Password": {
-    "meter": "Password complexity indicator. The letter corresponds to an aid for checking the correct password input."
-  }
+  "Request failed with status code 404": "Request failed. URL addressed was not found."
 }

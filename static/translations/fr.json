@@ -13,26 +13,40 @@
     "SignUp": "Inscription",
     "StartAChat": "Discussions",
     "YourProfile": "Compte",
-    "Chatrooms": "Discussions"
+    "Chatrooms": "Discussions",
+    "Logout": "Déconnexion"
   },
   "language": {
-    "fr" : "Francais",
-    "en" : "English"
+    "fr": "Francais",
+    "en": "English"
   },
   "user": {
+    "Email": "Courriel",
+    "Password": "Mot de passe",
     "Login": "Connexion",
     "SignUp": "Inscription",
     "Register": "S'inscrire",
     "ForgotPassword": "Mot de passe oublié"
   },
   "SignUp": {
+    "ConfirmPassword": "Confirmer le mot de passe",
     "ClickOrDropToUpdateYourProfilePicture": "Vous pouvez cliquer ou dropper une image pour mettre à jour votre image de profil.",
     "SignInIfYouHaveAnAccount": "Vous avez déjà un compte?",
+    "EnterACorrectEmailAddress": "Veuillez saisir un courriel valide.",
+    "ConfirmedPasswordIncorrect": "Les 2 mots de passe sont différents.",
     "Register": "S'inscrire"
   },
-  "Network Error" : "Erreur de reseau",
-  "You need to be login" : "Vous devez être connecté.",
-  "Password": {
-    "meter": "Indice de complexité du mot de passe. La lettre correspond à une aide pour la vérification de la bonne saisie du mot de passe."
-  }
+  "password": {
+    "meter": "Indice de complexité du mot de passe. La lettre correspond à une aide pour la vérification de la bonne saisie du mot de passe.",
+    "Ensure_this_field_has_at_least_6_characters": "Votre mot de passe doit faire plus de 6 caractères."
+  },
+  "email": {
+    "This_field_must_be_unique": "Courriel déjà present dans l'application. Si vous avez oublié votre mot de passe utilisez le bouton \"Mot de passe oublié\"."
+  },
+  "username": {
+    "A_user_with_that_username_already_exists": ""
+  },
+  "Network Error": "Erreur de reseau",
+  "You need to be login": "Vous devez être connecté.",
+  "Request failed with status code 404": "Requête en erreur. L'adresse demandée n'a pas été trouvée."
 }

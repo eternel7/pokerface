@@ -1,5 +1,5 @@
 <template>
-      <span v-bind:title="$t('Password.meter')" class="pwdMeter" v-bind:value="valuePasswordStrength">{{textPassword}}</span>
+      <span v-bind:title="$t('password.meter')" class="pwdMeter" v-bind:value="valuePasswordStrength">{{textPassword}}</span>
 </template>
 
 <script>

@@ -23,6 +23,6 @@
     list-style: none;
     margin: 0;
     padding: 0;
-    color: #d50000;
+    color: #f44336;
   }
 </style>

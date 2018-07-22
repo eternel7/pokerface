@@ -3,12 +3,12 @@
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
       <input class="mdl-textfield__input" id="email" required autofocus
              v-model.trim="sync_email"/>
-      <label class="mdl-textfield__label" for="email">Email</label>
+      <label class="mdl-textfield__label" for="email">{{$t('user.Email')}}</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
       <input class="mdl-textfield__input" type="password" id="password" required
              v-model.trim="sync_password"/>
-      <label class="mdl-textfield__label" for="password">Password</label>
+      <label class="mdl-textfield__label" for="password">{{$t('user.Password')}}</label>
       <pwdMeter v-bind:pwd="sync_password"></pwdMeter>
     </div>
   </div>

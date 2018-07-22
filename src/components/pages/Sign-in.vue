@@ -1,20 +1,20 @@
 <template>
-  <div id="login-container" class="mdl-card mdl-shadow--16dp">
+  <div id="form-container" class="mdl-card mdl-shadow--16dp">
     <div class="mdl-card__supporting-text">
       <cardFabTitle userTitle="Page.SignIn"></cardFabTitle>
       <userFields :email.sync="user.email" :password.sync="user.password" userTitle="user.Login"></userFields>
       <socialLogin></socialLogin>
-      <button id="login-button" v-on:click="login"
+      <button id="main-button" v-on:click="login"
               class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
         {{$t('user.Login')}}
       </button>
       <errorMessages v-bind:errors="errors"></errorMessages>
     </div>
     <div class="mdl-card__actions">
-      <router-link id='register' class="mdl-button" to="/signup">
+      <router-link id='secondary-button' class="mdl-button mdl-button--primary" to="/signup">
         {{$t('user.Register')}}
       </router-link>
-      <router-link id='forgot-password' class="mdl-button" to="/forgetpassword">
+      <router-link id='third-button' class="mdl-button mdl-button--primary" to="/forgetpassword">
         {{$t('user.ForgotPassword')}}
       </router-link>
     </div>
@@ -57,7 +57,7 @@
           .then(response => {
             vm.errors = []
             console.log(response)
-            localStorage.setItem('jwtToken', response.data.token)
+            localStorage.setItem('vue-authenticate.vueauth_token', response.data.token)
           })
           .catch(e => {
             console.log(e)
@@ -76,21 +76,21 @@
     z-index: auto !important;
   }
 
-  #login-container {
+  #form-container {
     margin: auto;
   }
 
-  #login-button {
+  #main-button {
     width: 100%;
     height: 40px;
     min-width: initial;
   }
 
-  #forgot-password {
-    float: right;
+  #secondary-button {
+    float: left;
   }
 
-  #register {
-    float: left;
+  #third-button {
+    float: right;
   }
 </style>
