@@ -24,7 +24,7 @@ export const authMixin = {
         window.localStorage.setItem('vue-authenticate.vueauth_token', token)
       }
       window.localStorage.setItem('auth-user', JSON.stringify(user))
-      vm.$router.push({name: 'Profile', params: {id: user.email}})
+      vm.$router.push({name: 'Profile'})
     },
     authError: function (error) {
       console.log(error)
@@ -35,6 +35,7 @@ export const authMixin = {
       localStorage.removeItem('auth-user')
     },
     isAuthenticated: function (onSuccess, onError) {
+      const that = this
       const token = localStorage.getItem('vue-authenticate.vueauth_token')
       axios.post('http://localhost:8000/api/check/',
         {'token': token}, {headers: {authorization: 'JWT ' + token}}).then((response) => {
@@ -42,9 +43,11 @@ export const authMixin = {
             onSuccess()
           } else {
             onError('server side no authentication')
+            that.authError('server side no authentication')
           }
         }).catch((error) => {
           onError(error)
+          that.authError(error)
         })
     },
     checkToken: function (provider, redirect) {
