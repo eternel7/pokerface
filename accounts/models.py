@@ -14,6 +14,6 @@ class UserInfo(models.Model):
 
 # a user model was just created! This now creates your extended user (a UserInfo):
 @receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
+def create_user_info(sender, instance, created, **kwargs):
   if created:
     UserInfo.objects.get_or_create(user=instance)
