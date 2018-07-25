@@ -6,6 +6,9 @@ from rest_framework.authtoken.models import Token
 from django.http import JsonResponse
 from rest_framework.throttling import UserRateThrottle
 from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
+from django.utils import timezone
+import hashlib
 
 
 class LimitPerDayUserThrottle(UserRateThrottle):
@@ -64,3 +67,27 @@ def user_login(request, format='json'):
       }, status=status.HTTP_200_OK)
     return JsonResponse({"message": "SignIn.User_has_been_deactivated"})
   return JsonResponse({"message": "SignIn.No_user_for_the_given_email_and_password"})
+
+
+@api_view(['POST'])
+@csrf_exempt
+@throttle_classes([LimitPerDayUserThrottle])
+def user_forgetPasswordSendMail(request, format='json'):
+  """
+  Email
+  Invalid email format
+  Try if email is link to an account
+  """
+  user = User.objects.filter(username=request.data['email'])
+  print("before test", user)
+  if user.count() == 1:
+    user = user.first()
+    print("yessa!", user)
+    now = timezone.now()
+    user.userinfo.resetPasswordDate = now
+    fullToken = hashlib.sha224((user.email + now.strftime("%Y-%m-%d %H:%M:%S %Z")).encode()).hexdigest()
+    user.userinfo.resetPasswordToken = fullToken[0:30]
+    user.save()
+    print("yessa!", user, user.userinfo.resetPasswordToken, user.userinfo.resetPasswordDate)
+  
+  return JsonResponse({"message": 1}, status=status.HTTP_200_OK)

@@ -29,6 +29,7 @@
   import CardFabTitle from '@/components/sub-components/Card-fab-title'
   import ErrorMessages from '@/components/sub-components/ErrorMessages'
   import {validateEmail} from '@/auth/validateEmail'
+  import axios from 'axios'
 
   export default {
     name: 'Forgot-password',
@@ -52,6 +53,20 @@
         evt.preventDefault()
         if (!vm.user.email || !validateEmail(vm.user.email)) {
           vm.errors.push({message: 'SignUp.EnterACorrectEmailAddress'})
+        }
+        if (vm.errors.length < 1) {
+          axios.post('/fpwd', {email: vm.user.email})
+            .then(function (response) {
+              // handle success
+              console.log(response)
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error)
+            })
+            .then(function () {
+              // always executed
+            })
         }
       }
     }
