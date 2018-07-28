@@ -4,7 +4,7 @@
       <cardFabTitle userTitle="Page.SignIn"></cardFabTitle>
       <userFields :email.sync="user.email" :password.sync="user.password" userTitle="user.Login"></userFields>
       <socialLogin></socialLogin>
-      <button id="main-button" v-on:click="login"
+      <button id="main-button" v-on:click="trylogin"
               class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
         {{$t('user.Login')}}
       </button>
@@ -51,34 +51,14 @@
       }
     },
     methods: {
-      login: function (e) {
+      trylogin: function (e) {
         let vm = this
         vm.errors = []
         if (vm.user.password.length < 6) {
           vm.errors.push({message: 'password.Ensure_this_field_has_at_least_6_characters'})
         }
         if (vm.errors.length < 1) {
-          vm.$auth.login(vm.user).then(response => {
-            vm.errors = []
-            if (response.data.token) {
-              vm.authSuccess({
-                email: response.data.email,
-                first_name: response.data.first_name || '',
-                last_name: response.data.last_name || '',
-                username: response.data.username
-              }, vm, response.data.token)
-            } else {
-              vm.authError(response.data.message)
-              if (response.data.message) {
-                vm.errors = []
-                vm.errors.push({message: response.data.message})
-              }
-            }
-          }).catch(e => {
-            vm.authError(e)
-            vm.errors = []
-            vm.errors.push(e)
-          })
+          vm.login(vm, vm.user)
         }
       }
     }

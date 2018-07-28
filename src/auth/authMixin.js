@@ -58,6 +58,29 @@ export const authMixin = {
         redirect({path: '/'})
         that.authError(error)
       })
+    },
+    login: function (vm, user) {
+      vm.$auth.login(user).then(response => {
+        vm.errors = []
+        if (response.data.token) {
+          vm.authSuccess({
+            email: response.data.email,
+            first_name: response.data.first_name || '',
+            last_name: response.data.last_name || '',
+            username: response.data.username
+          }, vm, response.data.token)
+        } else {
+          vm.authError(response.data.message)
+          if (response.data.message) {
+            vm.errors = []
+            vm.errors.push({message: response.data.message})
+          }
+        }
+      }).catch(e => {
+        vm.authError(e)
+        vm.errors = []
+        vm.errors.push(e)
+      })
     }
   }
 }

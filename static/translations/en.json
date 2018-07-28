@@ -50,7 +50,10 @@
     "Go_to_reset_password" : "Go to reset password"
   },
   "ResetPassword": {
-    "Update_Password" : "Update password"
+    "Update_Password" : "Update password",
+    "no_user_found_for_this_email": "No user account matching the given criteria.",
+    "TokenIncorrect": "Security token incorrect.",
+    "Security_token_invalid": "Security token invalid."
   },
   "password": {
     "meter": "Password complexity indicator. The letter corresponds to an aid for checking the correct password input.",

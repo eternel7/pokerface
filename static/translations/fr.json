@@ -49,7 +49,11 @@
     "Go_to_reset_password": "Saisie du nouveau mot de passe"
   },
   "ResetPassword": {
-    "Update_Password": "Mettre à jour"
+    "Update_Password": "Mettre à jour",
+    "no_user_found_for_this_email": "Aucun compte utilisateur ne correspond aux critères fournis.",
+    "TokenIncorrect": "Jeton de sécurité incorrect.",
+    "Security_token_no_more_valid": "Le jeton de sécurité n'est plus valide,veuillez en demander un nouveau.",
+    "Security_token_invalid": "Jeton de sécurité invalide."
   },
   "password": {
     "meter": "Indice de complexité du mot de passe. La lettre correspond à une aide pour la vérification de la bonne saisie du mot de passe.",

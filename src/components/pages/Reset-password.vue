@@ -27,6 +27,9 @@
       <router-link id='secondary-button' class="mdl-button mdl-button--primary" to="/signup">
         {{$t('user.SignUp')}}
       </router-link>
+      <router-link id='fourth-button' class="mdl-button mdl-button--primary" to="/forgotpassword">
+        {{$t('user.ForgotPassword')}}
+      </router-link>
     </div>
   </div>
 </template>
@@ -78,17 +81,22 @@
         if (user.password !== user.confirmPassword) {
           vm.errors.push({message: 'SignUp.ConfirmedPasswordIncorrect'})
         }
+        if (user.resetPasswordToken.length < 30) {
+          vm.errors.push({message: 'ResetPassword.TokenIncorrect'})
+        }
         if (vm.errors.length < 1) {
-          axios.post('/rpwd', {
-            email: vm.user.email,
-            password: vm.user.password,
-            confirmPassword: vm.user.confirmPassword,
-            resetPasswordToken: vm.user.resetPasswordToken
-          })
+          axios.post('/rpwd', vm.user)
             .then(function (response) {
               // handle success
               console.log(response)
-              vm.state = 1
+              if (response.data.state === 1) {
+                vm.state = 1
+                // try to log in
+                vm.login(vm, vm.user)
+              } else {
+                vm.errors = []
+                vm.errors.push({message: response.data.message})
+              }
             })
             .catch(function (error) {
               // handle error
@@ -135,6 +143,9 @@
     float: right;
   }
 
+  #fourth-button {
+    float: none;
+  }
   .smaller {
     font-size: small;
   }

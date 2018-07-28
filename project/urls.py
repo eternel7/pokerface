@@ -29,5 +29,6 @@ urlpatterns = [
   re_path(r'^auth/register', account_views.user_create, name='signup'),
   re_path(r'^auth/login', account_views.user_login, name='signin'),
   re_path(r'^fpwd', account_views.user_forgetPasswordSendMail, name='forgetPasswordSendMail'),
+  re_path(r'^rpwd', account_views.user_resetPassword, name='resetPassword'),
   re_path(r'^$', TemplateView.as_view(template_name='project/spa.html'), name='home'),
 ]
