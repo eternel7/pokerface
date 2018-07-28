@@ -34,6 +34,14 @@
     .mdl-card {
       max-width: 99%;
     }
+
+    /* Change the white to any color ;) */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 30px white inset;
+    }
   </style>
 </head>
 <body>
@@ -41,6 +49,6 @@
 {% endblock %}
 {% render_bundle 'app' %}
 
-<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+<script defer src="../static/js/material.min.js"></script>
 </body>
 </html>

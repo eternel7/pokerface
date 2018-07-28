@@ -1,26 +1,22 @@
 <template>
   <div id="form-container" class="mdl-card mdl-shadow--16dp">
     <div class="mdl-card__supporting-text">
-      <cardFabTitle userTitle="Page.ForgotPassword"></cardFabTitle>
-      <div v-if="state==0" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        We'll send you a link to reset your password.
+      <cardFabTitle userTitle="Page.ResetPassword"></cardFabTitle>
+      <userFields :email.sync="user.email" :password.sync="user.password"></userFields>
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <input class="mdl-textfield__input" type="password" id="passwordConfirm" required
+               v-model.trim="user.confirmPassword"/>
+        <label class="mdl-textfield__label" for="passwordConfirm">{{$t('SignUp.ConfirmPassword')}}</label>
+        <pwdMeter v-bind:pwd="user.confirmPassword"></pwdMeter>
       </div>
-      <div v-if="state==1" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        We have send an email to {{user.email}} with instruction on how to reset your password.
-        <br/><br/>
-        <span class="smaller">Didn't receive the password reset email? Check your spam folder for an email with subject <strong>"Reset
-        password on
-        PokerFace"</strong>. If you still don't see the email <a class="link" @click="startAgain">try again</a>.</span>
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <input class="mdl-textfield__input" type="text" id="resetpasswordtoken" required
+               v-model.trim="user.resetPasswordToken"/>
+        <label class="mdl-textfield__label" for="resetpasswordtoken">{{$t('user.ResetPasswordToken')}}</label>
       </div>
-      <div v-if="state==0" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        <input class="mdl-textfield__input" type="email" id="email" required
-               v-model.trim="user.email"/>
-        <label class="mdl-textfield__label" for="email">{{$t('user.Email')}}</label>
-      </div>
-      <button id="main-button" v-on:click="stepForgotPassword"
+      <button id="main-button" v-on:click="updatePassword"
               class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
-        <span v-if="state==0">{{$t('ForgotPassword.Send_password_reset_email')}}</span>
-        <span v-if="state==1">{{$t('ForgotPassword.Go_to_reset_password')}}</span>
+        {{$t('ResetPassword.Update_Password')}}
       </button>
       <errorMessages v-bind:errors="errors"></errorMessages>
     </div>
@@ -37,48 +33,58 @@
 
 <script>
   import PageBase from '@/components/pages/Page'
+  import UserFields from '@/components/user-components/Main-fields'
   import CardFabTitle from '@/components/sub-components/Card-fab-title'
   import ErrorMessages from '@/components/sub-components/ErrorMessages'
+  import PwdMeter from '@/components/pwd-components/Pwd-helper'
   import {validateEmail} from '@/auth/validateEmail'
+  import {authMixin} from '@/auth/authMixin'
   import axios from 'axios'
 
   export default {
-    name: 'Forgot-password',
+    name: 'Reset-password',
     extends: PageBase,
+    mixins: [authMixin],
     components: {
+      userFields: UserFields,
       cardFabTitle: CardFabTitle,
-      errorMessages: ErrorMessages
+      errorMessages: ErrorMessages,
+      pwdMeter: PwdMeter
     },
     data () {
       return {
         'user': {
-          'email': ''
+          'email': '',
+          'password': '',
+          'confirmPassword': '',
+          'resetPasswordToken': (this.$route.params.resetPasswordToken) ? this.$route.params.resetPasswordToken : ''
         },
         state: 0,
         errors: []
       }
     },
     methods: {
-      startAgain (evt) {
-        this.state = 0
-      },
-      stepForgotPassword (evt) {
-        let vm = this
-        if (vm.state === 0) {
-          vm.sendForgotPassword(evt)
-        } else {
-          vm.$router.push({name: 'ResetPassword'})
-        }
-      },
-      sendForgotPassword (evt) {
+      updatePassword (evt) {
         let vm = this
         vm.errors = []
         evt.preventDefault()
-        if (!vm.user.email || !validateEmail(vm.user.email)) {
+        let user = vm.user
+        if (!user.email || !validateEmail(user.email)) {
           vm.errors.push({message: 'SignUp.EnterACorrectEmailAddress'})
         }
+        if (user.password.length < 6) {
+          vm.errors.push({message: 'password.Ensure_this_field_has_at_least_6_characters'})
+        }
+        if (user.password !== user.confirmPassword) {
+          vm.errors.push({message: 'SignUp.ConfirmedPasswordIncorrect'})
+        }
         if (vm.errors.length < 1) {
-          axios.post('/fpwd', {email: vm.user.email})
+          axios.post('/rpwd', {
+            email: vm.user.email,
+            password: vm.user.password,
+            confirmPassword: vm.user.confirmPassword,
+            resetPasswordToken: vm.user.resetPasswordToken
+          })
             .then(function (response) {
               // handle success
               console.log(response)
@@ -129,7 +135,7 @@
     float: right;
   }
 
-  .smaller{
+  .smaller {
     font-size: small;
   }
 </style>

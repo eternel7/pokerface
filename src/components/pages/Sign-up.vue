@@ -5,9 +5,9 @@
       <userFields :email.sync="user.email" :password.sync="user.password"></userFields>
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
         <input class="mdl-textfield__input" type="password" id="passwordConfirm" required
-               v-model.trim="register.confirmPassword"/>
+               v-model.trim="user.confirmPassword"/>
         <label class="mdl-textfield__label" for="passwordConfirm">{{$t('SignUp.ConfirmPassword')}}</label>
-        <pwdMeter v-bind:pwd="register.confirmPassword"></pwdMeter>
+        <pwdMeter v-bind:pwd="user.confirmPassword"></pwdMeter>
       </div>
       <div class="link" v-on:click="askForAnImage"
            v-on:dragover.prevent="onDragOver" v-on:drop.prevent="onDrop">
@@ -57,22 +57,12 @@
     data () {
       return {
         image: '/static/img/icons/apple-touch-icon-76x76.png',
-        message: '',
         'user': {
           'email': '',
-          'password': ''
+          'password': '',
+          'confirmPassword': ''
         },
-        register: {},
         errors: []
-      }
-    },
-    computed: {
-      fullInfo: function () {
-        return {
-          email: this.user.email,
-          password: this.user.password,
-          confirmPassword: this.register.confirmPassword
-        }
       }
     },
     methods: {
@@ -80,7 +70,7 @@
         let vm = this
         vm.errors = []
         evt.preventDefault()
-        let userInfo = this.fullInfo
+        let userInfo = this.user
         if (!userInfo.email || !validateEmail(userInfo.email)) {
           vm.errors.push({message: 'SignUp.EnterACorrectEmailAddress'})
         }

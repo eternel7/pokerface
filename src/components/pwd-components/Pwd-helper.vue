@@ -88,25 +88,32 @@
   .pwdMeter[value="0"] {
     background: #f44336;
     color: white;
+    font-style: italic;
+    font-weight: bold;
   }
 
   .pwdMeter[value="1"] {
     background: #FF9800;
     color: #ffffff;
+    font-style: italic;
+    font-weight: bold;
   }
 
   .pwdMeter[value="2"] {
     background: #03A9F4;
     color: white;
+    font-weight: bold;
   }
 
   .pwdMeter[value="3"] {
     background: #4CAF50;
     color: white;
+    font-weight: bold;
   }
 
   .pwdMeter[value="4"] {
     background: #76FF03;
-    color: #212121;
+    color: #585858;
+    font-weight: bold;
   }
 </style>

@@ -9,10 +9,13 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.utils import timezone
 import hashlib
-
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+from django.conf import settings
+from django_user_agents.utils import get_user_agent
 
 class LimitPerDayUserThrottle(UserRateThrottle):
-  rate = '5/day'
+  rate = '500/day'
 
 
 @api_view(['POST'])
@@ -78,16 +81,56 @@ def user_forgetPasswordSendMail(request, format='json'):
   Invalid email format
   Try if email is link to an account
   """
-  user = User.objects.filter(username=request.data['email'])
+  email = request.data['email']
+  user = User.objects.filter(username=email)
   print("before test", user)
   if user.count() == 1:
     user = user.first()
-    print("yessa!", user)
+    print("yessa!", user.email)
     now = timezone.now()
     user.userinfo.resetPasswordDate = now
     fullToken = hashlib.sha224((user.email + now.strftime("%Y-%m-%d %H:%M:%S %Z")).encode()).hexdigest()
     user.userinfo.resetPasswordToken = fullToken[0:30]
     user.save()
-    print("yessa!", user, user.userinfo.resetPasswordToken, user.userinfo.resetPasswordDate)
-  
+    print("user ready for password update!")
+    user_agent = get_user_agent(request)
+    infos = {'resetPasswordToken': user.userinfo.resetPasswordToken,
+             'title': "Reset password for PokerFace",
+             'first_name': user.first_name,
+             'last_name': user.last_name,
+             'email': email,
+             'action_url': 'http://localhost:8000/#/resetpassword/' + user.userinfo.resetPasswordToken,
+             'support_url': 'http://localhost:8000/#/support',
+             'name': user.first_name if user.first_name != "" else email,
+             'operating_system': user_agent.os.family,
+             'ip_address': request.META['REMOTE_ADDR'],
+             'browser_name': user_agent.browser.family}
+    msg_plain = render_to_string('../templates/project/emails/forgotpassword.txt', infos)
+    msg_html = render_to_string('../templates/project/emails/forgotpassword.html', infos)
+    print('sending reset password instructions...')
+    send_mail('Reset password for PokerFace',
+              msg_plain,
+              settings.EMAIL_HOST_USER,
+              [email],
+              html_message=msg_html,
+              fail_silently=True,
+              )
+    print("send!!")
+  if not user:
+    infos = {'email': email,
+             'support_url': 'http://localhost:8000/#/support',
+             'operating_system': request.META['HTTP_USER_AGENT'],
+             'ip_address': request.META['REMOTE_ADDR'],
+             'browser_name': request.META['HTTP_USER_AGENT']}
+    msg_plain = render_to_string('../templates/project/emails/forgotpasswordnoaccount.txt', infos)
+    msg_html = render_to_string('../templates/project/emails/forgotpasswordnoaccount.html', infos)
+    print('sending reset password ask to unknown account...')
+    send_mail('Reset password on PokerFace but we don\'t know you',
+              msg_plain,
+              settings.EMAIL_HOST_USER,
+              [email],
+              html_message=msg_html,
+              fail_silently=False,
+              )
+    print("send!!")
   return JsonResponse({"message": 1}, status=status.HTTP_200_OK)

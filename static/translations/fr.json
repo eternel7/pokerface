@@ -5,6 +5,7 @@
     "SignUp": "Inscription",
     "Profile": "Profil",
     "ForgotPassword": "Mot de passe oublié",
+    "ResetPassword": "Modification du mot de passe",
     "Chat": "Discussion",
     "Chatrooms": "Discussions"
   },
@@ -28,7 +29,8 @@
     "SignUp": "Inscription",
     "SignIn": "Connexion",
     "Register": "S'inscrire",
-    "ForgotPassword": "Mot de passe oublié"
+    "ForgotPassword": "Mot de passe oublié",
+    "ResetPasswordToken": "Jeton de sécurité"
   },
   "SignUp": {
     "ConfirmPassword": "Confirmer le mot de passe",
@@ -43,7 +45,11 @@
     "User_has_been_deactivated" : "L'utilisateur de votre connexion a été désactivé. Veuillez contacter le support si vous ne savez pas pourquoi."
   },
   "ForgotPassword": {
-    "Send_password_reset_email": "Envoyer le courriel"
+    "Send_password_reset_email": "Envoyer",
+    "Go_to_reset_password": "Saisie du nouveau mot de passe"
+  },
+  "ResetPassword": {
+    "Update_Password": "Mettre à jour"
   },
   "password": {
     "meter": "Indice de complexité du mot de passe. La lettre correspond à une aide pour la vérification de la bonne saisie du mot de passe.",

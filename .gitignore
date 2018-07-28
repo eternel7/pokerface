@@ -32,3 +32,4 @@ db.sqlite3
 webpack-stats.json
 public/
 dist/
+/project/setting.json

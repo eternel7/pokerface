@@ -11,7 +11,11 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import json
 
+with open('project/setting.json', 'r') as f:
+  config = json.load(f)
+  
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -19,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ozo@1plj%&ia7&7lif&g)hk%*f$%+xih*@36uwqibyzdth1vmg'
+SECRET_KEY = config['private']['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -43,6 +47,7 @@ INSTALLED_APPS = [
   'social_django',
   'rest_social_auth',
   'rest_framework_social_oauth2',
+  'django_user_agents',
   'accounts',
 ]
 
@@ -126,20 +131,20 @@ REST_FRAMEWORK = {
 }
 
 AUTHENTICATION_BACKENDS = (
-
+  
   # Facebook OAuth2
   'social_core.backends.facebook.FacebookAppOAuth2',
   'social_core.backends.facebook.FacebookOAuth2',
-
+  
   # Google OAuth2
   'social_core.backends.google.GoogleOAuth2',
-
+  
   # Twitter OAuth
   'social_core.backends.twitter.TwitterOAuth',
-
+  
   # django-rest-framework-social-oauth2
   'rest_framework_social_oauth2.backends.DjangoOAuth2',
-
+  
   # Django
   'django.contrib.auth.backends.ModelBackend',
 )
@@ -149,7 +154,7 @@ SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 # Facebook configuration
 SOCIAL_AUTH_FACEBOOK_KEY = '585737338256884'
-SOCIAL_AUTH_FACEBOOK_SECRET = '17858bbbc932545d99b10eb15ed7492a'
+SOCIAL_AUTH_FACEBOOK_SECRET = config['private']['SOCIAL_AUTH_FACEBOOK_SECRET']
 # Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from facebook.
 # Email is not sent by default, to get it, you must request the email permission:
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
@@ -159,7 +164,7 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
 
 # Google configuration
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '338829541691-14vtulpp1bav75s243cr6cfo0dvojkjl.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'OZ4l8gCq3faYOTGlOieYzEXV'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config['private']['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
 SOCIAL_AUTH_GOOGLE_OAUTH2_FIELDS = ['email', 'username']
 # Twitter configuration
 SOCIAL_AUTH_TWITTER_KEY = 'nF5AOvrq4l8FmvjeRgEPpk6ID'
@@ -167,6 +172,15 @@ SOCIAL_AUTH_TWITTER_SECRET = 'siZZjbSdoZLI2DnsqOmGcHba92ExtIsI5cJlIsOiNftrzEQz9h
 
 CSRF_COOKIE_SECURE = True
 CORS_ORIGIN_ALLOW_ALL = True
+
+# email configuration
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config['smtp']['server']
+EMAIL_PORT = config['smtp']['port']
+EMAIL_HOST_USER = config['smtp']['mail']
+EMAIL_HOST_PASSWORD = config['smtp']['password']
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
