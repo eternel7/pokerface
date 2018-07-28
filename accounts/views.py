@@ -16,7 +16,7 @@ from django_user_agents.utils import get_user_agent
 
 
 class LimitPerDayUserThrottle(UserRateThrottle):
-  rate = '500/day'
+  rate = '10/day'
 
 
 @api_view(['POST'])
