@@ -118,11 +118,13 @@ def user_forgetPasswordSendMail(request, format='json'):
               )
     print("send!!")
   if not user:
+    user_agent = get_user_agent(request)
     infos = {'email': email,
+             'name': email,
              'support_url': 'http://localhost:8000/#/support',
-             'operating_system': request.META['HTTP_USER_AGENT'],
+             'operating_system': user_agent.os.family,
              'ip_address': request.META['REMOTE_ADDR'],
-             'browser_name': request.META['HTTP_USER_AGENT']}
+             'browser_name': user_agent.browser.family}
     msg_plain = render_to_string('../templates/project/emails/forgotpasswordnoaccount.txt', infos)
     msg_html = render_to_string('../templates/project/emails/forgotpasswordnoaccount.html', infos)
     print('sending reset password ask to unknown account...')
