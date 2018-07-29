@@ -16,7 +16,7 @@ from django_user_agents.utils import get_user_agent
 
 
 class LimitPerDayUserThrottle(UserRateThrottle):
-  rate = '10/day'
+  rate = '5/hour'
 
 
 @api_view(['POST'])
@@ -141,7 +141,6 @@ def user_forgetPasswordSendMail(request, format='json'):
 
 @api_view(['POST'])
 @csrf_exempt
-@throttle_classes([LimitPerDayUserThrottle])
 def user_resetPassword(request, format='json'):
   """
   Email

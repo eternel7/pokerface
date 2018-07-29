@@ -61,6 +61,10 @@
     methods: {
       startAgain (evt) {
         this.state = 0
+        // force refresh of material design lite inputs
+        window.setTimeout(function () {
+          PageBase.mounted()
+        }, 500)
       },
       stepForgotPassword (evt) {
         let vm = this
@@ -129,7 +133,7 @@
     float: right;
   }
 
-  .smaller{
+  .smaller {
     font-size: small;
   }
 </style>
