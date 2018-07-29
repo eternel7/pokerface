@@ -124,9 +124,9 @@ REST_FRAMEWORK = {
     'django_filters.rest_framework.DjangoFilterBackend',
   ),
   'DEFAULT_AUTHENTICATION_CLASSES': (
+    'rest_framework.authentication.TokenAuthentication',
     'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
     'rest_framework_social_oauth2.authentication.SocialAuthentication',
-    'rest_framework.authentication.TokenAuthentication',
   ),
 }
 

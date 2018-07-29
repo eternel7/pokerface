@@ -16,7 +16,7 @@ from django_user_agents.utils import get_user_agent
 
 
 class LimitPerDayUserThrottle(UserRateThrottle):
-  rate = '5/hour'
+  rate = '5555/hour'
 
 
 @api_view(['POST'])
@@ -200,3 +200,23 @@ def user_resetPassword(request, format='json'):
     return JsonResponse({"message": "SignUp.ConfirmedPasswordIncorrect"}, status=status.HTTP_200_OK)
   print("no user found for this email", email)
   return JsonResponse({"message": "ResetPassword.no_user_found_for_this_email"}, status=status.HTTP_200_OK)
+
+
+@api_view(['PUT'])
+@csrf_exempt
+def user_update(request, format='json'):
+  print("user_update", request.user, request.data)
+  if request.user.is_authenticated:
+    print("authenticated user", request.user)
+    request.user.first_name = request.data['first_name']
+    request.user.last_name = request.data['last_name']
+    request.user.save()
+    print(request.user.username)
+    return JsonResponse({"message": "Profile.Update_done",
+                         "user": {"email": request.user.email,
+                                  "username": request.user.email,
+                                  "first_name": request.user.first_name,
+                                  "last_name": request.user.last_name,
+                                  }}, status=status.HTTP_200_OK)
+  print("unauthenticated user", request.user)
+  return JsonResponse({"message": "Profile.unauthorized_access"}, status=status.HTTP_401_UNAUTHORIZED)
