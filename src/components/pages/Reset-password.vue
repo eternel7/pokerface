@@ -85,8 +85,10 @@
           vm.errors.push({message: 'ResetPassword.TokenIncorrect'})
         }
         if (vm.errors.length < 1) {
+          vm.$root.loading = true
           axios.post('/rpwd', vm.user)
             .then(function (response) {
+              vm.$root.loading = false
               // handle success
               console.log(response)
               if (response.data.state === 1) {
@@ -94,12 +96,14 @@
                 // try to log in
                 vm.login(vm, vm.user)
               } else {
+                vm.$root.loading = false
                 vm.errors = []
                 vm.errors.push({message: response.data.message})
               }
             })
             .catch(function (error) {
               // handle error
+              vm.$root.loading = false
               console.log(error)
               vm.state = 0
               vm.errors = []
@@ -107,6 +111,7 @@
             })
             .then(function () {
               // always executed
+              vm.$root.loading = false
             })
         }
       }

@@ -82,14 +82,17 @@
           vm.errors.push({message: 'SignUp.EnterACorrectEmailAddress'})
         }
         if (vm.errors.length < 1) {
+          vm.$root.loading = true
           axios.post('/fpwd', {email: vm.user.email})
             .then(function (response) {
+              vm.$root.loading = false
               // handle success
               console.log(response)
               vm.state = 1
             })
             .catch(function (error) {
               // handle error
+              vm.$root.loading = false
               console.log(error)
               vm.state = 0
               vm.errors = []
@@ -97,6 +100,7 @@
             })
             .then(function () {
               // always executed
+              vm.$root.loading = false
             })
         }
       }

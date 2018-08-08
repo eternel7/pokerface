@@ -15,17 +15,20 @@ export const authMixin = {
       if (provider === 'google') {
         authProvider = 'google-oauth2'
       }
-      const that = this
+      const vm = this
+      vm.$root.loading = true
       this.$auth.authenticate(provider, {provider: authProvider}).then(function (response) {
-        that.authSuccess({
+        vm.$root.loading = false
+        vm.authSuccess({
           email: response.data.email,
           first_name: response.data.first_name || '',
           last_name: response.data.last_name || '',
           username: response.data.username,
           avatar_image: response.data.avatar_image
-        }, that, false) // Authenticate manage the local update of token
+        }, vm, false) // Authenticate manage the local update of token
       }).catch(function (error) {
-        that.authError(error, that)
+        vm.$root.loading = false
+        vm.authError(error, vm)
       })
     },
     authSuccess: function (user, vm, token) {
@@ -43,10 +46,17 @@ export const authMixin = {
     logout: function (vm) {
       if (vm && vm.$root) {
         vm.$root.authenticated = false
+        vm.$root.loading = true
       }
       axios.post('/api/ulogout/', {}, this.authHeader()).then((response) => {
+        if (vm && vm.$root) {
+          vm.$root.loading = false
+        }
         console.log('user log out', response.data.message)
       }).catch((error) => {
+        if (vm && vm.$root) {
+          vm.$root.loading = false
+        }
         console.log('Error in user log out', error)
       })
       localStorage.removeItem('vue-authenticate.vueauth_token')
@@ -78,8 +88,10 @@ export const authMixin = {
       })
     },
     login: function (vm, user) {
+      vm.$root.loading = true
       vm.$auth.login(user).then(response => {
         vm.errors = []
+        vm.$root.loading = false
         if (response.data.token) {
           vm.authSuccess({
             email: response.data.email,
@@ -96,6 +108,7 @@ export const authMixin = {
           }
         }
       }).catch(e => {
+        vm.$root.loading = false
         vm.authError(e, vm)
         vm.errors = []
         vm.errors.push(e)

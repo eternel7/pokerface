@@ -86,8 +86,10 @@
             'email': vm.user.email,
             'password': vm.user.password
           }
+          vm.$root.loading = true
           vm.$auth.register(user).then(response => {
             vm.errors = []
+            vm.$root.loading = false
             if (!response.data.token) {
               for (let field in response.data) {
                 for (let erOnfield in response.data[field]) {
@@ -104,6 +106,7 @@
             }
           }).catch(e => {
             console.log('catch error in register', e)
+            vm.$root.loading = false
             vm.errors = []
             vm.errors.push(e)
           })
