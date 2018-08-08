@@ -42,7 +42,8 @@ new Vue({
   components: {App},
   data () {
     return {
-      authenticated: undefined
+      authenticated: undefined,
+      loading: false
     }
   }
 })

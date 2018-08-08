@@ -1,6 +1,7 @@
 <template>
   <div id="app" class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <header class="mdl-layout__header">
+      <loading></loading>
       <div class="mdl-layout__header-row">
         <span class="mdl-layout-title">Pokerface</span>
         <div class="mdl-layout-spacer"></div>
@@ -30,13 +31,15 @@
 
 <script>
   import PageBase from '@/components/pages/Page'
+  import Loading from '@/components/Loading'
   import NavBar from '@/components/Navbar'
 
   export default {
     name: 'app',
     extends: PageBase,
     components: {
-      navbar: NavBar
+      navbar: NavBar,
+      loading: Loading
     }
   }
 </script>

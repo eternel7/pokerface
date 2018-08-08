@@ -84,10 +84,11 @@
         if (vm.errors.length < 1 && vm.$root.authenticated) {
           let user = vm.user
           user.image = vm.image
+          vm.$root.loading = true
           axios.put('/api/uuser/', user, vm.authHeader())
             .then(function (response) {
               // handle success
-              console.log(response)
+              vm.$root.loading = false
               if (response.data.user) {
                 vm.authSuccess(response.data.user, vm, false)
               } else {
@@ -98,12 +99,14 @@
             .catch(function (error) {
               // handle error
               console.log(error)
+              vm.$root.loading = false
               vm.state = 0
               vm.errors = []
               vm.errors.push(error)
             })
             .then(function () {
               // always executed
+              vm.$root.loading = false
             })
         } else {
           vm.$router.push({name: 'Sign in'})
