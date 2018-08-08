@@ -14,6 +14,7 @@ Vue.config.productionTip = true
 Vue.use(VueAxios, axios)
 Vue.use(VueAuthenticate, {
   baseUrl: 'http://localhost:8000',
+  tokenType: 'JWT',
   providers: {
     google: {
       clientId: '338829541691-14vtulpp1bav75s243cr6cfo0dvojkjl.apps.googleusercontent.com',

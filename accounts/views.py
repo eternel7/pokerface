@@ -2,10 +2,12 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, throttle_classes
 from rest_framework import status
 from accounts.serializers import UserSerializer
+from accounts.models import get_user_from_token
 from rest_framework.authtoken.models import Token
+from rest_framework.authentication import get_authorization_header
 from django.http import JsonResponse
 from rest_framework.throttling import UserRateThrottle
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.utils import timezone
 import hashlib
@@ -59,6 +61,8 @@ def user_login(request, format='json'):
   if user is not None:
     # the password verified for the user
     if user.is_active:
+      login(request, user)
+      print('login', request.user)
       # authenticate seems to include the is_active test
       token, created = Token.objects.get_or_create(user=user)
       request.session['auth'] = token.key
@@ -205,18 +209,32 @@ def user_resetPassword(request, format='json'):
 @api_view(['PUT'])
 @csrf_exempt
 def user_update(request, format='json'):
-  print("user_update", request.user, request.data)
-  if request.user.is_authenticated:
-    print("authenticated user", request.user)
-    request.user.first_name = request.data['first_name']
-    request.user.last_name = request.data['last_name']
-    request.user.save()
-    print(request.user.username)
+  user = get_user_from_token(get_authorization_header(request))
+  
+  if isinstance(user, str):
+    print("message for user", user)
+    return JsonResponse({"message": user}, status=status.HTTP_200_OK)
+    
+  if user:
+    print("authenticated user", user)
+    user.first_name = request.data['first_name']
+    user.last_name = request.data['last_name']
+    user.save()
     return JsonResponse({"message": "Profile.Update_done",
-                         "user": {"email": request.user.email,
-                                  "username": request.user.email,
-                                  "first_name": request.user.first_name,
-                                  "last_name": request.user.last_name,
+                         "user": {"email": user.email,
+                                  "username": user.email,
+                                  "first_name": user.first_name,
+                                  "last_name": user.last_name,
                                   }}, status=status.HTTP_200_OK)
   print("unauthenticated user", request.user)
   return JsonResponse({"message": "Profile.unauthorized_access"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['POST'])
+@csrf_exempt
+def user_logOut(request, format='json'):
+  if request.user and request.user.is_authenticated:
+    logout(request)
+    return JsonResponse({"message": "user.Logout"}, status=status.HTTP_200_OK)
+  print("unauthenticated user", request.user)
+  return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)

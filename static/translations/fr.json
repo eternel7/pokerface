@@ -30,7 +30,9 @@
     "SignIn": "Connexion",
     "Register": "S'inscrire",
     "ForgotPassword": "Mot de passe oublié",
-    "ResetPasswordToken": "Jeton de sécurité"
+    "ResetPasswordToken": "Jeton de sécurité",
+    "Logout": "Déconnexion",
+    "nonConnected": "utilisateur non connecté"
   },
   "SignUp": {
     "ConfirmPassword": "Confirmer le mot de passe",
@@ -40,9 +42,9 @@
     "ConfirmedPasswordIncorrect": "Les 2 mots de passe sont différents.",
     "Register": "S'inscrire"
   },
-  "SignIn":{
-    "No_user_for_the_given_email_and_password" : "Il n'y a pas d'utilisateur pour le courriel et le mot de passe fournit. Veuillez essayer à nouveau.",
-    "User_has_been_deactivated" : "L'utilisateur de votre connexion a été désactivé. Veuillez contacter le support si vous ne savez pas pourquoi."
+  "SignIn": {
+    "No_user_for_the_given_email_and_password": "Il n'y a pas d'utilisateur pour le courriel et le mot de passe fournit. Veuillez essayer à nouveau.",
+    "User_has_been_deactivated": "L'utilisateur de votre connexion a été désactivé. Veuillez contacter le support si vous ne savez pas pourquoi."
   },
   "ForgotPassword": {
     "Send_password_reset_email": "Envoyer",

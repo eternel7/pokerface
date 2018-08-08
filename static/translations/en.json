@@ -31,7 +31,9 @@
     "Register": "Register",
     "ForgotPassword": "Forgot Password",
     "Send": "Forgot Password",
-    "ResetPasswordToken": "Security token"
+    "ResetPasswordToken": "Security token",
+    "Logout": "Logout",
+    "nonConnected": "Non connected user"
   },
   "SignUp": {
     "ConfirmPassword": "Confirm password",

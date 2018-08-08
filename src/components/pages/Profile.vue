@@ -78,8 +78,7 @@
         let vm = this
         vm.errors = []
         if (vm.errors.length < 1 && vm.$root.authenticated) {
-          const token = localStorage.getItem('vue-authenticate.vueauth_token')
-          axios.put('/uuser', vm.user, {headers: {authorization: 'JWT ' + token}})
+          axios.put('/api/uuser/', vm.user, vm.authHeader())
             .then(function (response) {
               // handle success
               console.log(response)

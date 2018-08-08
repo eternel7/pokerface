@@ -2,6 +2,14 @@ import axios from 'axios'
 
 export const authMixin = {
   methods: {
+    authHeader: function (token) {
+      const tok = token || localStorage.getItem('vue-authenticate.vueauth_token')
+      return {
+        headers: {
+          authorization: 'JWT ' + tok
+        }
+      }
+    },
     authenticate: function (provider) {
       let authProvider = provider
       if (provider === 'google') {
@@ -35,6 +43,11 @@ export const authMixin = {
       if (vm && vm.$root) {
         vm.$root.authenticated = false
       }
+      axios.post('/api/ulogout/', {}, this.authHeader()).then((response) => {
+        console.log('user log out', response.data.message)
+      }).catch((error) => {
+        console.log('Error in user log out', error)
+      })
       localStorage.removeItem('vue-authenticate.vueauth_token')
       localStorage.removeItem('auth-user')
     },
@@ -42,7 +55,7 @@ export const authMixin = {
       const that = this
       const token = localStorage.getItem('vue-authenticate.vueauth_token')
       axios.post('/api/check/',
-        {'token': token}, {headers: {authorization: 'JWT ' + token}}).then((response) => {
+        {'token': token}, this.authHeader(token)).then((response) => {
           if (response.data.status) {
             onSuccess()
           } else {
