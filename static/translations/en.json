@@ -25,6 +25,8 @@
   "user": {
     "Email": "Email",
     "Password": "Password",
+    "First_name": "First name",
+    "Last_name": "Last name",
     "Login": "Login",
     "SignUp": "Sign up",
     "SignIn": "Sign in",
@@ -33,7 +35,8 @@
     "Send": "Forgot Password",
     "ResetPasswordToken": "Security token",
     "Logout": "Logout",
-    "nonConnected": "Non connected user"
+    "nonConnected": "Non connected user",
+    "Update": "Update"
   },
   "SignUp": {
     "ConfirmPassword": "Confirm password",

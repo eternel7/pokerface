@@ -21,7 +21,8 @@ export const authMixin = {
           email: response.data.email,
           first_name: response.data.first_name || '',
           last_name: response.data.last_name || '',
-          username: response.data.username
+          username: response.data.username,
+          avatar_image: response.data.avatar_image
         }, that, false) // Authenticate manage the local update of token
       }).catch(function (error) {
         that.authError(error, that)
@@ -84,7 +85,8 @@ export const authMixin = {
             email: response.data.email,
             first_name: response.data.first_name || '',
             last_name: response.data.last_name || '',
-            username: response.data.username
+            username: response.data.username,
+            avatar_image: response.data.avatar_image
           }, vm, response.data.token)
         } else {
           vm.authError(response.data.message, vm)

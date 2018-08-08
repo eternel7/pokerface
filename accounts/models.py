@@ -11,6 +11,7 @@ class UserInfo(models.Model):
   updated_at = models.DateTimeField(auto_now=True)
   resetPasswordDate = models.DateTimeField(blank=True, null=True)
   resetPasswordToken = models.CharField(max_length=50, blank=True, default='')
+  avatarImage = models.TextField(blank=True, default='')
 
 
 # a user model was just created! This now creates your extended user (a UserInfo):

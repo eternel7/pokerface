@@ -5,17 +5,17 @@
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
         <input class="mdl-textfield__input" type="text" id="email" readonly required
                v-model.trim="user.email"/>
-        <label class="mdl-textfield__label" for="email">Email</label>
+        <label class="mdl-textfield__label" for="email">{{$t('user.Email')}}</label>
       </div>
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
         <input class="mdl-textfield__input" type="text" id="first_name"
                v-model.trim="user.first_name"/>
-        <label class="mdl-textfield__label" for="first_name">First name</label>
+        <label class="mdl-textfield__label" for="first_name">{{$t('user.First_name')}}</label>
       </div>
       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
         <input class="mdl-textfield__input" type="text" id="last_name"
                v-model.trim="user.last_name"/>
-        <label class="mdl-textfield__label" for="last_name">Last name</label>
+        <label class="mdl-textfield__label" for="last_name">{{$t('user.Last_name')}}</label>
       </div>
       <div class="link" v-on:click="askForAnImage"
            v-on:dragover.prevent="onDragOver" v-on:drop.prevent="onDrop">
@@ -26,7 +26,7 @@
       </div>
       <button id="main-button" v-on:click.prevent="tryUpdate"
               class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
-        {{$t('ResetPassword.Update_Password')}}
+        {{$t('user.Update')}}
       </button>
       <errorMessages v-bind:errors="errors"></errorMessages>
     </div>
@@ -58,7 +58,11 @@
     },
     computed: {
       user: function () {
-        return JSON.parse(window.localStorage.getItem('auth-user'))
+        let user = JSON.parse(window.localStorage.getItem('auth-user'))
+        if (user.avatar_image) {
+          this.image = user.avatar_image
+        }
+        return user
       }
     },
     methods: {
@@ -78,7 +82,9 @@
         let vm = this
         vm.errors = []
         if (vm.errors.length < 1 && vm.$root.authenticated) {
-          axios.put('/api/uuser/', vm.user, vm.authHeader())
+          let user = vm.user
+          user.image = vm.image
+          axios.put('/api/uuser/', user, vm.authHeader())
             .then(function (response) {
               // handle success
               console.log(response)

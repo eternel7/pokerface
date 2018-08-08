@@ -71,6 +71,7 @@ def user_login(request, format='json'):
         "email": user.email,
         "first_name": user.first_name,
         "last_name": user.last_name,
+        "avatar_image": user.userinfo.avatarImage,
         "token": token.key
       }, status=status.HTTP_200_OK)
     return JsonResponse({"message": "SignIn.User_has_been_deactivated"})
@@ -214,17 +215,23 @@ def user_update(request, format='json'):
   if isinstance(user, str):
     print("message for user", user)
     return JsonResponse({"message": user}, status=status.HTTP_200_OK)
-    
+  
   if user:
     print("authenticated user", user)
     user.first_name = request.data['first_name']
     user.last_name = request.data['last_name']
+    avatar_image = request.data['image']
+    if avatar_image.startswith("data:image/"):
+      print("avatar_image", avatar_image)
+      user.userinfo.avatarImage = avatar_image
+      
     user.save()
     return JsonResponse({"message": "Profile.Update_done",
                          "user": {"email": user.email,
                                   "username": user.email,
                                   "first_name": user.first_name,
                                   "last_name": user.last_name,
+                                  "avatar_image": user.userinfo.avatarImage,
                                   }}, status=status.HTTP_200_OK)
   print("unauthenticated user", request.user)
   return JsonResponse({"message": "Profile.unauthorized_access"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -236,5 +243,5 @@ def user_logOut(request, format='json'):
   if request.user and request.user.is_authenticated:
     logout(request)
     return JsonResponse({"message": "user.Logout"}, status=status.HTTP_200_OK)
-  print("unauthenticated user", request.user)
+  print("logout unauthenticated user")
   return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)

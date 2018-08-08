@@ -25,6 +25,8 @@
   "user": {
     "Email": "Courriel",
     "Password": "Mot de passe",
+    "First_name": "Prénom",
+    "Last_name": "Nom",
     "Login": "Connexion",
     "SignUp": "Inscription",
     "SignIn": "Connexion",
@@ -32,7 +34,8 @@
     "ForgotPassword": "Mot de passe oublié",
     "ResetPasswordToken": "Jeton de sécurité",
     "Logout": "Déconnexion",
-    "nonConnected": "utilisateur non connecté"
+    "nonConnected": "utilisateur non connecté",
+    "Update": "Mettre à jour"
   },
   "SignUp": {
     "ConfirmPassword": "Confirmer le mot de passe",
