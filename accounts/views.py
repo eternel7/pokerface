@@ -223,7 +223,6 @@ def user_update(request, format='json'):
     user.last_name = request.data['last_name']
     avatar_image = request.data['image']
     if avatar_image.startswith("data:image/"):
-      print("avatar_image", avatar_image)
       user.userinfo.avatarImage = avatar_image
     
     user.save()
