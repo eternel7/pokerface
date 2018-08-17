@@ -90,7 +90,7 @@
             vm.$root.loading = false
             // handle success
             if (response.data.user) {
-              vm.authSuccess(response.data.user, vm, false)
+              vm.authStoreUser(response.data.user, vm)
               if (response.data.user.avatar_image) {
                 vm.image = response.data.user.avatar_image
               }

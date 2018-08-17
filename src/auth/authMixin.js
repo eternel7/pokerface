@@ -17,25 +17,22 @@ export const authMixin = {
       }
       const vm = this
       vm.$root.loading = true
-      this.$auth.authenticate(provider, {provider: authProvider}).then(function (response) {
+      vm.$auth.authenticate(provider, {provider: authProvider}).then(function (response) {
         vm.$root.loading = false
-        vm.authSuccess({
-          email: response.data.email,
-          first_name: response.data.first_name || '',
-          last_name: response.data.last_name || '',
-          username: response.data.username,
-          avatar_image: response.data.avatar_image
-        }, vm, false) // Authenticate manage the local update of token
+        vm.authSuccess(response.data, vm, false) // Authenticate manage the local update of token
       }).catch(function (error) {
         vm.$root.loading = false
         vm.authError(error, vm)
       })
     },
+    authStoreUser: function (user, vm) {
+      window.localStorage.setItem('auth-user', JSON.stringify(user))
+    },
     authSuccess: function (user, vm, token) {
       if (token) {
         window.localStorage.setItem('vue-authenticate.vueauth_token', token)
       }
-      window.localStorage.setItem('auth-user', JSON.stringify(user))
+      vm.authStoreUser(user, vm)
       vm.$root.authenticated = true
       vm.$router.push({name: 'Profile'})
     },
