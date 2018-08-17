@@ -41,7 +41,9 @@ export const authMixin = {
     },
     authError: function (error, vm) {
       console.log(error)
-      this.logout(vm)
+      if (vm && vm.$root && vm.$root.authenticated) {
+        vm.logout(vm)
+      }
     },
     logout: function (vm) {
       if (vm && vm.$root) {

@@ -65,6 +65,9 @@
         return user
       }
     },
+    created: function (e) {
+      this.tryGetUserInfo(e)
+    },
     methods: {
       updatePreview (file) {
         return UserProfile.updatePreview(file, this)
@@ -77,6 +80,37 @@
       },
       onDragOver (evt) {
         return UserProfile.onDragOver(evt, this)
+      },
+      tryGetUserInfo (evt) {
+        let vm = this
+        vm.errors = []
+        vm.$root.loading = true
+        axios.get('/api/guser/', vm.authHeader())
+          .then(function (response) {
+            vm.$root.loading = false
+            // handle success
+            if (response.data.user) {
+              vm.authSuccess(response.data.user, vm, false)
+              if (response.data.user.avatar_image) {
+                vm.image = response.data.user.avatar_image
+              }
+            } else {
+              vm.errors = []
+              vm.errors.push({message: response.data.message})
+            }
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error)
+            vm.$root.loading = false
+            vm.state = 0
+            vm.errors = []
+            vm.errors.push(error)
+          })
+          .then(function () {
+            // always executed
+            vm.$root.loading = false
+          })
       },
       tryUpdate (evt) {
         let vm = this

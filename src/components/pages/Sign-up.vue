@@ -9,13 +9,6 @@
         <label class="mdl-textfield__label" for="passwordConfirm">{{$t('SignUp.ConfirmPassword')}}</label>
         <pwdMeter v-bind:pwd="user.confirmPassword"></pwdMeter>
       </div>
-      <div class="link" v-on:click="askForAnImage"
-           v-on:dragover.prevent="onDragOver" v-on:drop.prevent="onDrop">
-        <img id="profilePreview" v-bind:src="image" style="max-width:200px; max-height:200px">
-        <input hidden='hidden' type='file' id='fileInput' ref='fileInput' v-on:change.prevent="updatePreview"
-               accept="image/*">
-        <p>{{$t('SignUp.ClickOrDropToUpdateYourProfilePicture')}}</p>
-      </div>
       <button id="main-button"
               class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white"
               v-on:click="tryRegister">
@@ -101,7 +94,8 @@
                 email: response.data.email,
                 first_name: response.data.first_name || '',
                 last_name: response.data.last_name || '',
-                username: response.data.username
+                username: response.data.username,
+                avatar_image: response.data.avatar_image
               }, vm, response.data.token)
             }
           }).catch(e => {

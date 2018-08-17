@@ -29,7 +29,6 @@ def save_user_info(sender, instance, **kwargs):
 
 def get_user_from_token(header):
   auth = header.split()
-  print(auth)
   if not auth or auth[0].lower() != b'jwt':
     return 'Profile.unauthorized_access'
   

@@ -46,6 +46,7 @@ def user_create(request, format='json'):
       token = Token.objects.create(user=user)
       json = serializer.data
       json['token'] = token.key
+      json['avatar_image'] = user.userinfo.avatarImage
       return JsonResponse(json, status=status.HTTP_201_CREATED)
   
   return JsonResponse(serializer.errors)
@@ -224,7 +225,7 @@ def user_update(request, format='json'):
     if avatar_image.startswith("data:image/"):
       print("avatar_image", avatar_image)
       user.userinfo.avatarImage = avatar_image
-      
+    
     user.save()
     return JsonResponse({"message": "Profile.Update_done",
                          "user": {"email": user.email,
@@ -245,3 +246,19 @@ def user_logOut(request, format='json'):
     return JsonResponse({"message": "user.Logout"}, status=status.HTTP_200_OK)
   print("logout unauthenticated user")
   return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@csrf_exempt
+def user_get(request, format='json'):
+  user = get_user_from_token(get_authorization_header(request))
+  if user:
+    return JsonResponse({"user": {"email": user.email,
+                                  "username": user.username,
+                                  "first_name": user.first_name,
+                                  "last_name": user.last_name,
+                                  "avatar_image": user.userinfo.avatarImage,
+                                  }}, status=status.HTTP_200_OK)
+
+  return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)
+
