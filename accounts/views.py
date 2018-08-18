@@ -251,8 +251,10 @@ def user_get(request, format='json'):
   user = get_user_from_token(get_authorization_header(request))
   if user:
     social_info = None
-    for social in user.social_auth.values_list('provider'):
-      social_info = social[0]
+    social_set = user.social_auth.values_list('provider')
+    if social_set:
+      for social in social_set:
+        social_info = social[0]
       
     return JsonResponse({"user": {"email": user.email,
                                   "username": user.username,
