@@ -45,7 +45,6 @@ def get_user_from_token(header):
     token = token.decode("utf-8")
     gettoken = Token.objects.filter(key=token)
     if gettoken:
-      user = User.objects.filter(id=gettoken[0].user_id).first()
-      return user
+      return gettoken[0].user
   
   return None

@@ -11,11 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-import json
 
-with open('project/setting.json', 'r') as f:
-  config = json.load(f)
-  
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -23,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config['private']['SECRET_KEY']
+SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -93,12 +89,12 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
   'default': {
     'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'NAME': 'd2las8b9lr1kdu',
-    'USER': 'postgres',
-    'PASSWORD': 'grimoire',
-    'HOST': 'localhost',
-    'PORT': 5432,
-  }
+    'NAME': os.environ['DATABASE_NAME'],
+    'USER': os.environ['DATABASE_USER'],
+    'PASSWORD': os.environ['DATABASE_PASSWORD'],
+    'HOST': os.environ['DATABASE_HOST'],
+    'PORT': 5432
+  },
 }
 
 # Password validation
@@ -154,7 +150,7 @@ SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 # Facebook configuration
 SOCIAL_AUTH_FACEBOOK_KEY = '585737338256884'
-SOCIAL_AUTH_FACEBOOK_SECRET = config['private']['SOCIAL_AUTH_FACEBOOK_SECRET']
+SOCIAL_AUTH_FACEBOOK_SECRET = os.environ['DJANGO_SOCIAL_AUTH_FACEBOOK_SECRET']
 # Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from facebook.
 # Email is not sent by default, to get it, you must request the email permission:
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
@@ -164,11 +160,11 @@ SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
 
 # Google configuration
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '338829541691-14vtulpp1bav75s243cr6cfo0dvojkjl.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config['private']['SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ['DJANGO_SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET']
 SOCIAL_AUTH_GOOGLE_OAUTH2_FIELDS = ['email', 'username']
 # Twitter configuration
 SOCIAL_AUTH_TWITTER_KEY = 'nF5AOvrq4l8FmvjeRgEPpk6ID'
-SOCIAL_AUTH_TWITTER_SECRET = 'siZZjbSdoZLI2DnsqOmGcHba92ExtIsI5cJlIsOiNftrzEQz9h'
+SOCIAL_AUTH_TWITTER_SECRET = os.environ['DJANGO_SOCIAL_AUTH_TWITTER_SECRET']
 
 CSRF_COOKIE_SECURE = True
 CORS_ORIGIN_ALLOW_ALL = True
@@ -176,10 +172,10 @@ CORS_ORIGIN_ALLOW_ALL = True
 # email configuration
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = config['smtp']['server']
-EMAIL_PORT = config['smtp']['port']
-EMAIL_HOST_USER = config['smtp']['mail']
-EMAIL_HOST_PASSWORD = config['smtp']['password']
+EMAIL_HOST = os.environ['DJANGO_SMTP_SERVER']
+EMAIL_PORT = os.environ['DJANGO_SMTP_PORT']
+EMAIL_HOST_USER = os.environ['DJANGO_SMTP_MAIL']
+EMAIL_HOST_PASSWORD = os.environ['DJANGO_SMTP_PASSWORD']
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Internationalization
