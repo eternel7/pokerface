@@ -90,10 +90,8 @@ def user_forgetPasswordSendMail(request, format='json'):
   """
   email = request.data['email']
   user = User.objects.filter(username=email)
-  print("before test", user)
   if user.count() == 1:
     user = user.first()
-    print("yessa!", user.email)
     now = timezone.now()
     user.userinfo.resetPasswordDate = now + timezone.timedelta(hours=2)
     fullToken = hashlib.sha224((user.email + now.strftime("%Y-%m-%d %H:%M:%S %Z")).encode()).hexdigest()
@@ -122,7 +120,7 @@ def user_forgetPasswordSendMail(request, format='json'):
               html_message=msg_html,
               fail_silently=True,
               )
-    print("send!!")
+    print("send.")
   if not user:
     user_agent = get_user_agent(request)
     infos = {'email': email,
@@ -252,12 +250,16 @@ def user_logOut(request, format='json'):
 def user_get(request, format='json'):
   user = get_user_from_token(get_authorization_header(request))
   if user:
+    social_info = None
+    for social in user.social_auth.values_list('provider'):
+      social_info = social[0]
+      
     return JsonResponse({"user": {"email": user.email,
                                   "username": user.username,
                                   "first_name": user.first_name,
                                   "last_name": user.last_name,
                                   "avatar_image": user.userinfo.avatarImage,
+                                  "social_info": social_info,
                                   }}, status=status.HTTP_200_OK)
-
+  
   return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)
-
