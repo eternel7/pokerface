@@ -1,0 +1,77 @@
+{
+  "Page": {
+    "Home": "Accueil",
+    "SignIn": "Connexion",
+    "SignUp": "Inscription",
+    "Profile": "Profil",
+    "ForgotPassword": "Mot de passe oublié",
+    "ResetPassword": "Modification du mot de passe",
+    "Chat": "Discussion",
+    "Chatrooms": "Discussions"
+  },
+  "Nav": {
+    "Home": "Accueil",
+    "SignIn": "Connexion",
+    "SignUp": "Inscription",
+    "StartAChat": "Discussions",
+    "YourProfile": "Compte",
+    "Chatrooms": "Discussions",
+    "Logout": "Déconnexion"
+  },
+  "language": {
+    "fr": "Francais",
+    "en": "English"
+  },
+  "user": {
+    "Email": "Courriel",
+    "Password": "Mot de passe",
+    "First_name": "Prénom",
+    "Last_name": "Nom",
+    "Login": "Connexion",
+    "SignUp": "Inscription",
+    "SignIn": "Connexion",
+    "Register": "S'inscrire",
+    "ForgotPassword": "Mot de passe oublié",
+    "ResetPasswordToken": "Jeton de sécurité",
+    "Logout": "Déconnexion",
+    "nonConnected": "utilisateur non connecté",
+    "Update": "Mettre à jour"
+  },
+  "SignUp": {
+    "ConfirmPassword": "Confirmer le mot de passe",
+    "ClickOrDropToUpdateYourProfilePicture": "Vous pouvez cliquer ou dropper une image pour mettre à jour votre image de profil.",
+    "SignInIfYouHaveAnAccount": "Vous avez déjà un compte?",
+    "EnterACorrectEmailAddress": "Veuillez saisir un courriel valide.",
+    "ConfirmedPasswordIncorrect": "Les 2 mots de passe sont différents.",
+    "Register": "S'inscrire"
+  },
+  "SignIn": {
+    "No_user_for_the_given_email_and_password": "Il n'y a pas d'utilisateur pour le courriel et le mot de passe fournit. Veuillez essayer à nouveau.",
+    "User_has_been_deactivated": "L'utilisateur de votre connexion a été désactivé. Veuillez contacter le support si vous ne savez pas pourquoi."
+  },
+  "ForgotPassword": {
+    "Send_password_reset_email": "Envoyer",
+    "Go_to_reset_password": "Saisie du nouveau mot de passe"
+  },
+  "ResetPassword": {
+    "Update_Password": "Mettre à jour",
+    "no_user_found_for_this_email": "Aucun compte utilisateur ne correspond aux critères fournis.",
+    "TokenIncorrect": "Jeton de sécurité incorrect.",
+    "Security_token_no_more_valid": "Le jeton de sécurité n'est plus valide,veuillez en demander un nouveau.",
+    "Security_token_invalid": "Jeton de sécurité invalide."
+  },
+  "password": {
+    "meter": "Indice de complexité du mot de passe. La lettre correspond à une aide pour la vérification de la bonne saisie du mot de passe.",
+    "Ensure_this_field_has_at_least_6_characters": "Votre mot de passe doit faire plus de 6 caractères."
+  },
+  "email": {
+    "This_field_must_be_unique": "Courriel déjà present dans l'application. Si vous avez oublié votre mot de passe utilisez le bouton \"Mot de passe oublié\"."
+  },
+  "username": {
+    "A_user_with_that_username_already_exists": ""
+  },
+  "Network Error": "Erreur de reseau",
+  "You need to be login": "Vous devez être connecté.",
+  "Request failed with status code 404": "Requête en erreur. L'adresse demandée n'a pas été trouvée.",
+  "Request failed with status code 429": "Vous avez fait trop de requêtes. Veuillez réessayer dans une heure."
+}
