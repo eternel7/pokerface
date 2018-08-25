@@ -9,7 +9,7 @@ import VueAuthenticate from 'vue-authenticate'
 import VueAxios from 'vue-axios'
 import axios from 'axios'
 
-const appBaseUrl = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/'
+const appBaseUrl = window.location.protocol + '//' + window.location.hostname + ((window.location.port !== '') ? ':' + window.location.port : '') + '/'
 
 Vue.config.productionTip = true
 
