@@ -6,9 +6,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Pokerface</title>
   <link rel="icon" type="image/png" sizes="32x32"
-        href="../static/img/icons/favicon-32x32.png">
+        href="/static/img/icons/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16"
-        href="../static/img/icons/favicon-16x16.png">
+        href="/static/img/icons/favicon-16x16.png">
   <!--[if IE]>
     <link rel="shortcut icon" href="../static/img/icons/favicon.ico"><![endif]-->
   <link rel="manifest" href="../static/manifest.json">
@@ -16,7 +16,7 @@
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Inconsolata:300|Material+Icons"
         rel="stylesheet" type="text/css">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-  <link href="../static/css/material.min.css" rel="stylesheet" type="text/css">
+  <link href="/static/css/material.min.css" rel="stylesheet" type="text/css">
   {% if DJANGO_ENV != 'DEV' %}
     {% block css %}
     {% endblock %}
@@ -49,15 +49,14 @@
   </style>
 </head>
 <body>
-{% block content %}
-{% endblock %}
+<div id="app"></div>
 {% if DJANGO_ENV == 'DEV' %}
   {% render_bundle 'app' %}
 {%  else %}
   {% block js %}
   {% endblock %}
 {% endif %}
-<script defer src="../static/js/material.min.js" async
+<script defer src="/static/js/material.min.js" async
         integrity="sha256-PCfu4+fnQrp4wNmVbjN1eaX4LbOvOejab0UOhjLezrw="
         crossorigin="anonymous"></script>
 </body>

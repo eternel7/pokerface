@@ -1,9 +1,9 @@
-{% extends "project/spa.html" %}
+{% extends "project/base.html" %}
 {% block css %}
-  <% htmlWebpackPlugin.files.css.forEach(function(css) {%><link href=<%= JSON.stringify(css) %> rel="stylesheet" type="text/css">
+  <% htmlWebpackPlugin.files.css.forEach(function(css) {%><link href="<%= css %>" rel="stylesheet" type="text/css">
   <% }); %>
 {% endblock %}
 {% block js %}
-  <% htmlWebpackPlugin.files.js.forEach(function(js) {%><script type="text/javascript" src=<%= JSON.stringify(js) %>></script>
+  <% htmlWebpackPlugin.files.js.forEach(function(js) {%><script type="text/javascript" src="<%= js %>"></script>
   <% }); %>
 {% endblock %}
