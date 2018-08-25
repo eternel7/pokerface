@@ -38,26 +38,24 @@ export const authMixin = {
     },
     authError: function (error, vm) {
       console.log(error)
-      if (vm && vm.$root && vm.$root.authenticated) {
+      if (vm) {
         vm.logout(vm)
+      } else {
+        this.logout(this)
       }
     },
     logout: function (vm) {
       if (vm && vm.$root) {
         vm.$root.authenticated = false
         vm.$root.loading = true
+        axios.post('/api/ulogout/', {}, this.authHeader()).then((response) => {
+          vm.$root.loading = false
+          console.log('user log out', response.data.message)
+        }).catch((error) => {
+          vm.$root.loading = false
+          console.log('Error in user log out', error)
+        })
       }
-      axios.post('/api/ulogout/', {}, this.authHeader()).then((response) => {
-        if (vm && vm.$root) {
-          vm.$root.loading = false
-        }
-        console.log('user log out', response.data.message)
-      }).catch((error) => {
-        if (vm && vm.$root) {
-          vm.$root.loading = false
-        }
-        console.log('Error in user log out', error)
-      })
       localStorage.removeItem('vue-authenticate.vueauth_token')
       localStorage.removeItem('auth-user')
     },
