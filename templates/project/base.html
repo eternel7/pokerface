@@ -17,9 +17,9 @@
         rel="stylesheet" type="text/css">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
   <link href="../static/css/material.min.css" rel="stylesheet" type="text/css">
-  <!--
-  <link href="/static/css/app.9059a4975463c40d47647e097efd240f.css" rel="stylesheet" type="text/css">
-  -->
+  {% if DJANGO_ENV != 'DEV' %}
+    <link href="/static/css/app.9059a4975463c40d47647e097efd240f.css" rel="stylesheet" type="text/css">
+  {%  endif %}
   <style>
     .section {
       border: none;
@@ -50,12 +50,14 @@
 <body>
 {% block content %}
 {% endblock %}
-{% render_bundle 'app' %}
-<!--
-<script type=text/javascript src=/static/js/manifest.eb934a2a65487bf4543e.js></script>
-<script type=text/javascript src=/static/js/vendor.e642ca3b758f4a9e37af.js></script>
-<script type=text/javascript src=/static/js/app.72dc4ffbe850b7d4dfbc.js></script>
---><script defer src="../static/js/material.min.js" async
+{% if DJANGO_ENV == 'DEV' %}
+  {% render_bundle 'app' %}
+{%  else %}
+  <script type="text/javascript" src="/static/js/manifest.29e0e6198d30405abe61.js"></script>
+  <script type="text/javascript" src="/static/js/vendor.e642ca3b758f4a9e37af.js"></script>
+  <script type="text/javascript" src="/static/js/app.c37f94f6bf00215cb3a1.js"></script>
+{% endif %}
+<script defer src="../static/js/material.min.js" async
         integrity="sha256-PCfu4+fnQrp4wNmVbjN1eaX4LbOvOejab0UOhjLezrw="
         crossorigin="anonymous"></script>
 </body>

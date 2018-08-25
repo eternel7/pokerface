@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import re_path, include
 from django.contrib import admin
-from .views import check_token
+from .views import HomePageView, check_token
 from accounts import views as account_views
 from django.views.generic import TemplateView
 
@@ -33,5 +33,5 @@ urlpatterns = [
   re_path(r'^rpwd', account_views.user_resetPassword, name='resetPassword'),
   re_path(r'^api/uuser/', account_views.user_update, name='updateUser'),
   re_path(r'^api/guser/', account_views.user_get, name='getUser'),
-  re_path(r'^$', TemplateView.as_view(template_name='project/spa.html'), name='home'),
+  re_path(r'^$', HomePageView.as_view(), name='home'),
 ]

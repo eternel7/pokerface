@@ -9,27 +9,29 @@ import VueAuthenticate from 'vue-authenticate'
 import VueAxios from 'vue-axios'
 import axios from 'axios'
 
+const appBaseUrl = window.location.protocol + '//' + window.location.hostname + ':' + window.location.port + '/'
+
 Vue.config.productionTip = true
 
 Vue.use(VueAxios, axios)
 Vue.use(VueAuthenticate, {
-  baseUrl: 'http://localhost:8000',
+  baseUrl: appBaseUrl,
   tokenType: 'JWT',
   providers: {
     google: {
       clientId: '338829541691-14vtulpp1bav75s243cr6cfo0dvojkjl.apps.googleusercontent.com',
-      redirectUri: 'http://localhost:8000/',
-      url: 'http://localhost:8000/api/login/social/token_user/google/'
+      redirectUri: appBaseUrl,
+      url: appBaseUrl + 'api/login/social/token_user/google/'
     },
     twitter: {
       clientId: 'nF5AOvrq4l8FmvjeRgEPpk6ID',
-      redirectUri: 'http://localhost:8000/',
-      url: 'http://localhost:8000/api/login/social/token_user/twitter/'
+      redirectUri: appBaseUrl,
+      url: appBaseUrl + 'api/login/social/token_user/twitter/'
     },
     facebook: {
       clientId: '585737338256884',
-      redirectUri: 'http://localhost:8000/',
-      url: 'http://localhost:8000/api/login/social/token_user/facebook/'
+      redirectUri: appBaseUrl,
+      url: appBaseUrl + 'api/login/social/token_user/facebook/'
     }
   }
 })
