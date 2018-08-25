@@ -48,13 +48,15 @@
 <body>
 {% block content %}
 {% endblock %}
+{% render_bundle 'app' %}
+<!--
 <script src="../static/js/manifest.9f596046247e86cce96d.js"
         crossorigin="anonymous"></script>
 <script src="../static/js/vendor.e642ca3b758f4a9e37af.js"
         crossorigin="anonymous"></script>
 <script defer src="../static/js/app.fa05142c2bb6a5678419.js" async
         crossorigin="anonymous"></script>
-<script defer src="../static/js/material.min.js" async
+--><script defer src="../static/js/material.min.js" async
         integrity="sha256-PCfu4+fnQrp4wNmVbjN1eaX4LbOvOejab0UOhjLezrw="
         crossorigin="anonymous"></script>
 </body>

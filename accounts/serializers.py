@@ -14,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
   updated_at = serializers.ReadOnlyField(source='userinfo.updated_at')
   resetPasswordDate = serializers.DateTimeField(source='userinfo.resetPasswordDate', read_only=True)
   resetPasswordToken = serializers.DateTimeField(source='userinfo.resetPasswordToken', read_only=True)
-  avatar_image = serializers.CharField(source='userinfo.avatarImage')
+  avatar_image = serializers.CharField(source='userinfo.avatarImage', required=False)
   
   def create(self, validated_data):
     user = User.objects.create_user(validated_data['email'], validated_data['email'],

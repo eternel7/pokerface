@@ -260,7 +260,7 @@ def user_get(request, format='json'):
                                   "username": user.username,
                                   "first_name": user.first_name,
                                   "last_name": user.last_name,
-                                  "avatar_image": user.userinfo.avatarImage,
+                                  "avatar_image": user.userinfo.avatarImage if user.userinfo else '',
                                   "social_info": social_info,
                                   }}, status=status.HTTP_200_OK)
   
