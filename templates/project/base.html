@@ -18,7 +18,8 @@
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
   <link href="../static/css/material.min.css" rel="stylesheet" type="text/css">
   {% if DJANGO_ENV != 'DEV' %}
-    <link href="/static/css/app.9059a4975463c40d47647e097efd240f.css" rel="stylesheet" type="text/css">
+    {% block css %}
+    {% endblock %}
   {%  endif %}
   <style>
     .section {
@@ -53,9 +54,8 @@
 {% if DJANGO_ENV == 'DEV' %}
   {% render_bundle 'app' %}
 {%  else %}
-  <script type="text/javascript" src="/static/js/manifest.5e49160e94d31cf6ddbe.js"></script>
-  <script type="text/javascript" src="/static/js/vendor.e642ca3b758f4a9e37af.js"></script>
-  <script type="text/javascript" src="/static/js/app.235aaee65a405c31fbe9.js"></script>
+  {% block js %}
+  {% endblock %}
 {% endif %}
 <script defer src="../static/js/material.min.js" async
         integrity="sha256-PCfu4+fnQrp4wNmVbjN1eaX4LbOvOejab0UOhjLezrw="

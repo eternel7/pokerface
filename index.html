@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>django-vue-template</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
-</html>
+{% extends "project/spa.html" %}
+{% block css %}
+  <% htmlWebpackPlugin.files.css.forEach(function(css) {%><link href=<%= JSON.stringify(css) %> rel="stylesheet" type="text/css">
+  <% }); %>
+{% endblock %}
+{% block js %}
+  <% htmlWebpackPlugin.files.js.forEach(function(js) {%><script type="text/javascript" src=<%= JSON.stringify(js) %>></script>
+  <% }); %>
+{% endblock %}

@@ -7,7 +7,7 @@ from rest_framework.authtoken.models import Token
 
 
 class HomePageView(TemplateView):
-  template_name = 'project/spa.html'
+  template_name = 'project/index.html'
   
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
