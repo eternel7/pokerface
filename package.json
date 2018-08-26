@@ -8,7 +8,7 @@
     "dev": "start webpack-dev-server --inline --progress --config build/webpack.dev.conf.js && start python manage.py runserver 8000",
     "start": "npm run dev",
     "unit": "jest test/unit/specs",
-    "e2e": "set DJANGO_E2E_TEST='1' && start python manage.py runserver 8080 && node test/e2e/runner.js",
+    "e2e": "set DJANGO_E2E_TEST='1' && start python manage.py runserver 8880 && node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs",
     "build": "node build/build.js"

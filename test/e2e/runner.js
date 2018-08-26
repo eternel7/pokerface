@@ -1,5 +1,6 @@
 // 1. start the dev server using production config
 process.env.NODE_ENV = 'testing'
+process.env.PORT = '8880'
 
   // 2. run the nightwatch test suite against it
   // to run in additional browsers:
