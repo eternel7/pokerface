@@ -156,7 +156,7 @@
         let vm = this
         vm.errors = []
         if (vm.$root.authenticated) {
-          if (confirm(vm.$i18n.t('user.ConfirmDeletionQuestion') === true)) {
+          if (confirm(vm.$i18n.t('user.ConfirmDeletionQuestion')) === true) {
             let user = vm.user
             vm.$root.loading = true
             axios.delete('/api/duser/' + user.username, vm.authHeader())
@@ -166,7 +166,7 @@
                 if (response.data.email) {
                   vm.errors = []
                   alert(vm.$i18n.t('user.ConfirmedDeletion', {email: response.data.email}))
-                  vm.$router.push({name: 'Sign in'})
+                  vm.$router.push({name: 'Sign up'})
                 }
               })
               .catch(function (error) {
