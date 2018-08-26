@@ -46,16 +46,12 @@
     components: {
       localizerChooser: LocalizerChooser
     },
-    data () {
-      return {authenticated: false}
-    },
     methods: {
       hideMenu: function () {
         document.getElementsByClassName('mdl-layout__drawer')[0].classList.remove('is-visible')
         document.getElementsByClassName('mdl-layout__obfuscator')[0].classList.remove('is-visible')
       },
       tryToLogout: function () {
-        this.authenticated = false
         authMixin.methods.logout(this)
         this.hideMenu()
       }

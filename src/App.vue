@@ -40,6 +40,12 @@
     components: {
       navbar: NavBar,
       loading: Loading
+    },
+    data () {
+      return {
+        loading: false,
+        authenticated: true
+      }
     }
   }
 </script>
