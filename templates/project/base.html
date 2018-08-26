@@ -17,7 +17,7 @@
         rel="stylesheet" type="text/css">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
   <link href="/static/css/material.min.css" rel="stylesheet" type="text/css">
-  {% if DJANGO_ENV != 'DEV' %}
+  {% if DJANGO_ENV != 'DEV' or DJANGO_E2E_TEST %}
     {% block css %}
     {% endblock %}
   {%  endif %}
@@ -50,11 +50,11 @@
 </head>
 <body>
 <div id="app"></div>
-{% if DJANGO_ENV == 'DEV' %}
-  {% render_bundle 'app' %}
-{%  else %}
+{% if DJANGO_ENV  != 'DEV' or DJANGO_E2E_TEST %}
   {% block js %}
   {% endblock %}
+{%  else %}
+  {% render_bundle 'app' %}
 {% endif %}
 <script defer src="/static/js/material.min.js" async
         integrity="sha256-PCfu4+fnQrp4wNmVbjN1eaX4LbOvOejab0UOhjLezrw="

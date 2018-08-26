@@ -12,6 +12,7 @@ class HomePageView(TemplateView):
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
     context['DJANGO_ENV'] = os.environ['DJANGO_ENV']
+    context['DJANGO_E2E_TEST'] = os.environ.get('DJANGO_E2E_TEST', False)
     return context
 
 @api_view(['POST'])

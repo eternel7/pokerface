@@ -23,7 +23,7 @@ module.exports = {
       selenium_host: 'localhost',
       silent: true,
       globals: {
-        devServerURL: 'http://localhost:' + config.dev.djangoPort
+        devServerURL: 'http://localhost:' + (process.env.PORT || config.dev.port)
       }
     },
 
