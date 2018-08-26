@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App.vue should match Snapshot 1`] = `
+<div
+  class="mdl-layout mdl-js-layout mdl-layout--fixed-header"
+  id="app"
+>
+  <header
+    class="mdl-layout__header"
+  >
+    <loading-stub />
+     
+    <div
+      class="mdl-layout__header-row"
+    >
+      <span
+        class="mdl-layout-title"
+      >
+        Pokerface
+      </span>
+       
+      <div
+        class="mdl-layout-spacer"
+      />
+       
+      <div
+        class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
+                mdl-textfield--floating-label mdl-textfield--align-right"
+      >
+        <label
+          class="mdl-button mdl-js-button mdl-button--icon"
+          for="fixed-header-drawer-exp"
+        >
+          <i
+            class="material-icons"
+          >
+            search
+          </i>
+        </label>
+         
+        <div
+          class="mdl-textfield__expandable-holder"
+        >
+          <input
+            class="mdl-textfield__input"
+            id="fixed-header-drawer-exp"
+            name="search"
+            type="text"
+          />
+        </div>
+      </div>
+    </div>
+  </header>
+   
+  <navbar-stub />
+   
+  <main
+    class="mdl-layout__content"
+  >
+    <section
+      class="section"
+    >
+      <div
+        class="section-inner"
+      >
+        <router-view-stub
+          name="default"
+        />
+      </div>
+    </section>
+  </main>
+</div>
+`;
