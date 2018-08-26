@@ -33,5 +33,6 @@ urlpatterns = [
   re_path(r'^rpwd', account_views.user_resetPassword, name='resetPassword'),
   re_path(r'^api/uuser/', account_views.user_update, name='updateUser'),
   re_path(r'^api/guser/', account_views.user_get, name='getUser'),
+  re_path(r'^api/duser/', account_views.user_delete, name='deleteUser'),
   re_path(r'^$', HomePageView.as_view(), name='home'),
 ]

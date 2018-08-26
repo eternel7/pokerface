@@ -255,7 +255,7 @@ def user_get(request, format='json'):
     if social_set:
       for social in social_set:
         social_info = social[0]
-      
+    
     return JsonResponse({"user": {"email": user.email,
                                   "username": user.username,
                                   "first_name": user.first_name,
@@ -263,5 +263,17 @@ def user_get(request, format='json'):
                                   "avatar_image": user.userinfo.avatarImage if user.userinfo else '',
                                   "social_info": social_info,
                                   }}, status=status.HTTP_200_OK)
+  
+  return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)
+
+
+@api_view(['DELETE'])
+@csrf_exempt
+def user_delete(request, format='json'):
+  user = get_user_from_token(get_authorization_header(request))
+  if user:
+    email = user.email
+    user.delete()
+    return JsonResponse({"email": email}, status=status.HTTP_200_OK)
   
   return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)

@@ -36,7 +36,11 @@
     "ResetPasswordToken": "Security token",
     "Logout": "Logout",
     "nonConnected": "Non connected user",
-    "Update": "Update"
+    "Update": "Update",
+    "Delete": "Delete",
+    "ConfirmDeletionQuestion": "Are you sure you want to delete your profile?",
+    "ConfirmedDeletion": "You have deleted the user profile for {email}",
+    "BeforeDeleteMessage": "You can delete your profile by clicking the following button. This action is irreversible."
   },
   "SignUp": {
     "ConfirmPassword": "Confirm password",

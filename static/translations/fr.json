@@ -35,7 +35,11 @@
     "ResetPasswordToken": "Jeton de sécurité",
     "Logout": "Déconnexion",
     "nonConnected": "utilisateur non connecté",
-    "Update": "Mettre à jour"
+    "Update": "Mettre à jour",
+    "Delete": "Suppression",
+    "ConfirmDeletionQuestion": "Êtes vous sûr de vouloir supprimer votre profil?",
+    "ConfirmedDeletion": "You have deleted the user profile for {email}",
+    "BeforeDeleteMessage": "Vous pouvez supprimer votre profil en cliquant sur le bouton suivant. Cette action est irréverssible."
   },
   "SignUp": {
     "ConfirmPassword": "Confirmer le mot de passe",

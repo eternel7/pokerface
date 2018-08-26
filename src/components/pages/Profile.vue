@@ -29,6 +29,12 @@
         {{$t('user.Update')}}
       </button>
       <errorMessages v-bind:errors="errors"></errorMessages>
+      <hr/>
+      <p class="center-align">{{$t('user.BeforeDeleteMessage')}}</p>
+      <button id="secondary-button" v-on:click.prevent="tryDelete"
+              class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white">
+        {{$t('user.Delete')}}
+      </button>
     </div>
   </div>
 </template>
@@ -115,7 +121,7 @@
       tryUpdate (evt) {
         let vm = this
         vm.errors = []
-        if (vm.errors.length < 1 && vm.$root.authenticated) {
+        if (vm.$root.authenticated) {
           let user = vm.user
           user.image = vm.image
           vm.$root.loading = true
@@ -142,6 +148,40 @@
               // always executed
               vm.$root.loading = false
             })
+        } else {
+          vm.$router.push({name: 'Sign in'})
+        }
+      },
+      tryDelete (evt) {
+        let vm = this
+        vm.errors = []
+        if (vm.$root.authenticated) {
+          if (confirm(vm.$i18n.t('user.ConfirmDeletionQuestion') === true)) {
+            let user = vm.user
+            vm.$root.loading = true
+            axios.delete('/api/duser/' + user.username, vm.authHeader())
+              .then(function (response) {
+                // handle success
+                vm.$root.loading = false
+                if (response.data.email) {
+                  vm.errors = []
+                  alert(vm.$i18n.t('user.ConfirmedDeletion', {email: response.data.email}))
+                  vm.$router.push({name: 'Sign in'})
+                }
+              })
+              .catch(function (error) {
+                // handle error
+                console.log(error)
+                vm.$root.loading = false
+                vm.state = 0
+                vm.errors = []
+                vm.errors.push(error)
+              })
+              .then(function () {
+                // always executed
+                vm.$root.loading = false
+              })
+          }
         } else {
           vm.$router.push({name: 'Sign in'})
         }
