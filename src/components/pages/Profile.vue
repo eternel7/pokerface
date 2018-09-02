@@ -114,7 +114,6 @@
       askForAnImage (e) {
         const vm = this
         e.stopPropagation()
-        console.log('askForAnImage')
         return vm.$refs.fileInput.click()
       },
       onDrop (e) {
