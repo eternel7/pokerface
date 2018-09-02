@@ -2,9 +2,10 @@
   <div id="form-container" class="mdl-card mdl-shadow--16dp">
     <div class="mdl-card__supporting-text">
       <cardFabTitle userTitle="Page.SignIn"></cardFabTitle>
-      <userFields :email.sync="user.email" :password.sync="user.password" userTitle="user.Login"></userFields>
+      <userFields :email.sync="user.email" :password.sync="user.password" userTitle="user.Login"
+                  v-on:enterKeyUp="tryLogin"></userFields>
       <socialLogin></socialLogin>
-      <button id="main-button" v-on:click="trylogin"
+      <button id="main-button" v-on:click="tryLogin"
               class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
         {{$t('user.Login')}}
       </button>
@@ -51,7 +52,7 @@
       }
     },
     methods: {
-      trylogin: function (e) {
+      tryLogin: function (e) {
         let vm = this
         vm.errors = []
         if (vm.user.password.length < 6) {

@@ -2,12 +2,12 @@
   <div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
       <input class="mdl-textfield__input" id="email" required autofocus
-             v-model.trim="sync_email"/>
+             v-model.trim="sync_email" v-on:keyup.enter="emitEnterKeyUp"/>
       <label class="mdl-textfield__label" for="email">{{$t('user.Email')}}</label>
     </div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
       <input class="mdl-textfield__input" type="password" id="password" required
-             v-model.trim="sync_password"/>
+             v-model.trim="sync_password" v-on:keyup.enter="emitEnterKeyUp"/>
       <label class="mdl-textfield__label" for="password">{{$t('user.Password')}}</label>
       <pwdMeter v-bind:pwd="sync_password"></pwdMeter>
     </div>
@@ -46,6 +46,11 @@
         set (val) {
           this.$emit('update:password', val)
         }
+      }
+    },
+    methods: {
+      emitEnterKeyUp: function (e) {
+        this.$emit('enterKeyUp')
       }
     }
   }
