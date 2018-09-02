@@ -19,12 +19,12 @@
       </div>
       <div class="link" v-on:click="askForAnImage"
            v-on:dragover.prevent="onDragOver" v-on:drop.prevent="onDrop">
-        <img id="profilePreview" v-bind:src="image" style="max-width:200px; max-height:200px">
+        <img id="profilePreview" v-bind:src="user.avatar_image" style="max-width:200px; max-height:200px">
         <input hidden='hidden' type='file' id='fileInput' ref='fileInput' v-on:change.prevent="updatePreview"
                accept="image/*">
         <p class="center-align">{{$t('SignUp.ClickOrDropToUpdateYourProfilePicture')}}</p>
       </div>
-      <button id="main-button" v-on:click.prevent="tryUpdate"
+      <button id="main-button" v-on:click.prevent="tryUpdate" v-bind:class="{ pulse: updateNeeded }"
               class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
         {{$t('user.Update')}}
       </button>
@@ -40,13 +40,15 @@
 </template>
 
 <script>
-  import UserProfile from '@/assets/user-profile.js'
+  import ImageTools from '@/assets/image-tools.js'
+  import FileDrop from '@/assets/file-drop.js'
   import PageBase from '@/components/pages/Page'
   import CardFabTitle from '@/components/sub-components/Card-fab-title'
   import ErrorMessages from '@/components/sub-components/ErrorMessages'
   import {authMixin} from '@/auth/authMixin.js'
   import axios from 'axios'
 
+  let storedUser = JSON.parse(window.localStorage.getItem('auth-user'))
   export default {
     name: 'Profile',
     extends: PageBase,
@@ -57,35 +59,76 @@
     },
     data () {
       return {
-        image: '/static/img/icons/apple-touch-icon-76x76.png',
+        user: {
+          email: '',
+          avatar_image: '/static/img/icons/apple-touch-icon-76x76.png',
+          last_name: '',
+          first_name: ''
+        },
         message: '',
-        errors: []
-      }
-    },
-    computed: {
-      user: function () {
-        let user = JSON.parse(window.localStorage.getItem('auth-user'))
-        if (user.avatar_image) {
-          this.image = user.avatar_image
-        }
-        return user
+        errors: [],
+        updateNeeded: 'noNeed'
       }
     },
     created: function (e) {
+      if (storedUser) {
+        this.user = storedUser
+      }
+      this.updateNeeded = 'noNeed'
+      this.$nextTick(function () {
+        this.updateNeeded = false
+      })
       this.tryGetUserInfo(e)
+    },
+    watch: {
+      // whenever user changes, this function will run
+      user: {
+        handler: function () {
+          if (this.updateNeeded !== 'noNeed') {
+            this.updateNeeded = true
+          }
+        },
+        deep: true
+      }
     },
     methods: {
       updatePreview (file) {
-        return UserProfile.updatePreview(file, this)
+        const vm = this
+        if (file !== undefined) {
+          if (file.type === 'change') {
+            file = vm.$refs.fileInput.files[0]
+          }
+          if (file.type.match('image.*')) {
+            ImageTools.resizeImageBase64(file, 300, 300, function (result) {
+              if (result) {
+                vm.user.avatar_image = result
+                vm.message = ''
+              } else {
+                console.log('updatePreview error', result)
+              }
+            })
+          }
+        }
+        return true
       },
-      askForAnImage (evt) {
-        return UserProfile.askForAnImage(evt, this)
+      askForAnImage (e) {
+        const vm = this
+        e.stopPropagation()
+        console.log('askForAnImage')
+        return vm.$refs.fileInput.click()
       },
-      onDrop (evt) {
-        return UserProfile.onDrop(evt, this)
+      onDrop (e) {
+        const vm = this
+        FileDrop.getFilesOnDrop(e, function (r) {
+          if (r) {
+            vm.updatePreview(r[0])
+          }
+        })
+        return true
       },
       onDragOver (evt) {
-        return UserProfile.onDragOver(evt, this)
+        // Allow drop there
+        return true
       },
       tryGetUserInfo (evt) {
         let vm = this
@@ -97,8 +140,9 @@
             // handle success
             if (response.data.user) {
               vm.authStoreUser(response.data.user, vm)
-              if (response.data.user.avatar_image) {
-                vm.image = response.data.user.avatar_image
+              if (response.data.user) {
+                vm.user = response.data.user
+                vm.updateNeeded = false
               }
             } else {
               vm.errors = []
@@ -109,6 +153,7 @@
             // handle error
             console.log(error)
             vm.$root.loading = false
+            vm.updateNeeded = false
             vm.state = 0
             vm.errors = []
             vm.errors.push(error)
@@ -116,6 +161,7 @@
           .then(function () {
             // always executed
             vm.$root.loading = false
+            vm.updateNeeded = false
           })
       },
       tryUpdate (evt) {
@@ -123,13 +169,15 @@
         vm.errors = []
         if (vm.$root.authenticated) {
           let user = vm.user
-          user.image = vm.image
           vm.$root.loading = true
           axios.put('/api/uuser/', user, vm.authHeader())
             .then(function (response) {
               // handle success
               vm.$root.loading = false
+              // update done
+              vm.updateNeeded = false
               if (response.data.user) {
+                // store updated user
                 vm.authSuccess(response.data.user, vm, false)
               } else {
                 vm.errors = []
@@ -140,6 +188,8 @@
               // handle error
               console.log(error)
               vm.$root.loading = false
+              // update done
+              vm.updateNeeded = false
               vm.state = 0
               vm.errors = []
               vm.errors.push(error)
@@ -147,6 +197,7 @@
             .then(function () {
               // always executed
               vm.$root.loading = false
+              vm.updateNeeded = false
             })
         } else {
           vm.$router.push({name: 'Sign in'})
@@ -199,5 +250,55 @@
 
   #container {
     margin: auto;
+  }
+
+  .pulse {
+    background-color: rgb(96, 125, 139);
+    animation: color_change 2s infinite;
+  }
+
+  @-webkit-keyframes color_change {
+    0%, 100% {
+      background-color: rgb(96, 125, 139);
+    }
+    50% {
+      background-color: rgb(255, 64, 129);
+    }
+  }
+
+  @-moz-keyframes color_change {
+    0%, 100% {
+      background-color: rgb(96, 125, 139);
+    }
+    50% {
+      background-color: rgb(255, 64, 129);
+    }
+  }
+
+  @-ms-keyframes color_change {
+    0%, 100% {
+      background-color: rgb(96, 125, 139);
+    }
+    50% {
+      background-color: rgb(255, 64, 129);
+    }
+  }
+
+  @-o-keyframes color_change {
+    0%, 100% {
+      background-color: rgb(96, 125, 139);
+    }
+    50% {
+      background-color: rgb(255, 64, 129);
+    }
+  }
+
+  @keyframes color_change {
+    0%, 100% {
+      background-color: rgb(96, 125, 139);
+    }
+    50% {
+      background-color: rgb(255, 64, 129);
+    }
   }
 </style>

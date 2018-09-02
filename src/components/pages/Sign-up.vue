@@ -28,7 +28,6 @@
 </template>
 
 <script>
-  import UserProfile from '@/assets/user-profile.js'
   import PageBase from '@/components/pages/Page'
   import UserFields from '@/components/user-components/Main-fields'
   import CardFabTitle from '@/components/sub-components/Card-fab-title'
@@ -105,18 +104,6 @@
             vm.errors.push(e)
           })
         }
-      },
-      updatePreview (file) {
-        return UserProfile.updatePreview(file, this)
-      },
-      askForAnImage (e) {
-        return UserProfile.askForAnImage(e, this)
-      },
-      onDrop (e) {
-        return UserProfile.onDrop(e, this)
-      },
-      onDragOver (e) {
-        return UserProfile.onDragOver(e, this)
       }
     }
   }

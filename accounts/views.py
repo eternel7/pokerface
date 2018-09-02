@@ -16,6 +16,8 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django_user_agents.utils import get_user_agent
 
+defaultImage = "/static/img/icons/apple-touch-icon-76x76.png"
+
 
 class LimitPerDayUserThrottle(UserRateThrottle):
   rate = '5555/hour'
@@ -67,12 +69,13 @@ def user_login(request, format='json'):
       # authenticate seems to include the is_active test
       token, created = Token.objects.get_or_create(user=user)
       request.session['auth'] = token.key
+      avatar_image = user.userinfo.avatarImage if user.userinfo and user.userinfo.avatarImage != "" else defaultImage
       return JsonResponse({
         "username": user.username,
         "email": user.email,
         "first_name": user.first_name,
         "last_name": user.last_name,
-        "avatar_image": user.userinfo.avatarImage,
+        "avatar_image": avatar_image,
         "token": token.key
       }, status=status.HTTP_200_OK)
     return JsonResponse({"message": "SignIn.User_has_been_deactivated"})
@@ -219,9 +222,11 @@ def user_update(request, format='json'):
     print("authenticated user", user)
     user.first_name = request.data['first_name']
     user.last_name = request.data['last_name']
-    avatar_image = request.data['image']
+    avatar_image = request.data['avatar_image']
     if avatar_image.startswith("data:image/"):
       user.userinfo.avatarImage = avatar_image
+    else:
+      user.userinfo.avatarImage = defaultImage
     
     user.save()
     return JsonResponse({"message": "Profile.Update_done",
@@ -256,13 +261,15 @@ def user_get(request, format='json'):
       for social in social_set:
         social_info = social[0]
     
-    return JsonResponse({"user": {"email": user.email,
-                                  "username": user.username,
-                                  "first_name": user.first_name,
-                                  "last_name": user.last_name,
-                                  "avatar_image": user.userinfo.avatarImage if user.userinfo else '',
-                                  "social_info": social_info,
-                                  }}, status=status.HTTP_200_OK)
+    avatar_image = user.userinfo.avatarImage if user.userinfo and user.userinfo.avatarImage != "" else defaultImage
+    return JsonResponse({"user":
+                           {"email": user.email,
+                            "username": user.username,
+                            "first_name": user.first_name,
+                            "last_name": user.last_name,
+                            "avatar_image": avatar_image,
+                            "social_info": social_info,
+                            }}, status=status.HTTP_200_OK)
   
   return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)
 
