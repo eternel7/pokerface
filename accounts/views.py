@@ -227,6 +227,8 @@ def user_update(request, format='json'):
       user.userinfo.avatarImage = avatar_image
     else:
       user.userinfo.avatarImage = defaultImage
+    if user.email == "":
+      user.email = request.data['email']
     
     user.save()
     return JsonResponse({"message": "Profile.Update_done",

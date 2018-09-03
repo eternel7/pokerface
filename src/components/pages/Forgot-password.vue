@@ -87,7 +87,6 @@
             .then(function (response) {
               vm.$root.loading = false
               // handle success
-              console.log(response)
               vm.state = 1
             })
             .catch(function (error) {

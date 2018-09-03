@@ -2,17 +2,20 @@
   <div id="container" class="mdl-card mdl-shadow--16dp">
     <div class="mdl-card__supporting-text">
       <cardFabTitle userTitle="Page.Profile"></cardFabTitle>
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        <input class="mdl-textfield__input" type="text" id="email" readonly required
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+           v-bind:class="{'is-dirty' : (user.email) ? true : false}">
+        <input class="mdl-textfield__input" type="text" id="email" :readonly="(user.email) ? true : false" required
                v-model.trim="user.email"/>
         <label class="mdl-textfield__label" for="email">{{$t('user.Email')}}</label>
       </div>
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+           v-bind:class="{'is-dirty' : (user.first_name) ? true : false}">
         <input class="mdl-textfield__input" type="text" id="first_name"
                v-model.trim="user.first_name"/>
         <label class="mdl-textfield__label" for="first_name">{{$t('user.First_name')}}</label>
       </div>
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+           v-bind:class="{'is-dirty' : (user.last_name) ? true : false}">
         <input class="mdl-textfield__input" type="text" id="last_name"
                v-model.trim="user.last_name"/>
         <label class="mdl-textfield__label" for="last_name">{{$t('user.Last_name')}}</label>

@@ -3,7 +3,8 @@
     <div class="mdl-card__supporting-text">
       <cardFabTitle userTitle="Page.SignUp"></cardFabTitle>
       <userFields :email.sync="user.email" :password.sync="user.password"></userFields>
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+           v-bind:class="{'is-dirty' : (user.confirmPassword) ? true : false}">
         <input class="mdl-textfield__input" type="password" id="passwordConfirm" required
                v-model.trim="user.confirmPassword"/>
         <label class="mdl-textfield__label" for="passwordConfirm">{{$t('SignUp.ConfirmPassword')}}</label>
