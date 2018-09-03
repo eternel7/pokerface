@@ -22,7 +22,7 @@
       </div>
       <div class="link" v-on:click="askForAnImage"
            v-on:dragover.prevent="onDragOver" v-on:drop.prevent="onDrop">
-        <img id="profilePreview" v-bind:src="user.avatar_image" style="max-width:200px; max-height:200px">
+        <img id="profilePreview" v-bind:src="user.avatar_image">
         <input hidden='hidden' type='file' id='fileInput' ref='fileInput' v-on:change.prevent="updatePreview"
                accept="image/*">
         <p class="center-align">{{$t('SignUp.ClickOrDropToUpdateYourProfilePicture')}}</p>
@@ -252,6 +252,11 @@
 
   #container {
     margin: auto;
+  }
+
+  #profilePreview {
+    max-width: 200px;
+    max-height: 200px;
   }
 
   .pulse {

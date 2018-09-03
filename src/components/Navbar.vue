@@ -2,20 +2,21 @@
   <div class="mdl-layout__drawer">
     <span class="mdl-layout-title">Pokerface</span>
     <nav class="mdl-navigation">
-      <router-link class="mdl-navigation__link" to="/" @click.native="hideMenu">{{ $t("Nav.Home") }}</router-link>
+      <router-link class="mdl-navigation__link" to="/" @click.native="hideMenu">{{ $t('Nav.Home') }}</router-link>
       <router-link v-if="!$root.authenticated" class="mdl-navigation__link" to="/signin" @click.native="hideMenu">{{
-        $t("Nav.SignIn") }}
+        $t('Nav.SignIn') }}
       </router-link>
       <router-link v-if="!$root.authenticated" class="mdl-navigation__link" to="/signup" @click.native="hideMenu">{{
-        $t("Nav.SignUp") }}
+        $t('Nav.SignUp') }}
       </router-link>
       <router-link v-if="$root.authenticated" class="mdl-navigation__link" to="/chatrooms" @click.native="hideMenu">{{
-        $t("Nav.StartAChat") }}
+        $t('Nav.StartAChat') }}
       </router-link>
       <router-link v-if="$root.authenticated" class="mdl-navigation__link" to="/profile" @click.native="hideMenu">{{
-        $t("Nav.YourProfile") }}
+        $t('Nav.YourProfile') }}
       </router-link>
-      <router-link v-if="$root.authenticated" class="mdl-navigation__link" to="/" @click.native="tryToLogout">{{ $t("Nav.Logout")
+      <router-link v-if="$root.authenticated" class="mdl-navigation__link" to="/" @click.native="tryToLogout">{{
+        $t('Nav.Logout')
         }}
       </router-link>
       <localizerChooser></localizerChooser>
@@ -35,9 +36,9 @@
     authMixin.methods.isAuthenticated(() => {
       vm.$root.authenticated = true
     },
-    () => {
-      vm.$root.authenticated = false
-    })
+      () => {
+        vm.$root.authenticated = false
+      })
   }
 
   export default {
@@ -81,5 +82,14 @@
     transform: translate(-12px, -12px);
     line-height: 24px;
     width: 24px
+  }
+
+  .mdl-navigation__link:hover, .mdl-layout-title {
+    background-color: rgb(96, 125, 139) !important;
+    color: rgb(255, 255, 255) !important;
+  }
+
+  .mdl-layout__drawer {
+    border-right: 0 !important;
   }
 </style>
