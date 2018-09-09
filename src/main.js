@@ -36,11 +36,12 @@ Vue.use(VueAuthenticate, {
   }
 })
 const userDefault = {
-  email: '',
+  email: false,
   avatar_image: '/static/img/icons/apple-touch-icon-76x76.png',
-  last_name: '',
-  first_name: '',
-  username: ''
+  last_name: false,
+  first_name: false,
+  username: false,
+  social_info: false
 }
 /* eslint-disable no-new */
 new Vue({
@@ -62,7 +63,7 @@ new Vue({
   },
   computed: {
     authenticated: function () {
-      return this.user.username !== ''
+      return (this.user.username && this.user.username !== '')
     }
   },
   methods: {

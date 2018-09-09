@@ -58,7 +58,10 @@ export default new Router({
     {
       path: '/chatrooms',
       name: 'Chatrooms',
-      component: Chatrooms
+      component: Chatrooms,
+      beforeEnter: (to, from, next) => {
+        authMixin.methods.checkToken('all', next)
+      }
     }
   ]
 })

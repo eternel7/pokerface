@@ -37,7 +37,7 @@ export const authMixin = {
       vm.$router.push({name: 'Profile'})
     },
     authError: function (error, vm) {
-      console.log(error)
+      console.log('authError', error)
       if (vm) {
         vm.logout(vm)
       } else {
@@ -47,6 +47,7 @@ export const authMixin = {
     logout: function (vm) {
       if (vm && vm.$root) {
         vm.$root.loading = true
+        vm.$root.setUnauthenticated()
         axios.post('/api/ulogout/', {}, this.authHeader()).then((response) => {
           vm.$root.loading = false
           console.log('user log out', response.data.message)
@@ -67,7 +68,6 @@ export const authMixin = {
             onSuccess()
           } else {
             onError('server side no authentication')
-            that.authError('server side no authentication')
           }
         }).catch((error) => {
           onError(error)
