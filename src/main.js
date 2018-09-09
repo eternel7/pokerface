@@ -40,12 +40,34 @@ new Vue({
   i18n,
   el: '#app',
   router,
-  template: '<App/>',
+  template: '<App ref="App" v-bind:message="message" ' +
+    'v-bind:searchAvailable="searchAvailable"' +
+    'v-bind:errors="errors"/>',
   components: {App},
   data () {
     return {
+      loading: false,
       authenticated: undefined,
-      loading: false
+      user: {
+        email: '',
+        avatar_image: '/static/img/icons/apple-touch-icon-76x76.png',
+        last_name: '',
+        first_name: ''
+      },
+      message: '',
+      errors: [],
+      searchAvailable: false
+    }
+  },
+  methods: {
+    setSearch: function (val) {
+      this.searchAvailable = !!val
+    },
+    showSnackbar: function (msg) {
+      this.message = msg
+      this.$nextTick(function () {
+        this.$refs.App.showSnackbar()
+      })
     }
   }
 })

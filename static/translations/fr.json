@@ -36,6 +36,7 @@
     "Logout": "Déconnexion",
     "nonConnected": "utilisateur non connecté",
     "Update": "Mettre à jour",
+    "UpdateConfirmed": "Mis à jour réussi",
     "Delete": "Suppression",
     "ConfirmDeletionQuestion": "Êtes vous sûr de vouloir supprimer votre profil?",
     "ConfirmedDeletion": "You have deleted the user profile for {email}",

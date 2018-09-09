@@ -75,9 +75,10 @@
     },
     created: function (e) {
       if (storedUser) {
+        this.updateNeeded = 'noNeed'
         this.user = storedUser
+        this.updateNeeded = false
       }
-      this.updateNeeded = 'noNeed'
       this.$nextTick(function () {
         this.updateNeeded = false
       })
@@ -181,6 +182,7 @@
               if (response.data.user) {
                 // store updated user
                 vm.authSuccess(response.data.user, vm, false)
+                vm.$root.showSnackbar(vm.$i18n.t('user.UpdateConfirmed'))
               } else {
                 vm.errors = []
                 vm.errors.push({message: response.data.message})
