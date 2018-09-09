@@ -3,7 +3,7 @@
 exports[`App.vue should match Snapshot 1`] = `
 <div
   class="mdl-layout mdl-js-layout mdl-layout--fixed-header"
-  id="app"
+  id="app-content"
 >
   <header
     class="mdl-layout__header"
@@ -26,6 +26,8 @@ exports[`App.vue should match Snapshot 1`] = `
       <div
         class="mdl-textfield mdl-js-textfield mdl-textfield--expandable
                 mdl-textfield--floating-label mdl-textfield--align-right"
+        name="fade"
+        style="display: none;"
       >
         <label
           class="mdl-button mdl-js-button mdl-button--icon"
@@ -68,6 +70,20 @@ exports[`App.vue should match Snapshot 1`] = `
         />
       </div>
     </section>
+     
+    <div
+      class="mdl-js-snackbar mdl-snackbar"
+      id="toast"
+    >
+      <div
+        class="mdl-snackbar__text"
+      />
+       
+      <button
+        class="mdl-snackbar__action"
+        type="button"
+      />
+    </div>
   </main>
 </div>
 `;

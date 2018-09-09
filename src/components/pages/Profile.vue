@@ -62,21 +62,20 @@
     },
     data () {
       return {
-        user: {
-          email: '',
-          avatar_image: '/static/img/icons/apple-touch-icon-76x76.png',
-          last_name: '',
-          first_name: ''
-        },
         message: '',
         errors: [],
         updateNeeded: 'noNeed'
       }
     },
+    computed: {
+      user: function () {
+        return this.$root.user
+      }
+    },
     created: function (e) {
       if (storedUser) {
         this.updateNeeded = 'noNeed'
-        this.user = storedUser
+        this.$root.user = storedUser
         this.updateNeeded = false
       }
       this.$nextTick(function () {
@@ -144,7 +143,7 @@
             if (response.data.user) {
               vm.authStoreUser(response.data.user, vm)
               if (response.data.user) {
-                vm.user = response.data.user
+                vm.$root.user = response.data.user
                 vm.updateNeeded = false
               }
             } else {

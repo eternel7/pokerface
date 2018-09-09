@@ -10,7 +10,7 @@ module.exports = {
 
     browser
       .url(devServer)
-      .waitForElementVisible('#app', 1500)
+      .waitForElementVisible('#app-content', 1500)
       .assert.containsText('span', 'Pokerface')
       .assert.elementCount('main', 1)
       .assert.elementPresent('.section')

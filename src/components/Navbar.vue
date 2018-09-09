@@ -34,10 +34,10 @@
   // common authentication test to ensure we are still authenticated
   let authentication = function (vm) {
     authMixin.methods.isAuthenticated(() => {
-      vm.$root.authenticated = true
+      // nice
     },
       () => {
-        vm.$root.authenticated = false
+        vm.$root.setUnauthenticated()
       })
   }
 

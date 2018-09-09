@@ -35,6 +35,13 @@ Vue.use(VueAuthenticate, {
     }
   }
 })
+const userDefault = {
+  email: '',
+  avatar_image: '/static/img/icons/apple-touch-icon-76x76.png',
+  last_name: '',
+  first_name: '',
+  username: ''
+}
 /* eslint-disable no-new */
 new Vue({
   i18n,
@@ -47,19 +54,21 @@ new Vue({
   data () {
     return {
       loading: false,
-      authenticated: undefined,
-      user: {
-        email: '',
-        avatar_image: '/static/img/icons/apple-touch-icon-76x76.png',
-        last_name: '',
-        first_name: ''
-      },
+      user: userDefault,
       message: '',
       errors: [],
       searchAvailable: false
     }
   },
+  computed: {
+    authenticated: function () {
+      return this.user.username !== ''
+    }
+  },
   methods: {
+    setUnauthenticated: function () {
+      this.user = userDefault
+    },
     setSearch: function (val) {
       this.searchAvailable = !!val
     },

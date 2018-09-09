@@ -26,6 +26,7 @@ export const authMixin = {
       })
     },
     authStoreUser: function (user, vm) {
+      vm.$root.user = user
       window.localStorage.setItem('auth-user', JSON.stringify(user))
     },
     authSuccess: function (user, vm, token) {
@@ -33,7 +34,6 @@ export const authMixin = {
         window.localStorage.setItem('vue-authenticate.vueauth_token', token)
       }
       vm.authStoreUser(user, vm)
-      vm.$root.authenticated = true
       vm.$router.push({name: 'Profile'})
     },
     authError: function (error, vm) {
@@ -46,7 +46,6 @@ export const authMixin = {
     },
     logout: function (vm) {
       if (vm && vm.$root) {
-        vm.$root.authenticated = false
         vm.$root.loading = true
         axios.post('/api/ulogout/', {}, this.authHeader()).then((response) => {
           vm.$root.loading = false
