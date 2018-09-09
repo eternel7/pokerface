@@ -2,42 +2,68 @@
   <div id="container" class="mdl-card mdl-shadow--16dp">
     <div class="mdl-card__supporting-text">
       <cardFabTitle userTitle="Page.Profile"></cardFabTitle>
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
-           v-bind:class="{'is-dirty' : (user.email) ? true : false}">
-        <input class="mdl-textfield__input" type="text" id="email" :readonly="(user.email) ? true : false" required
-               v-model.trim="user.email"/>
-        <label class="mdl-textfield__label" for="email">{{$t('user.Email')}}</label>
+      <!-- Tabs -->
+      <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect is-upgraded">
+        <div class="mdl-tabs__tab-bar">
+          <div v-bind:href="tab.id" class="mdl-tabs__tab link" v-for="tab in tabs" v-on:click="tabActive=tab.id"
+               v-bind:class="{'is-active' : (tab.id===tabActive)}">
+            <i class="material-icons">
+              {{tab.icon}}
+            </i><span>{{tab.Title}}</span>
+
+          </div>
+        </div>
+        <div class="mdl-tabs__panel is-active" id="0" v-if="tabActive==='0'">
+          <div class="page-content">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+                 v-bind:class="{'is-dirty' : (user.email) ? true : false}">
+              <input class="mdl-textfield__input" type="text" id="email" :readonly="(user.email) ? true : false"
+                     required
+                     v-model.trim="user.email"/>
+              <label class="mdl-textfield__label" for="email">{{$t('user.Email')}}</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+                 v-bind:class="{'is-dirty' : (user.first_name) ? true : false}">
+              <input class="mdl-textfield__input" type="text" id="first_name"
+                     v-model.trim="user.first_name"/>
+              <label class="mdl-textfield__label" for="first_name">{{$t('user.First_name')}}</label>
+            </div>
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+                 v-bind:class="{'is-dirty' : (user.last_name) ? true : false}">
+              <input class="mdl-textfield__input" type="text" id="last_name"
+                     v-model.trim="user.last_name"/>
+              <label class="mdl-textfield__label" for="last_name">{{$t('user.Last_name')}}</label>
+            </div>
+            <div class="link" v-on:click="askForAnImage"
+                 v-on:dragover.prevent="onDragOver" v-on:drop.prevent="onDrop">
+              <img id="profilePreview" v-bind:src="user.avatar_image">
+              <input hidden='hidden' type='file' id='fileInput' ref='fileInput' v-on:change.prevent="updatePreview"
+                     accept="image/*">
+              <p class="center-align">{{$t('SignUp.ClickOrDropToUpdateYourProfilePicture')}}</p>
+            </div>
+            <button id="main-button" v-on:click.prevent="tryUpdate" v-bind:class="{ pulse: updateNeeded }"
+                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
+              {{$t('user.Update')}}
+            </button>
+            <errorMessages v-bind:errors="errors"></errorMessages>
+          </div>
+        </div>
+        <div class="mdl-tabs__panel is-active" id="1" v-if="tabActive==='1'">
+          <div class="page-content">More<!-- Your content goes here --></div>
+        </div>
+        <div class="mdl-tabs__panel is-active" id="2" v-if="tabActive==='2'">
+          <div class="page-content">Password<!-- Your content goes here --></div>
+        </div>
+        <div class="mdl-tabs__panel is-active" id="3" v-if="tabActive==='3'">
+          <div class="page-content">
+            <p class="center-align">{{$t('user.BeforeDeleteMessage')}}</p>
+            <button id="secondary-button" v-on:click.prevent="tryDelete"
+                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white">
+              {{$t('user.Delete')}}
+            </button>
+          </div>
+        </div>
       </div>
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
-           v-bind:class="{'is-dirty' : (user.first_name) ? true : false}">
-        <input class="mdl-textfield__input" type="text" id="first_name"
-               v-model.trim="user.first_name"/>
-        <label class="mdl-textfield__label" for="first_name">{{$t('user.First_name')}}</label>
-      </div>
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
-           v-bind:class="{'is-dirty' : (user.last_name) ? true : false}">
-        <input class="mdl-textfield__input" type="text" id="last_name"
-               v-model.trim="user.last_name"/>
-        <label class="mdl-textfield__label" for="last_name">{{$t('user.Last_name')}}</label>
-      </div>
-      <div class="link" v-on:click="askForAnImage"
-           v-on:dragover.prevent="onDragOver" v-on:drop.prevent="onDrop">
-        <img id="profilePreview" v-bind:src="user.avatar_image">
-        <input hidden='hidden' type='file' id='fileInput' ref='fileInput' v-on:change.prevent="updatePreview"
-               accept="image/*">
-        <p class="center-align">{{$t('SignUp.ClickOrDropToUpdateYourProfilePicture')}}</p>
-      </div>
-      <button id="main-button" v-on:click.prevent="tryUpdate" v-bind:class="{ pulse: updateNeeded }"
-              class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
-        {{$t('user.Update')}}
-      </button>
-      <errorMessages v-bind:errors="errors"></errorMessages>
-      <hr/>
-      <p class="center-align">{{$t('user.BeforeDeleteMessage')}}</p>
-      <button id="secondary-button" v-on:click.prevent="tryDelete"
-              class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white">
-        {{$t('user.Delete')}}
-      </button>
     </div>
   </div>
 </template>
@@ -62,6 +88,29 @@
     },
     data () {
       return {
+        tabs: [
+          {
+            id: '0',
+            Title: 'User',
+            icon: 'person'
+          },
+          {
+            id: '1',
+            Title: 'More',
+            icon: 'loyalty'
+          },
+          {
+            id: '2',
+            Title: 'Password',
+            icon: 'verified_user'
+          },
+          {
+            id: '3',
+            Title: 'Delete',
+            icon: 'delete'
+          }
+        ],
+        tabActive: '0',
         message: '',
         errors: [],
         updateNeeded: 'noNeed'
@@ -249,6 +298,12 @@
   .mdl-card {
     overflow: visible !important;
     z-index: auto !important;
+    width: 75%;
+    min-width: 300px;
+  }
+
+  .mdl-card__supporting-text {
+    margin: auto;
   }
 
   #container {
@@ -258,6 +313,44 @@
   #profilePreview {
     max-width: 200px;
     max-height: 200px;
+  }
+
+  .mdl-tabs__tab > i {
+    display: none;
+  }
+
+  @media all and (min-width: 0) and (max-width: 480px) {
+    .mdl-card {
+      width: 99%;
+    }
+
+    .mdl-tabs__tab-bar {
+      width: 100%;
+    }
+
+    .mdl-tabs__tab > i {
+      display: block;
+      margin-top: 10px;
+    }
+
+    .mdl-tabs__tab > span {
+      display: none;
+    }
+
+    .mdl-tabs__tab {
+      width: 100%;
+      padding: 0 3%;
+      margin: 0 auto;
+    }
+  }
+
+  .mdl-textfield {
+    display: block;
+    margin: auto;
+  }
+
+  .page-content {
+    margin: 20px auto 20px;
   }
 
   .pulse {
