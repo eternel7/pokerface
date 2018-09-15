@@ -1,274 +1,336 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml"
+      xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <title>{{ title }}</title>
-  <style type="text/css" rel="stylesheet" media="all">
-    /* Base ------------------------------ */
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+  <!-- [ if !mso]> <!-->
+  <meta content="IE=edge" http-equiv="X-UA-Compatible"/>
+  <!-- <![endif] -->
+  <meta content="telephone=no" name="format-detection"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title{{ t.headTitle }}</title>
+  <style type="text/css">
+    .ExternalClass {
+      width: 100%;
+    }
 
-    *:not(br):not(tr):not(html) {
-      font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
-      box-sizing: border-box;
+    .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div, .ExternalClass b, .ExternalClass br, .ExternalClass img {
+      line-height: 100% !important;
+    }
+
+    /* iOS BLUE LINKS */
+    .appleBody a {
+      color: #212121;
+      text-decoration: none;
+    }
+
+    .appleFooter a {
+      color: #212121 !important;
+      text-decoration: none !important;
+    }
+
+    /* END iOS BLUE LINKS */
+    img {
+      color: #ffffff;
+      text-align: center;
+      font-family: 'Roboto', 'Open Sans', Helvetica, Arial, sans-serif;
+      display: block;
     }
 
     body {
-      width: 100% !important;
-      height: 100%;
       margin: 0;
       padding: 0;
-      line-height: 1.4;
-      background-color: #F2F4F6;
-      color: #585858;
-      -webkit-text-size-adjust: none;
+      -webkit-text-size-adjust: 100% !important;
+      -ms-text-size-adjust: 100% !important;
+      font-family: 'Roboto', 'Open Sans', Helvetica, Arial, sans-serif !important;
     }
 
-    p,
-    ul,
-    ol,
-    blockquote {
-      line-height: 1.4;
-      text-align: left;
+    body, #body_style {
+      background: #fffffe;
     }
 
-    a {
-      color: #3869D4;
+    table td {
+      border-collapse: collapse;
+      border-spacing: 0 !important;
     }
 
-    a img {
+    table tr {
+      border-collapse: collapse;
+      border-spacing: 0 !important;
+    }
+
+    table tbody {
+      border-collapse: collapse;
+      border-spacing: 0 !important;
+    }
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0 !important;
+    }
+
+    span.yshortcuts, a span.yshortcuts {
+      color: #000001;
+      background-color: none;
       border: none;
     }
 
-    td {
-      word-break: break-word;
+    span.yshortcuts:hover,
+    span.yshortcuts:active,
+    span.yshortcuts:focus {
+      color: #000001;
+      background-color: none;
+      border: none;
     }
 
-    /* Layout ------------------------------ */
-
-    .email-wrapper {
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      -premailer-width: 100%;
-      -premailer-cellpadding: 0;
-      -premailer-cellspacing: 0;
-      background-color: #585858;
+    img {
+      -ms-interpolation-mode:: bicubic;
     }
 
-    .email-content {
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      -premailer-width: 100%;
-      -premailer-cellpadding: 0;
-      -premailer-cellspacing: 0;
+    a[x-apple-data-detectors] {
+      color: inherit !important;
+      text-decoration: none !important;
+      font-size: inherit !important;
+      font-family: inherit !important;
+      font-weight: inherit !important;
+      line-height: inherit !important;
     }
 
-    /* Masthead ----------------------- */
+    /**** My desktop styles ****/
+    @media only screen and (min-width: 600px) {
+      .noDesk {
+        display: none !important;
+      }
 
-    .email-masthead {
-      padding: 25px 0;
-      text-align: center;
+      .td-padding {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+      }
+
+      .padding-container {
+        padding: 0px 15px 0px 15px !important;
+        mso-padding-alt: 0px 15px 0px 15px !important;
+      }
+
+      .mobile-column-left-padding {
+        padding: 0px 0px 0px 0px !important;
+        mso-alt-padding: 0px 0px 0px 0px !important;
+      }
+
+      .mobile-column-right-padding {
+        padding: 0px 0px 0px 0px !important;
+        mso-alt-padding: 0px 0px 0px 0px !important;
+      }
+
+      .mobile {
+        display: none !important
+      }
     }
 
-    .email-masthead_logo {
-      width: 94px;
+    /**** My mobile styles ****/
+    @media only screen and (max-width: 599px) and (-webkit-min-device-pixel-ratio: 1) {
+      *[class].wrapper {
+        width: 100% !important;
+      }
+
+      *[class].container {
+        width: 100% !important;
+      }
+
+      *[class].mobile {
+        width: 100% !important;
+        display: block !important;
+      }
+
+      *[class].image {
+        width: 100% !important;
+        height: auto;
+      }
+
+      *[class].center {
+        margin: 0 auto !important;
+        text-align: center !important;
+      }
+
+      *[class="mobileOff"] {
+        width: 0px !important;
+        display: none !important;
+      }
+
+      *[class*="mobileOn"] {
+        display: block !important;
+        max-height: none !important;
+      }
+
+      p[class="mobile-padding"] {
+        padding-left: 0px !important;
+        padding-top: 10px;
+      }
+
+      .padding-container {
+        padding: 0px 15px 0px 15px !important;
+        mso-padding-alt: 0px 15px 0px 15px !important;
+      }
+
+      .hund {
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      .td-padding {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+      }
+
+      .mobile-column-left-padding {
+        padding: 18px 0px 18px 0px !important;
+        mso-alt-padding: 18px 0px 18px 0px !important;
+      }
+
+      .mobile-column-right-padding {
+        padding: 18px 0px 0px 0px !important;
+        mso-alt-padding: 18px 0px 0px 0px !important;
+      }
+
+      .stack {
+        width: 100% !important;
+      }
+
+      img {
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      *[class="hide"] {
+        display: none !important
+      }
+
+      *[class="Gmail"] {
+        display: none !important
+      }
+
+      .Gmail {
+        display: none !important
+      }
+
+      .bottom-padding-fix {
+        padding: 0px 0px 18px 0px !important;
+        mso-alt-padding: 0px 0px 18px 0px;
+      }
     }
 
-    .email-masthead_name {
-      font-size: 26px;
-      font-weight: bold;
-      color: #ffffff;
+    .social, .social:active {
+      opacity: 1 !important;
+      transform: scale(1);
+      transition: all .2s !important;
+    }
+
+    .social:hover {
+      opacity: 0.8 !important;
+      transform: scale(1.1);
+      transition: all .2s !important;
+    }
+
+    .button.raised {
+      transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all .2s;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    }
+
+    .button.raised:hover {
+      box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2);
+      transition: all .2s;
+      -webkit-box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2);
+      transition: all .2s;
+      -moz-box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2);
+      transition: all .2s;
+    }
+
+    .card-1 {
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .16), 0 2px 10px 0 rgba(0, 0, 0, .12);
+      -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .16), 0 2px 10px 0 rgba(0, 0, 0, .12);
+      -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, .16), 0 2px 10px 0 rgba(0, 0, 0, .12);
+      transition: box-shadow .45s;
+    }
+
+    .card-1:hover {
+      box-shadow: 0 8px 17px 0 rgba(0, 0, 0, .2), 0 6px 20px 0 rgba(0, 0, 0, .19);
+      -webkit-box-shadow: 0 8px 17px 0 rgba(0, 0, 0, .2), 0 6px 20px 0 rgba(0, 0, 0, .19);
+      -moz-box-shadow: 0 8px 17px 0 rgba(0, 0, 0, .2), 0 6px 20px 0 rgba(0, 0, 0, .19);
+      transition: box-shadow .45s;
+    }
+
+    .ripplelink {
+      display: block
+      color: #fff;
       text-decoration: none;
-    }
-
-    /* Body ------------------------------ */
-
-    .email-body {
-      width: 100%;
-      margin: 0;
-      padding: 0;
-      -premailer-width: 100%;
-      -premailer-cellpadding: 0;
-      -premailer-cellspacing: 0;
-      background-color: #585858;
-    }
-
-    .email-body_inner {
-      width: 570px;
-      margin: 0 auto;
-      padding: 0;
-      -premailer-width: 570px;
-      -premailer-cellpadding: 0;
-      -premailer-cellspacing: 0;
-      background-color: #FFFFFF;
-    }
-
-    .email-footer {
-      width: 570px;
-      margin: 0 auto;
-      padding: 0;
-      -premailer-width: 570px;
-      -premailer-cellpadding: 0;
-      -premailer-cellspacing: 0;
-      text-align: center;
-    }
-
-    .email-footer p {
-      color: #ffffff;
-    }
-
-    .body-action {
-      width: 100%;
-      margin: 30px auto;
-      padding: 0;
-      -premailer-width: 100%;
-      -premailer-cellpadding: 0;
-      -premailer-cellspacing: 0;
-      text-align: center;
-    }
-
-    .body-sub {
-      margin-top: 25px;
-      padding-top: 25px;
-      border-top: 1px solid #EDEFF2;
-    }
-
-    .content-cell {
-      padding: 35px;
-    }
-
-    .preheader {
-      display: none !important;
-      visibility: hidden;
-      mso-hide: all;
-      font-size: 1px;
-      line-height: 1px;
-      max-height: 0;
-      max-width: 0;
-      opacity: 0;
+      position: relative;
       overflow: hidden;
+      -webkit-transition: all 0.2s ease;
+      -moz-transition: all 0.2s ease;
+      -o-transition: all 0.2s ease;
+      transition: all 0.2s ease;
+      z-index: 0;
     }
 
-    /* Social Icons ------------------------------ */
-
-    .social {
-      width: auto;
+    .ripplelink:hover {
+      z-index: 1000;
     }
 
-    .social td {
-      padding: 0;
-      width: auto;
+    .ink {
+      display: block;
+      position: absolute;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 100%;
+      -webkit-transform: scale(0);
+      -moz-transform: scale(0);
+      -o-transform: scale(0);
+      transform: scale(0);
     }
 
-    .social_icon {
-      height: 20px;
-      margin: 0 8px 10px 8px;
-      padding: 0;
+    .animate {
+      -webkit-animation: ripple 0.65s linear;
+      -moz-animation: ripple 0.65s linear;
+      -ms-animation: ripple 0.65s linear;
+      -o-animation: ripple 0.65s linear;
+      animation: ripple 0.65s linear;
     }
 
-    /* Utilities ------------------------------ */
-
-    .align-right {
-      text-align: right;
-    }
-
-    .align-left {
-      text-align: left;
-    }
-
-    .align-center {
-      text-align: center;
-    }
-
-    /*Media Queries ------------------------------ */
-
-    @media only screen and (max-width: 600px) {
-      .email-body_inner,
-      .email-footer {
-        width: 100% !important;
+    @-webkit-keyframes ripple {
+      100% {
+        opacity: 0;
+        -webkit-transform: scale(2.5);
       }
     }
 
-    @media only screen and (max-width: 500px) {
-      .button {
-        width: 100% !important;
+    @-moz-keyframes ripple {
+      100% {
+        opacity: 0;
+        -moz-transform: scale(2.5);
       }
     }
 
-    /* Buttons ------------------------------ */
-
-    .button {
-      background-color: #3869D4;
-      border-top: 10px solid #3869D4;
-      border-right: 18px solid #3869D4;
-      border-bottom: 10px solid #3869D4;
-      border-left: 18px solid #3869D4;
-      display: inline-block;
-      color: #FFF;
-      text-decoration: none;
-      border-radius: 3px;
-      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.16);
-      -webkit-text-size-adjust: none;
+    @-o-keyframes ripple {
+      100% {
+        opacity: 0;
+        -o-transform: scale(2.5);
+      }
     }
 
-    .button--pink {
-      background-color: #e91e63;
-      border-top: 10px solid #e91e63;
-      border-right: 18px solid #e91e63;
-      border-bottom: 10px solid #e91e63;
-      border-left: 18px solid #e91e63;
+    @keyframes ripple {
+      100% {
+        opacity: 0;
+        transform: scale(2.5);
+      }
     }
 
-    .button--red {
-      background-color: #FF6136;
-      border-top: 10px solid #FF6136;
-      border-right: 18px solid #FF6136;
-      border-bottom: 10px solid #FF6136;
-      border-left: 18px solid #FF6136;
-    }
-
-    /* Type ------------------------------ */
-
-    h1 {
-      margin-top: 0;
-      color: #2F3133;
-      font-size: 19px;
-      font-weight: bold;
-      text-align: left;
-    }
-
-    h2 {
-      margin-top: 0;
-      color: #2F3133;
-      font-size: 16px;
-      font-weight: bold;
-      text-align: left;
-    }
-
-    h3 {
-      margin-top: 0;
-      color: #2F3133;
-      font-size: 14px;
-      font-weight: bold;
-      text-align: left;
-    }
-
-    p {
-      margin-top: 0;
-      color: #74787E;
-      font-size: 16px;
-      line-height: 1.5em;
-      text-align: left;
-    }
-
-    p.sub {
-      font-size: 12px;
-    }
-
-    p.center {
-      text-align: center;
-    }
   </style>
+  <!--[if gte mso 9]>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:AllowPNG/>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+    <![endif]-->
 </head>

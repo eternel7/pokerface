@@ -85,6 +85,7 @@
           vm.errors.push({message: 'ResetPassword.TokenIncorrect'})
         }
         if (vm.errors.length < 1) {
+          vm.user.language = vm.$i18n.locale
           vm.$root.loading = true
           axios.post('/rpwd', vm.user)
             .then(function (response) {

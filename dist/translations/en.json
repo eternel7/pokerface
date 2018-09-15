@@ -56,14 +56,40 @@
     "User_has_been_deactivated": "User has been deactivated. Contact support if you don't know why."
   },
   "ForgotPassword": {
-    "Send_password_reset_email" : "Send",
-    "Go_to_reset_password" : "Go to reset password"
+    "Send_password_reset_email": "Send",
+    "state0":{
+      "Text": "We'll send you a link to reset your password."
+    },
+    "state1":{
+      "Text1":"We have send an email to {email} with instruction on how to reset your password.",
+      "Text2": "Didn't receive the password reset email? Check your spam folder for an email with subject {0}.",
+      "Text3": "If you still don't see the email ",
+      "Text3link": "try again"
+    },
+    "Go_to_reset_password": "Go to reset password"
   },
   "ResetPassword": {
-    "Update_Password" : "Update password",
+    "Update_Password": "Update password",
     "no_user_found_for_this_email": "No user account matching the given criteria.",
     "TokenIncorrect": "Security token incorrect.",
     "Security_token_invalid": "Security token invalid."
+  },
+  "emails": {
+    "forgotPassword": {
+      "headTitle" : "Pokerface forgotten password request",
+      "head01TextOnly": "Use this link to reset your password. The link is only valid for 2 hours.",
+      "head01Title": "PokerFace"
+    },
+    "forgotpasswordnoaccount":{
+      "head01Title": "PokerFace",
+      "headTitle": "Pokerface forgotten password request but we don't know you...",
+      "head01TextOnly": "Erroneous Pokerface forgotten password request"
+    },
+    "passwordhasbeenreset":{
+      "head01Title": "PokerFace",
+      "headTitle": "Your password has been reset successfully for PokerFace",
+      "head01TextOnly": "Pokerface password updated"
+    }
   },
   "password": {
     "meter": "Password complexity indicator. The letter corresponds to an aid for checking the correct password input.",

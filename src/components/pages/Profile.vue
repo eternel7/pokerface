@@ -10,7 +10,6 @@
             <i class="material-icons">
               {{tab.icon}}
             </i><span>{{tab.Title}}</span>
-
           </div>
         </div>
         <div class="mdl-tabs__panel is-active" id="0" v-if="tabActive==='0'">

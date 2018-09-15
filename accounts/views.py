@@ -15,6 +15,7 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.conf import settings
 from django_user_agents.utils import get_user_agent
+import json
 
 defaultImage = "/static/img/icons/apple-touch-icon-76x76.png"
 
@@ -103,7 +104,6 @@ def user_forgetPasswordSendMail(request, format='json'):
     print("user ready for password update => sending information by mail")
     user_agent = get_user_agent(request)
     infos = {'resetPasswordToken': user.userinfo.resetPasswordToken,
-             'title': "Reset password for PokerFace",
              'first_name': user.first_name,
              'last_name': user.last_name,
              'email': email,
@@ -113,10 +113,18 @@ def user_forgetPasswordSendMail(request, format='json'):
              'operating_system': user_agent.os.family,
              'ip_address': request.META['REMOTE_ADDR'],
              'browser_name': user_agent.browser.family}
+    emailTitle = 'Request to reset password'
+    lang = request.data['language']
+    if lang:
+      json_data = open('static/translations/' + lang + '.json')
+      translation_data = json.load(json_data)
+      json_data.close()
+      infos['t'] = translation_data['emails']['forgotPassword']
+      emailTitle = infos['t']['headTitle']
     msg_plain = render_to_string('../templates/project/emails/forgotpassword.txt', infos)
     msg_html = render_to_string('../templates/project/emails/forgotpassword.html', infos)
     print('sending reset password instructions...')
-    send_mail('Reset password for PokerFace',
+    send_mail(emailTitle,
               msg_plain,
               settings.EMAIL_HOST_USER,
               [email],
@@ -132,10 +140,18 @@ def user_forgetPasswordSendMail(request, format='json'):
              'operating_system': user_agent.os.family,
              'ip_address': request.META['REMOTE_ADDR'],
              'browser_name': user_agent.browser.family}
+    emailTitle = 'Reset password on PokerFace but we don\'t know you'
+    lang = request.data['language']
+    if lang:
+      json_data = open('static/translations/' + lang + '.json')
+      translation_data = json.load(json_data)
+      json_data.close()
+      infos['t'] = translation_data['emails']['forgotpasswordnoaccount']
+      emailTitle = infos['t']['headTitle']
     msg_plain = render_to_string('../templates/project/emails/forgotpasswordnoaccount.txt', infos)
     msg_html = render_to_string('../templates/project/emails/forgotpasswordnoaccount.html', infos)
     print('sending reset password ask to unknown account...')
-    send_mail('Reset password on PokerFace but we don\'t know you',
+    send_mail(emailTitle,
               msg_plain,
               settings.EMAIL_HOST_USER,
               [email],
@@ -159,10 +175,8 @@ def user_resetPassword(request, format='json'):
   confirmPassword = request.data['confirmPassword']
   resetPasswordToken = request.data['resetPasswordToken']
   user = User.objects.filter(username=email)
-  print("before test", user)
   if user.count() == 1:
     user = user.first()
-    print("found user!", user.email)
     if len(password) >= 6 and password == confirmPassword:
       if len(user.userinfo.resetPasswordToken) == 30 and user.userinfo.resetPasswordToken == resetPasswordToken:
         now = timezone.now()
@@ -176,7 +190,6 @@ def user_resetPassword(request, format='json'):
           print("user password updated! Token set to invalid.")
           user_agent = get_user_agent(request)
           infos = {'resetPasswordToken': user.userinfo.resetPasswordToken,
-                   'title': "Your password has been reset successfully for PokerFace",
                    'first_name': user.first_name,
                    'last_name': user.last_name,
                    'email': email,
@@ -186,10 +199,18 @@ def user_resetPassword(request, format='json'):
                    'operating_system': user_agent.os.family,
                    'ip_address': request.META['REMOTE_ADDR'],
                    'browser_name': user_agent.browser.family}
+          emailTitle = 'Your password has been reset successfully for PokerFace'
+          lang = request.data['language']
+          if lang:
+            json_data = open('static/translations/' + lang + '.json')
+            translation_data = json.load(json_data)
+            json_data.close()
+            infos['t'] = translation_data['emails']['passwordhasbeenreset']
+            emailTitle = infos['t']['headTitle']
           msg_plain = render_to_string('../templates/project/emails/passwordhasbeenreset.txt', infos)
           msg_html = render_to_string('../templates/project/emails/passwordhasbeenreset.html', infos)
           print('sending reset password confirmation mail.')
-          send_mail('Your password has been reset successfully for PokerFace',
+          send_mail(emailTitle,
                     msg_plain,
                     settings.EMAIL_HOST_USER,
                     [email],

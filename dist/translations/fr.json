@@ -27,7 +27,7 @@
     "Password": "Mot de passe",
     "First_name": "Prénom",
     "Last_name": "Nom",
-    "Login": "Connexion",
+    "Login": "Se connecter",
     "SignUp": "Inscription",
     "SignIn": "Connexion",
     "Register": "S'inscrire",
@@ -56,6 +56,17 @@
   },
   "ForgotPassword": {
     "Send_password_reset_email": "Envoyer",
+    "state0": {
+      "Text": "Nous vous transmettrons les informations nécessaires pour réinitialiser votre mot de passe."
+    },
+    "state1": {
+      "Text1": "Nous avons envoyer un courriel à {email} avec les informations nécessaires à la mise à jour du mot de passe.",
+      "emailTitle": "Reset password on PokerFace",
+      "Text2": "Vous n'avez pas reçu le courriel? Vérifiez dans votre répertoire de spams/indésirables à la recherche d'un courriel ayant pour sujet : {0}.",
+
+      "Text3": "Si vous ne voyez toujours pas le courriel ",
+      "Text3link": "réessayez"
+    },
     "Go_to_reset_password": "Saisie du nouveau mot de passe"
   },
   "ResetPassword": {
@@ -64,6 +75,23 @@
     "TokenIncorrect": "Jeton de sécurité incorrect.",
     "Security_token_no_more_valid": "Le jeton de sécurité n'est plus valide,veuillez en demander un nouveau.",
     "Security_token_invalid": "Jeton de sécurité invalide."
+  },
+  "emails": {
+    "forgotPassword": {
+      "headTitle": "Reinitialisation de mot de passe PokerFace",
+      "head01TextOnly": "Utilisez ce courriel pour reinitialiser votre mot de passe. Ce courriel est valide pendant deux heures.",
+      "head01Title": "PokerFace"
+    },
+    "forgotpasswordnoaccount": {
+      "head01Title": "PokerFace",
+      "headTitle": "Nous ne vous connaissons pas, mais nous avons recu une demande de reinitialisation de mot de passe PokerFace...",
+      "head01TextOnly": "Demande erronee de reinitialisation de mot de passe PokerFace..."
+    },
+    "passwordhasbeenreset": {
+      "head01Title": "PokerFace",
+      "headTitle": "Votre mot de passe PokerFace a ete mis a jour avec succes",
+      "head01TextOnly": "Pokerface password updated"
+    }
   },
   "password": {
     "meter": "Indice de complexité du mot de passe. La lettre correspond à une aide pour la vérification de la bonne saisie du mot de passe.",

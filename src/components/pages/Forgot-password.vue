@@ -3,26 +3,34 @@
     <div class="mdl-card__supporting-text">
       <cardFabTitle userTitle="Page.ForgotPassword"></cardFabTitle>
       <div v-if="state==0" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        We'll send you a link to reset your password.
+        {{$t('ForgotPassword.state0.Text')}}
       </div>
       <div v-if="state==1" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        We have send an email to {{user.email}} with instruction on how to reset your password.
+         {{ $t('ForgotPassword.state1.Text1',{email: user.email}) }}
         <br/><br/>
-        <span class="smaller">Didn't receive the password reset email? Check your spam folder for an email with subject <strong>"Reset
-        password on
-        PokerFace"</strong>. If you still don't see the email <a class="link" @click="startAgain">try again</a>.</span>
+        <i18n path="ForgotPassword.state1.Text2" tag="span" class="smaller">
+          <strong>{{ $t('emails.forgotPassword.headTitle') }}</strong>
+        </i18n>
+        <span class="smaller">{{ $t('ForgotPassword.state1.Text3') }}
+          <a class="link" @click="startAgain">{{ $t('ForgotPassword.state1.Text3link') }}</a>.
+        </span>
       </div>
       <div v-if="state==0" class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
         <input class="mdl-textfield__input" type="email" id="email" required
                v-model.trim="user.email"/>
         <label class="mdl-textfield__label" for="email">{{$t('user.Email')}}</label>
       </div>
-      <button id="main-button" v-on:click="stepForgotPassword"
+      <button v-if="state==0" id="main-button" v-on:click="stepForgotPassword"
               class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
-        <span v-if="state==0">{{$t('ForgotPassword.Send_password_reset_email')}}</span>
-        <span v-if="state==1">{{$t('ForgotPassword.Go_to_reset_password')}}</span>
+        <span>{{$t('ForgotPassword.Send_password_reset_email')}}</span>
       </button>
       <errorMessages v-bind:errors="errors"></errorMessages>
+    </div>
+    <div class="mdl-card__actions">
+      <router-link id='fourth-button' class="mdl-button mdl-button--primary"
+                   v-bind:class="{'mdl-button--raised' : state==1}" to="/resetpassword">
+        {{$t('ForgotPassword.Go_to_reset_password')}}
+      </router-link>
     </div>
     <div class="mdl-card__actions">
       <router-link id='third-button' class="mdl-button mdl-button--primary" to="/signin">
@@ -68,11 +76,11 @@
       },
       stepForgotPassword (evt) {
         let vm = this
-        if (vm.state === 0) {
-          vm.sendForgotPassword(evt)
-        } else {
-          vm.$router.push({name: 'ResetPassword'})
-        }
+        vm.sendForgotPassword(evt)
+      },
+      stepResetPassword (evt) {
+        let vm = this
+        vm.$router.push({name: 'ResetPassword'})
       },
       sendForgotPassword (evt) {
         let vm = this
@@ -83,7 +91,7 @@
         }
         if (vm.errors.length < 1) {
           vm.$root.loading = true
-          axios.post('/fpwd', {email: vm.user.email})
+          axios.post('/fpwd', {email: vm.user.email, language: vm.$i18n.locale})
             .then(function (response) {
               vm.$root.loading = false
               // handle success
