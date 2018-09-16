@@ -94,7 +94,6 @@ def user_forgetPasswordSendMail(request, format='json'):
   """
   email = request.data['email']
   user = User.objects.filter(username=email)
-  baseUrl = request.scheme + "://" + request.get_host()
   if user.count() == 1:
     user = user.first()
     now = timezone.now()
@@ -108,8 +107,8 @@ def user_forgetPasswordSendMail(request, format='json'):
              'first_name': user.first_name,
              'last_name': user.last_name,
              'email': email,
-             'action_url': baseUrl + '/#/resetpassword/' + user.userinfo.resetPasswordToken,
-             'support_url': baseUrl + '/#/support',
+             'action_url': request.build_absolute_uri('/#/resetpassword/' + user.userinfo.resetPasswordToken),
+             'support_url': request.build_absolute_uri('/#/support'),
              'name': user.first_name if user.first_name != "" else email,
              'operating_system': user_agent.os.family,
              'ip_address': request.META['REMOTE_ADDR'],
@@ -124,7 +123,7 @@ def user_forgetPasswordSendMail(request, format='json'):
       emailTitle = infos['t']['headTitle']
     msg_plain = render_to_string('../templates/project/emails/forgotpassword.txt', infos)
     msg_html = render_to_string('../templates/project/emails/forgotpassword.html', infos)
-    print('sending reset password instructions...')
+    print('sending reset password instructions...', request.build_absolute_uri('/#/support'))
     send_mail(emailTitle,
               msg_plain,
               settings.EMAIL_HOST_USER,
@@ -137,7 +136,7 @@ def user_forgetPasswordSendMail(request, format='json'):
     user_agent = get_user_agent(request)
     infos = {'email': email,
              'name': email,
-             'support_url': baseUrl + '/#/support',
+             'support_url': request.build_absolute_uri('/#/support'),
              'operating_system': user_agent.os.family,
              'ip_address': request.META['REMOTE_ADDR'],
              'browser_name': user_agent.browser.family}
@@ -176,7 +175,6 @@ def user_resetPassword(request, format='json'):
   confirmPassword = request.data['confirmPassword']
   resetPasswordToken = request.data['resetPasswordToken']
   user = User.objects.filter(username=email)
-  baseUrl = request.scheme + "://" + request.get_host()
   if user.count() == 1:
     user = user.first()
     if len(password) >= 6 and password == confirmPassword:
@@ -195,8 +193,8 @@ def user_resetPassword(request, format='json'):
                    'first_name': user.first_name,
                    'last_name': user.last_name,
                    'email': email,
-                   'action_url': baseUrl + '/#/signin',
-                   'support_url': baseUrl + '/#/support',
+                   'action_url': request.build_absolute_uri('/#/signin'),
+                   'support_url': request.build_absolute_uri('/#/support'),
                    'name': user.first_name if user.first_name != "" else email,
                    'operating_system': user_agent.os.family,
                    'ip_address': request.META['REMOTE_ADDR'],
