@@ -94,6 +94,7 @@ def user_forgetPasswordSendMail(request, format='json'):
   """
   email = request.data['email']
   user = User.objects.filter(username=email)
+  baseUrl = request.scheme + "://" + request.get_host()
   if user.count() == 1:
     user = user.first()
     now = timezone.now()
@@ -107,8 +108,8 @@ def user_forgetPasswordSendMail(request, format='json'):
              'first_name': user.first_name,
              'last_name': user.last_name,
              'email': email,
-             'action_url': 'http://localhost:8000/#/resetpassword/' + user.userinfo.resetPasswordToken,
-             'support_url': 'http://localhost:8000/#/support',
+             'action_url': baseUrl + '/#/resetpassword/' + user.userinfo.resetPasswordToken,
+             'support_url': baseUrl + '/#/support',
              'name': user.first_name if user.first_name != "" else email,
              'operating_system': user_agent.os.family,
              'ip_address': request.META['REMOTE_ADDR'],
@@ -136,7 +137,7 @@ def user_forgetPasswordSendMail(request, format='json'):
     user_agent = get_user_agent(request)
     infos = {'email': email,
              'name': email,
-             'support_url': 'http://localhost:8000/#/support',
+             'support_url': baseUrl + '/#/support',
              'operating_system': user_agent.os.family,
              'ip_address': request.META['REMOTE_ADDR'],
              'browser_name': user_agent.browser.family}
@@ -175,6 +176,7 @@ def user_resetPassword(request, format='json'):
   confirmPassword = request.data['confirmPassword']
   resetPasswordToken = request.data['resetPasswordToken']
   user = User.objects.filter(username=email)
+  baseUrl = request.scheme + "://" + request.get_host()
   if user.count() == 1:
     user = user.first()
     if len(password) >= 6 and password == confirmPassword:
@@ -193,8 +195,8 @@ def user_resetPassword(request, format='json'):
                    'first_name': user.first_name,
                    'last_name': user.last_name,
                    'email': email,
-                   'action_url': 'http://localhost:8000/#/signin',
-                   'support_url': 'http://localhost:8000/#/support',
+                   'action_url': baseUrl + '/#/signin',
+                   'support_url': baseUrl + '/#/support',
                    'name': user.first_name if user.first_name != "" else email,
                    'operating_system': user_agent.os.family,
                    'ip_address': request.META['REMOTE_ADDR'],
