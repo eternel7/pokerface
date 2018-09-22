@@ -9,7 +9,7 @@
                v-bind:class="{'is-active' : (tab.id===tabActive)}">
             <i class="material-icons">
               {{tab.icon}}
-            </i><span>{{tab.Title}}</span>
+            </i><span>{{$t('user.' + tab.Title)}}</span>
           </div>
         </div>
         <div class="mdl-tabs__panel is-active" id="0" v-if="tabActive==='0'">
@@ -90,22 +90,22 @@
         tabs: [
           {
             id: '0',
-            Title: 'User',
+            Title: 'TabUser',
             icon: 'person'
           },
           {
             id: '1',
-            Title: 'More',
+            Title: 'TabMore',
             icon: 'loyalty'
           },
           {
             id: '2',
-            Title: 'Password',
+            Title: 'TabPassword',
             icon: 'verified_user'
           },
           {
             id: '3',
-            Title: 'Delete',
+            Title: 'TabDelete',
             icon: 'delete'
           }
         ],
@@ -314,17 +314,27 @@
     max-height: 200px;
   }
 
+  .mdl-tabs__tab {
+    font-size: calc(7px + .5vw);
+    padding: 0 4%;
+  }
+
   .mdl-tabs__tab > i {
     display: none;
   }
 
   @media all and (min-width: 0) and (max-width: 480px) {
     .mdl-card {
-      width: 99%;
+      width: 100%;
     }
 
     .mdl-tabs__tab-bar {
       width: 100%;
+    }
+
+    .mdl-tabs__tab {
+      width: 100%;
+      margin: 0 auto;
     }
 
     .mdl-tabs__tab > i {
@@ -334,12 +344,6 @@
 
     .mdl-tabs__tab > span {
       display: none;
-    }
-
-    .mdl-tabs__tab {
-      width: 100%;
-      padding: 0 3%;
-      margin: 0 auto;
     }
   }
 

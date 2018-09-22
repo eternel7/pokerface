@@ -23,6 +23,10 @@
     "en": "English"
   },
   "user": {
+    "TabUser": "Informations",
+    "TabMore": "Préférences",
+    "TabPassword": "Sécurité",
+    "TabDelete": "Suppression",
     "Email": "Courriel",
     "Password": "Mot de passe",
     "First_name": "Prénom",
