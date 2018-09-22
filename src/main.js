@@ -9,6 +9,11 @@ import VueAuthenticate from 'vue-authenticate'
 import VueAxios from 'vue-axios'
 import axios from 'axios'
 
+// https redirect on non local env
+if (location.protocol !== 'https:' && window.location.href.search('localhost') === -1) {
+  location.href = 'https:' + window.location.href.substring(window.location.protocol.length)
+}
+
 const appBaseUrl = window.location.protocol + '//' + window.location.hostname + ((window.location.port !== '') ? ':' + window.location.port : '') + '/'
 
 Vue.config.productionTip = true
