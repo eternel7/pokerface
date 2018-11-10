@@ -39,6 +39,30 @@
       max-width: 99%;
     }
 
+    .mdl-textfield__input.getmdl-select {
+      cursor: hand;
+      cursor: pointer;
+    }
+
+    .getmdl-select .mdl-icon-toggle__label {
+      float: right;
+      margin-top: -30px;
+      color: rgba(0, 0, 0, 0.4);
+      transform: rotate(0);
+      transition: transform 0.3s;
+    }
+
+    .getmdl-select.is-focused .mdl-icon-toggle__label {
+      color: #3f51b5;
+      transform: rotate(180deg);
+    }
+
+    .mdl-menu__item {
+      display: block;
+      border: none;
+      color: #757575;
+    }
+
     .link {
       cursor: pointer
     }
@@ -53,15 +77,16 @@
   </style>
 </head>
 <body>
+<div id="cookies-accept"></div>
 <div id="app"></div>
+<script defer src="/static/js/material.min.js" async
+        integrity="sha256-PCfu4+fnQrp4wNmVbjN1eaX4LbOvOejab0UOhjLezrw="
+        crossorigin="anonymous"></script>
 {% if DJANGO_ENV  != 'DEV' or DJANGO_E2E_TEST %}
   {% block js %}
   {% endblock %}
 {%  else %}
   {% render_bundle 'app' %}
 {% endif %}
-<script defer src="/static/js/material.min.js" async
-        integrity="sha256-PCfu4+fnQrp4wNmVbjN1eaX4LbOvOejab0UOhjLezrw="
-        crossorigin="anonymous"></script>
 </body>
 </html>

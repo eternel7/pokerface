@@ -2,6 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+import CookiesAccept from './components/gdpr/Cookies-accept'
 import router from './router'
 import i18n from './config/i18n'
 
@@ -83,6 +84,20 @@ new Vue({
       this.$nextTick(function () {
         this.$refs.App.showSnackbar()
       })
+    }
+  }
+})
+/* eslint-disable no-new */
+new Vue({
+  el: '#cookies-accept',
+  template: '<Cookies-accept ref="Cookies-accept"/>',
+  components: {CookiesAccept},
+  data () {
+    return {
+      loading: false,
+      message: '',
+      errors: [],
+      searchAvailable: false
     }
   }
 })

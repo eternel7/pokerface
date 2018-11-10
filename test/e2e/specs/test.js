@@ -11,7 +11,7 @@ module.exports = {
     browser
       .url(devServer)
       .waitForElementVisible('#app-content', 1500)
-      .assert.containsText('span', 'Pokerface')
+      .assert.containsText('span.mdl-layout-title', 'Pokerface')
       .assert.elementCount('main', 1)
       .assert.elementPresent('.section')
       .assert.elementPresent('.section-inner')

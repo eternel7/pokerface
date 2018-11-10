@@ -20,7 +20,8 @@
   },
   "language": {
     "fr": "Francais",
-    "en": "English"
+    "en": "English",
+    "Choice": "Language"
   },
   "user": {
     "TabUser": "User",
