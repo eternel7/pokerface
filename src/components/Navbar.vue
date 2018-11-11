@@ -3,19 +3,19 @@
     <span class="mdl-layout-title">Pokerface</span>
     <nav class="mdl-navigation">
       <router-link class="mdl-navigation__link" to="/" @click.native="hideMenu">{{ $t('Nav.Home') }}</router-link>
-      <router-link v-if="!$root.authenticated" class="mdl-navigation__link" to="/signin" @click.native="hideMenu">{{
+      <router-link v-if="!$root.authenticated" id="nav_signin" class="mdl-navigation__link" to="/signin" @click.native="hideMenu">{{
         $t('Nav.SignIn') }}
       </router-link>
-      <router-link v-if="!$root.authenticated" class="mdl-navigation__link" to="/signup" @click.native="hideMenu">{{
+      <router-link v-if="!$root.authenticated" id="nav_signup" class="mdl-navigation__link" to="/signup" @click.native="hideMenu">{{
         $t('Nav.SignUp') }}
       </router-link>
-      <router-link v-if="$root.authenticated" class="mdl-navigation__link" to="/chatrooms" @click.native="hideMenu">{{
+      <router-link v-if="$root.authenticated" id="nav_chatrooms" class="mdl-navigation__link" to="/chatrooms" @click.native="hideMenu">{{
         $t('Nav.StartAChat') }}
       </router-link>
-      <router-link v-if="$root.authenticated" class="mdl-navigation__link" to="/profile" @click.native="hideMenu">{{
+      <router-link v-if="$root.authenticated" id="nav_profile" class="mdl-navigation__link" to="/profile" @click.native="hideMenu">{{
         $t('Nav.YourProfile') }}
       </router-link>
-      <router-link v-if="$root.authenticated" class="mdl-navigation__link" to="/" @click.native="tryToLogout">{{
+      <router-link v-if="$root.authenticated" id="nav_logout" class="mdl-navigation__link" to="/" @click.native="tryToLogout">{{
         $t('Nav.Logout')
         }}
       </router-link>
