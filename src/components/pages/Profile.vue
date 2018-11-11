@@ -5,7 +5,8 @@
       <!-- Tabs -->
       <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect is-upgraded">
         <div class="mdl-tabs__tab-bar">
-          <div v-bind:href="tab.id" class="mdl-tabs__tab link" v-for="tab in tabs" v-on:click="tabActive=tab.id"
+          <div v-for="tab in tabs" class="mdl-tabs__tab link"
+               v-bind:href="tab.id" v-bind:id="'profile_tab_'+tab.id" v-on:click="tabActive=tab.id"
                v-bind:class="{'is-active' : (tab.id===tabActive)}">
             <i class="material-icons">
               {{tab.icon}}

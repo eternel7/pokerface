@@ -4,7 +4,7 @@
             class="mdl-button mdl-button--raised mdl-button--colored mdl-color-text--white"
             v-on:click.prevent="accept">x
     </button>
-    <div class="mdl-card__supporting-text">
+    <div>
       <h6>Notice</h6>
       <p>This website or its third-party tools use cookies, which are necessary to its functioning and required to
         achieve
@@ -82,11 +82,12 @@
   #cookieConsent > div {
     color: #ccc;
     line-height: 26px;
+    margin-top: -20px;
+    padding: 0 15px 15px 15px;
   }
 
   #closeCookieConsent {
     float: right;
-    display: inline-block;
     cursor: pointer;
     padding: 0 10px 0 10px;
     min-width: 20px;

@@ -2,7 +2,7 @@
   <div>
     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
          v-bind:class="{'is-dirty' : (sync_email) ? true : false}">
-      <input class="mdl-textfield__input" id="email" ref="email" required autofocus
+      <input class="mdl-textfield__input" type="text" id="email" ref="email" required autofocus
              v-model.trim="sync_email" v-on:keyup.enter="emitEnterKeyUp"/>
       <label class="mdl-textfield__label" for="email">{{$t('user.Email')}}</label>
     </div>
