@@ -63,6 +63,9 @@ new Vue({
       loading: false,
       user: userDefault,
       message: '',
+      timeout: 2750,
+      actionHandler: false,
+      actionText: false,
       errors: [],
       searchAvailable: false
     }
@@ -80,9 +83,20 @@ new Vue({
       this.searchAvailable = !!val
     },
     showSnackbar: function (msg) {
-      this.message = msg
+      if (typeof msg === 'string') {
+        this.message = msg
+      } else {
+        this.message = msg.message
+        this.timeout = msg.timeout
+        this.actionHandler = msg.actionHandler
+        this.actionText = msg.actionText
+      }
       this.$nextTick(function () {
         this.$refs.App.showSnackbar()
+        this.message = ''
+        this.timeout = 2750
+        this.actionHandler = false
+        this.actionText = false
       })
     }
   }

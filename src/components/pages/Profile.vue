@@ -1,5 +1,19 @@
 <template>
   <div id="container" class="mdl-card mdl-shadow--16dp">
+    <dialog ref="dialog" class="mdl-dialog">
+      <div class="mdl-dialog__content">
+        <p>
+          {{$t('user.ConfirmDeletionQuestion')}}
+        </p>
+      </div>
+      <div class="mdl-dialog__actions">
+        <button type="button" id="CancelDialog" class="mdl-button close" v-on:click="closeConfirmDialog(true)">Disagree</button>
+        <button type="button" id="OkDialog"
+                class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white"
+                v-on:click="tryDeleteConfirmed">Agree
+        </button>
+      </div>
+    </dialog>
     <div class="mdl-card__supporting-text">
       <cardFabTitle userTitle="Page.Profile"></cardFabTitle>
       <!-- Tabs -->
@@ -259,35 +273,55 @@
         let vm = this
         vm.errors = []
         if (vm.$root.authenticated) {
-          if (confirm(vm.$i18n.t('user.ConfirmDeletionQuestion')) === true) {
-            let user = vm.user
-            vm.$root.loading = true
-            axios.delete('/api/duser/' + user.username, vm.authHeader())
-              .then(function (response) {
-                // handle success
-                vm.$root.loading = false
-                if (response.data.email) {
-                  vm.errors = []
-                  alert(vm.$i18n.t('user.ConfirmedDeletion', {email: response.data.email}))
-                  vm.$router.push({name: 'Sign up'})
-                }
-              })
-              .catch(function (error) {
-                // handle error
-                console.log(error)
-                vm.$root.loading = false
-                vm.state = 0
-                vm.errors = []
-                vm.errors.push(error)
-              })
-              .then(function () {
-                // always executed
-                vm.$root.loading = false
-              })
-          }
+          let dialog = vm.$refs['dialog']
+          // eslint-disable-next-line no-undef
+          dialogPolyfill.registerDialog(dialog)
+          dialog.showModal()
         } else {
           vm.$router.push({name: 'Sign in'})
         }
+      },
+      closeConfirmDialog (evt) {
+        let vm = this
+        let dialog = vm.$refs['dialog']
+        if (dialog) {
+          // eslint-disable-next-line no-undef
+          dialogPolyfill.registerDialog(dialog)
+          dialog.close()
+        }
+      },
+      tryDeleteConfirmed (evt) {
+        let vm = this
+        let user = vm.user
+        vm.$root.loading = true
+        axios.delete('/api/duser/' + user.username, vm.authHeader())
+          .then(function (response) {
+            // handle success
+            vm.$root.loading = false
+            if (response.data.email) {
+              vm.errors = []
+              let confirmation = {
+                'message': vm.$i18n.t('user.ConfirmedDeletion', {email: response.data.email}),
+                'timeout': 10000
+              }
+              vm.$root.showSnackbar(confirmation)
+              vm.$router.push({name: 'Sign up'})
+            }
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error)
+            vm.$root.loading = false
+            vm.state = 0
+            vm.errors = []
+            vm.errors.push(error)
+            vm.closeConfirmDialog(error)
+          })
+          .then(function () {
+            // always executed
+            vm.$root.loading = false
+            vm.closeConfirmDialog(true)
+          })
       }
     }
   }
