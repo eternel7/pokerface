@@ -51,7 +51,7 @@
 
 <style scoped>
   .pwdMeter {
-    border-radius: 25%;
+    border-radius: 50%;
     font-size: 0.8em;
     width: 1.5em;
     height: 1.5em;
@@ -81,7 +81,6 @@
     -webkit-align-items: center;
     -ms-flex-align: center;
     align-items: center;
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
   }
 
   /* Webkit based browsers */
@@ -113,7 +112,7 @@
 
   .pwdMeter[value="4"] {
     background: #76FF03;
-    color: #585858;
+    color: #959595;
     font-weight: bold;
   }
 </style>
