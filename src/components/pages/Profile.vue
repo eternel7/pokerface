@@ -7,7 +7,9 @@
         </p>
       </div>
       <div class="mdl-dialog__actions">
-        <button type="button" id="CancelDialog" class="mdl-button close" v-on:click="closeConfirmDialog(true)">Disagree</button>
+        <button type="button" id="CancelDialog" class="mdl-button close" v-on:click="closeConfirmDialog(true)">
+          Disagree
+        </button>
         <button type="button" id="OkDialog"
                 class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white"
                 v-on:click="tryDeleteConfirmed">Agree
@@ -28,54 +30,25 @@
           </div>
         </div>
         <div class="mdl-tabs__panel is-active" id="0" v-if="tabActive==='0'">
-          <div class="page-content">
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
-                 v-bind:class="{'is-dirty' : (user.email) ? true : false}">
-              <input class="mdl-textfield__input" type="text" id="email" :readonly="(user.email) ? true : false"
-                     required
-                     v-model.trim="user.email"/>
-              <label class="mdl-textfield__label" for="email">{{$t('user.Email')}}</label>
-            </div>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
-                 v-bind:class="{'is-dirty' : (user.first_name) ? true : false}">
-              <input class="mdl-textfield__input" type="text" id="first_name"
-                     v-model.trim="user.first_name"/>
-              <label class="mdl-textfield__label" for="first_name">{{$t('user.First_name')}}</label>
-            </div>
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
-                 v-bind:class="{'is-dirty' : (user.last_name) ? true : false}">
-              <input class="mdl-textfield__input" type="text" id="last_name"
-                     v-model.trim="user.last_name"/>
-              <label class="mdl-textfield__label" for="last_name">{{$t('user.Last_name')}}</label>
-            </div>
-            <div class="link" v-on:click="askForAnImage"
-                 v-on:dragover.prevent="onDragOver" v-on:drop.prevent="onDrop">
-              <img id="profilePreview" v-bind:src="user.avatar_image">
-              <input hidden='hidden' type='file' id='fileInput' ref='fileInput' v-on:change.prevent="updatePreview"
-                     accept="image/*">
-              <p class="center-align">{{$t('SignUp.ClickOrDropToUpdateYourProfilePicture')}}</p>
-            </div>
-            <button id="main-button" v-on:click.prevent="tryUpdate" v-bind:class="{ pulse: updateNeeded }"
-                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
-              {{$t('user.Update')}}
-            </button>
-            <errorMessages v-bind:errors="errors"></errorMessages>
-          </div>
+          <profileDetails v-bind:user="user"
+                          v-bind:errors="errors"
+                          v-bind:updateNeeded="updateNeeded"
+                          v-on:tryUpdate="tryUpdate"></profileDetails>
         </div>
-        <div class="mdl-tabs__panel is-active" id="1" v-if="tabActive==='1'">
-          <div class="page-content">More<!-- Your content goes here --></div>
-        </div>
-        <div class="mdl-tabs__panel is-active" id="2" v-if="tabActive==='2'">
-          <div class="page-content">Password<!-- Your content goes here --></div>
-        </div>
-        <div class="mdl-tabs__panel is-active" id="3" v-if="tabActive==='3'">
-          <div class="page-content">
-            <p class="center-align">{{$t('user.BeforeDeleteMessage')}}</p>
-            <button id="secondary-button" v-on:click.prevent="tryDelete"
-                    class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white">
-              {{$t('user.Delete')}}
-            </button>
-          </div>
+      </div>
+      <div class="mdl-tabs__panel is-active" id="1" v-if="tabActive==='1'">
+        <div class="page-content">More<!-- Your content goes here --></div>
+      </div>
+      <div class="mdl-tabs__panel is-active" id="2" v-if="tabActive==='2'">
+        <div class="page-content">Password<!-- Your content goes here --></div>
+      </div>
+      <div class="mdl-tabs__panel is-active" id="3" v-if="tabActive==='3'">
+        <div class="page-content">
+          <p class="center-align">{{$t('user.BeforeDeleteMessage')}}</p>
+          <button id="secondary-button" v-on:click.prevent="tryDelete"
+                  class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white">
+            {{$t('user.Delete')}}
+          </button>
         </div>
       </div>
     </div>
@@ -83,10 +56,9 @@
 </template>
 
 <script>
-  import ImageTools from '@/assets/image-tools.js'
-  import FileDrop from '@/assets/file-drop.js'
   import PageBase from '@/components/pages/Page'
   import CardFabTitle from '@/components/sub-components/Card-fab-title'
+  import ProfileDetails from '@/components/user-components/Profile-details'
   import ErrorMessages from '@/components/sub-components/ErrorMessages'
   import {authMixin} from '@/auth/authMixin.js'
   import axios from 'axios'
@@ -98,6 +70,7 @@
     mixins: [authMixin],
     components: {
       cardFabTitle: CardFabTitle,
+      profileDetails: ProfileDetails,
       errorMessages: ErrorMessages
     },
     data () {
@@ -127,7 +100,8 @@
         tabActive: '0',
         message: '',
         errors: [],
-        updateNeeded: 'noNeed'
+        updateNeeded: 'noNeed',
+        loaded: false
       }
     },
     computed: {
@@ -158,43 +132,6 @@
       }
     },
     methods: {
-      updatePreview (file) {
-        const vm = this
-        if (file !== undefined) {
-          if (file.type === 'change') {
-            file = vm.$refs.fileInput.files[0]
-          }
-          if (file.type.match('image.*')) {
-            ImageTools.resizeImageBase64(file, 300, 300, function (result) {
-              if (result) {
-                vm.user.avatar_image = result
-                vm.message = ''
-              } else {
-                console.log('updatePreview error', result)
-              }
-            })
-          }
-        }
-        return true
-      },
-      askForAnImage (e) {
-        const vm = this
-        e.stopPropagation()
-        return vm.$refs.fileInput.click()
-      },
-      onDrop (e) {
-        const vm = this
-        FileDrop.getFilesOnDrop(e, function (r) {
-          if (r) {
-            vm.updatePreview(r[0])
-          }
-        })
-        return true
-      },
-      onDragOver (evt) {
-        // Allow drop there
-        return true
-      },
       tryGetUserInfo (evt) {
         let vm = this
         vm.errors = []
@@ -342,11 +279,6 @@
 
   #container {
     margin: auto;
-  }
-
-  #profilePreview {
-    max-width: 200px;
-    max-height: 200px;
   }
 
   .mdl-tabs__tab {
