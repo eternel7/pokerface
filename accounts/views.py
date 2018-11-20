@@ -220,7 +220,6 @@ def user_updatePassword(request, format='json'):
           infos['t'] = translation_data['emails']['passwordhasbeenupdated']
           emailTitle = infos['t']['headTitle']
           infos['t'] = formatTranslations(infos, 't')
-        print(infos)
         msg_plain = render_to_string('../templates/project/emails/passwordhasbeenupdated.txt', infos)
         msg_html = render_to_string('../templates/project/emails/passwordhasbeenupdated.html', infos)
         print('sending update password confirmation mail.')
