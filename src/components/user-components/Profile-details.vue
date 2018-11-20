@@ -1,38 +1,36 @@
 <template>
-  <div>
-    <div class="page-content">
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
-           v-bind:class="{'is-dirty' : (user.email) ? true : false}">
-        <input class="mdl-textfield__input" type="text" id="email" :readonly="(user.email) ? true : false"
-               required
-               v-model.trim="user.email"/>
-        <label class="mdl-textfield__label" for="email">{{$t('user.Email')}}</label>
-      </div>
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
-           v-bind:class="{'is-dirty' : (user.first_name) ? true : false}">
-        <input class="mdl-textfield__input" type="text" id="first_name"
-               v-model.trim="user.first_name"/>
-        <label class="mdl-textfield__label" for="first_name">{{$t('user.First_name')}}</label>
-      </div>
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
-           v-bind:class="{'is-dirty' : (user.last_name) ? true : false}">
-        <input class="mdl-textfield__input" type="text" id="last_name"
-               v-model.trim="user.last_name"/>
-        <label class="mdl-textfield__label" for="last_name">{{$t('user.Last_name')}}</label>
-      </div>
-      <div class="link" v-on:click="askForAnImage"
-           v-on:dragover.prevent="onDragOver" v-on:drop.prevent="onDrop">
-        <img id="profilePreview" v-bind:src="user.avatar_image">
-        <input hidden='hidden' type='file' id='fileInput' ref='fileInput' v-on:change.prevent="updatePreview"
-               accept="image/*">
-        <p class="center-align">{{$t('SignUp.ClickOrDropToUpdateYourProfilePicture')}}</p>
-      </div>
-      <button id="main-button" v-on:click.prevent="$emit('tryUpdate')" v-bind:class="{ pulse: updateNeeded }"
-              class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
-        {{$t('user.Update')}}
-      </button>
-      <errorMessages v-bind:errors="errors"></errorMessages>
+  <div class="page-content">
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+         v-bind:class="{'is-dirty' : (user.email) ? true : false}">
+      <input class="mdl-textfield__input" type="text" id="email" :readonly="(user.email) ? true : false"
+             required
+             v-model.trim="user.email"/>
+      <label class="mdl-textfield__label" for="email">{{$t('user.Email')}}</label>
     </div>
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+         v-bind:class="{'is-dirty' : (user.first_name) ? true : false}">
+      <input class="mdl-textfield__input" type="text" id="first_name"
+             v-model.trim="user.first_name"/>
+      <label class="mdl-textfield__label" for="first_name">{{$t('user.First_name')}}</label>
+    </div>
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+         v-bind:class="{'is-dirty' : (user.last_name) ? true : false}">
+      <input class="mdl-textfield__input" type="text" id="last_name"
+             v-model.trim="user.last_name"/>
+      <label class="mdl-textfield__label" for="last_name">{{$t('user.Last_name')}}</label>
+    </div>
+    <div class="link" v-on:click="askForAnImage"
+         v-on:dragover.prevent="onDragOver" v-on:drop.prevent="onDrop">
+      <img id="profilePreview" v-bind:src="user.avatar_image">
+      <input hidden='hidden' type='file' id='fileInput' ref='fileInput' v-on:change.prevent="updatePreview"
+             accept="image/*">
+      <p class="center-align">{{$t('SignUp.ClickOrDropToUpdateYourProfilePicture')}}</p>
+    </div>
+    <button id="main-button" v-on:click.prevent="$emit('tryUpdate')" v-bind:class="{ pulse: updateNeeded }"
+            class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white">
+      {{$t('user.Update')}}
+    </button>
+    <errorMessages v-bind:errors="errors"></errorMessages>
   </div>
 </template>
 
@@ -93,8 +91,6 @@
   }
 </script>
 <style scoped>
-
-
   #profilePreview {
     max-width: 200px;
     max-height: 200px;

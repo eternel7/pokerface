@@ -30,6 +30,8 @@
     "TabDelete": "Delete",
     "Email": "Email",
     "Password": "Password",
+    "NewPassword": "New password",
+    "ConfirmNewPassword": "Confirm new password",
     "First_name": "First name",
     "Last_name": "Last name",
     "Login": "Login",
@@ -43,6 +45,11 @@
     "nonConnected": "Non connected user",
     "Update": "Update",
     "UpdateConfirmed": "Update done",
+    "UpdatePassword": "Update password",
+    "Wrong_former_password": "Wrong former password.",
+    "Your_not_authenticated": "Your not correctly authenticated.",
+    "New_password_not_correctly_confirmed_or_too_short": "New password not correctly confirmed or too short.",
+    "Password_updated": "Your password has been updated.",
     "Delete": "Delete",
     "ConfirmDeletionQuestion": "Are you sure you want to delete your profile?",
     "ConfirmedDeletion": "You have deleted the user profile for {email}",
@@ -90,15 +97,35 @@
       "headTitle": "Pokerface forgotten password request but we don't know you...",
       "head01TextOnly": "Erroneous Pokerface forgotten password request"
     },
-    "passwordhasbeenreset":{
+    "passwordhasbeenreset": {
       "head01Title": "PokerFace",
       "headTitle": "Your password has been reset successfully for PokerFace",
       "head01TextOnly": "Pokerface password updated"
+    },
+    "passwordhasbeenupdated": {
+      "head01Title": "PokerFace",
+      "headTitle": "Your password has been updated successfully for PokerFace",
+      "head01TextOnly": "Pokerface password updated",
+      "ContentTitle": "Hi {name},",
+      "ContentText": "Your password has been updated successfully. You can now use your new password to log in.",
+      "ButtonLabel": "Login",
+      "FooterTitle": "More informations",
+      "FooterText1": "For security, this request was received from {ip_address} on a {operating_system} device, using {browser_name}.",
+      "FooterText2": "If you did not request a password update, please connect to PokerFace and change your password or <a href='{support_url}'>contact support</a> if you have questions.",
+      "Thanks": "Thanks,",
+      "Signature": "The PokerFace Team",
+      "EndText": "If you’re having trouble with the button above, copy and paste the URL below into your web browser."
     }
   },
   "password": {
     "meter": "Password complexity indicator. The letter corresponds to an aid for checking the correct password input.",
     "Ensure_this_field_has_at_least_6_characters": "Ensure password has at least 6 characters."
+  },
+  "newPassword": {
+    "PleaseInputYourFormerPassword": "Please fill your former password.",
+    "Ensure_this_field_has_at_least_6_characters": "Ensure new password has at least 6 characters.",
+    "NewPasswordSimilarToFormerOne": "New password is similar to former one.",
+    "ConfirmedPasswordIncorrect": "Confirmed password incorrect."
   },
   "email": {
     "This_field_must_be_unique": "Email already used. If you forget your password use the \"Forgot Password\" button."
@@ -109,5 +136,6 @@
   "Network Error": "Network Error",
   "You need to be login": "You need to sign in.",
   "Request failed with status code 404": "Request failed. URL addressed was not found.",
-  "Request failed with status code 429": "You have sent too many requests. Try again in one hour."
+  "Request failed with status code 429": "You have sent too many requests. Try again in one hour.",
+  "Request failed with status code 500": "Request failed. Server couldn't handle your request."
 }

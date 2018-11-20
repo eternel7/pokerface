@@ -31,6 +31,7 @@ urlpatterns = [
   re_path(r'^auth/login', account_views.user_login, name='signIn'),
   re_path(r'^fpwd', account_views.user_forgetPasswordSendMail, name='forgetPasswordSendMail'),
   re_path(r'^rpwd', account_views.user_resetPassword, name='resetPassword'),
+  re_path(r'^upwd', account_views.user_updatePassword, name='updatePassword'),
   re_path(r'^api/uuser/', account_views.user_update, name='updateUser'),
   re_path(r'^api/guser/', account_views.user_get, name='getUser'),
   re_path(r'^api/duser/', account_views.user_delete, name='deleteUser'),

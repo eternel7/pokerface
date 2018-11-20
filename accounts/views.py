@@ -1,3 +1,4 @@
+from copy import deepcopy
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, throttle_classes
 from rest_framework import status
@@ -22,6 +23,15 @@ defaultImage = "/static/img/icons/apple-touch-icon-76x76.png"
 
 class LimitPerDayUserThrottle(UserRateThrottle):
   rate = '5555/hour'
+
+
+def formatTranslations(datadict, translationKey):
+  # deepcopy before data manipulation
+  newdict = deepcopy(datadict[translationKey])
+  # format each values of the translation dict
+  for key, value in datadict[translationKey].items():
+    newdict[key] = value.format(**datadict)
+  return newdict
 
 
 @api_view(['POST'])
@@ -116,11 +126,12 @@ def user_forgetPasswordSendMail(request, format='json'):
     emailTitle = 'Request to reset password'
     lang = request.data['language']
     if lang:
-      json_data = open('static/translations/' + lang + '.json')
+      json_data = open('static/translations/' + lang + '.json', encoding='utf-8')
       translation_data = json.load(json_data)
       json_data.close()
       infos['t'] = translation_data['emails']['forgotPassword']
       emailTitle = infos['t']['headTitle']
+      infos['t'] = formatTranslations(infos, 't')
     msg_plain = render_to_string('../templates/project/emails/forgotpassword.txt', infos)
     msg_html = render_to_string('../templates/project/emails/forgotpassword.html', infos)
     print('sending reset password instructions...', request.build_absolute_uri('/#/support'))
@@ -143,11 +154,13 @@ def user_forgetPasswordSendMail(request, format='json'):
     emailTitle = 'Reset password on PokerFace but we don\'t know you'
     lang = request.data['language']
     if lang:
-      json_data = open('static/translations/' + lang + '.json')
+      json_data = open('static/translations/' + lang + '.json', encoding='utf-8')
       translation_data = json.load(json_data)
       json_data.close()
+      infos['LANGUAGE_CODE'] = lang
       infos['t'] = translation_data['emails']['forgotpasswordnoaccount']
       emailTitle = infos['t']['headTitle']
+      infos['t'] = formatTranslations(infos, 't')
     msg_plain = render_to_string('../templates/project/emails/forgotpasswordnoaccount.txt', infos)
     msg_html = render_to_string('../templates/project/emails/forgotpasswordnoaccount.html', infos)
     print('sending reset password ask to unknown account...')
@@ -160,6 +173,70 @@ def user_forgetPasswordSendMail(request, format='json'):
               )
     print("send!!")
   return JsonResponse({"message": 1}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@csrf_exempt
+def user_updatePassword(request, format='json'):
+  """
+  Confirmed new password
+  Update user password
+  Send email of update confirmation
+  """
+  
+  user = get_user_from_token(get_authorization_header(request))
+  
+  if isinstance(user, str):
+    print("message for user", user, " in user_updatePassword")
+    return JsonResponse({"message": user}, status=status.HTTP_200_OK)
+  
+  if user:
+    email = request.data['email']
+    password = request.data['password']
+    newPassword = request.data['newPassword']
+    confirmPassword = request.data['confirmPassword']
+    testUser = authenticate(username=email, password=password)
+    print("authenticated user", user, testUser)
+    if user.email == email and testUser is not None:
+      if len(newPassword) >= 6 and newPassword == confirmPassword:
+        user.set_password(newPassword)
+        user.save()
+        user_agent = get_user_agent(request)
+        infos = {'first_name': user.first_name,
+                 'last_name': user.last_name,
+                 'email': email,
+                 'action_url': request.build_absolute_uri('/#/signin'),
+                 'support_url': request.build_absolute_uri('/#/support'),
+                 'name': user.first_name if user.first_name != "" else email,
+                 'operating_system': user_agent.os.family,
+                 'ip_address': request.META['REMOTE_ADDR'],
+                 'browser_name': user_agent.browser.family}
+        emailTitle = 'Your password has been updated successfully for PokerFace'
+        lang = request.data['language']
+        if lang:
+          json_data = open('static/translations/' + lang + '.json', encoding='utf-8')
+          translation_data = json.load(json_data)
+          json_data.close()
+          infos['t'] = translation_data['emails']['passwordhasbeenupdated']
+          emailTitle = infos['t']['headTitle']
+          infos['t'] = formatTranslations(infos, 't')
+        print(infos)
+        msg_plain = render_to_string('../templates/project/emails/passwordhasbeenupdated.txt', infos)
+        msg_html = render_to_string('../templates/project/emails/passwordhasbeenupdated.html', infos)
+        print('sending update password confirmation mail.')
+        send_mail(emailTitle,
+                  msg_plain,
+                  settings.EMAIL_HOST_USER,
+                  [email],
+                  html_message=msg_html,
+                  fail_silently=True,
+                  )
+        print("send!!")
+        return JsonResponse({"state": 1,
+                             "message": "user.Password_updated"}, status=status.HTTP_200_OK)
+      return JsonResponse({"message": "user.New_password_not_correctly_confirmed_or_too_short"})
+    return JsonResponse({"message": "user.Wrong_former_password"})
+  return JsonResponse({"message": "user.Your_not_authenticated"})
 
 
 @api_view(['POST'])
@@ -202,11 +279,12 @@ def user_resetPassword(request, format='json'):
           emailTitle = 'Your password has been reset successfully for PokerFace'
           lang = request.data['language']
           if lang:
-            json_data = open('static/translations/' + lang + '.json')
+            json_data = open('static/translations/' + lang + '.json', encoding='utf-8')
             translation_data = json.load(json_data)
             json_data.close()
             infos['t'] = translation_data['emails']['passwordhasbeenreset']
             emailTitle = infos['t']['headTitle']
+            infos['t'] = formatTranslations(infos, 't')
           msg_plain = render_to_string('../templates/project/emails/passwordhasbeenreset.txt', infos)
           msg_html = render_to_string('../templates/project/emails/passwordhasbeenreset.html', infos)
           print('sending reset password confirmation mail.')

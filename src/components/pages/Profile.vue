@@ -40,7 +40,7 @@
         <div class="page-content">More<!-- Your content goes here --></div>
       </div>
       <div class="mdl-tabs__panel is-active" id="2" v-if="tabActive==='2'">
-        <div class="page-content">Password<!-- Your content goes here --></div>
+        <profilePwdUpdate></profilePwdUpdate>
       </div>
       <div class="mdl-tabs__panel is-active" id="3" v-if="tabActive==='3'">
         <div class="page-content">
@@ -59,6 +59,7 @@
   import PageBase from '@/components/pages/Page'
   import CardFabTitle from '@/components/sub-components/Card-fab-title'
   import ProfileDetails from '@/components/user-components/Profile-details'
+  import ProfilePwdUpdate from '@/components/user-components/Profile-password-update'
   import ErrorMessages from '@/components/sub-components/ErrorMessages'
   import {authMixin} from '@/auth/authMixin.js'
   import axios from 'axios'
@@ -71,6 +72,7 @@
     components: {
       cardFabTitle: CardFabTitle,
       profileDetails: ProfileDetails,
+      profilePwdUpdate: ProfilePwdUpdate,
       errorMessages: ErrorMessages
     },
     data () {
@@ -314,62 +316,7 @@
     }
   }
 
-  .mdl-textfield {
-    display: block;
-    margin: auto;
-  }
-
   .page-content {
     margin: 20px auto 20px;
-  }
-
-  .pulse {
-    background-color: rgb(96, 125, 139);
-    animation: color_change 2s infinite;
-  }
-
-  @-webkit-keyframes color_change {
-    0%, 100% {
-      background-color: rgb(96, 125, 139);
-    }
-    50% {
-      background-color: rgb(255, 64, 129);
-    }
-  }
-
-  @-moz-keyframes color_change {
-    0%, 100% {
-      background-color: rgb(96, 125, 139);
-    }
-    50% {
-      background-color: rgb(255, 64, 129);
-    }
-  }
-
-  @-ms-keyframes color_change {
-    0%, 100% {
-      background-color: rgb(96, 125, 139);
-    }
-    50% {
-      background-color: rgb(255, 64, 129);
-    }
-  }
-
-  @-o-keyframes color_change {
-    0%, 100% {
-      background-color: rgb(96, 125, 139);
-    }
-    50% {
-      background-color: rgb(255, 64, 129);
-    }
-  }
-
-  @keyframes color_change {
-    0%, 100% {
-      background-color: rgb(96, 125, 139);
-    }
-    50% {
-      background-color: rgb(255, 64, 129);
-    }
   }
 </style>

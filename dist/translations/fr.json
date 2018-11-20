@@ -30,6 +30,8 @@
     "TabDelete": "Suppression",
     "Email": "Courriel",
     "Password": "Mot de passe",
+    "NewPassword": "Nouveau mot de passe",
+    "ConfirmNewPassword": "Confirmer le nouveau mot de passe",
     "First_name": "Prénom",
     "Last_name": "Nom",
     "Login": "Se connecter",
@@ -42,6 +44,11 @@
     "nonConnected": "utilisateur non connecté",
     "Update": "Mettre à jour",
     "UpdateConfirmed": "Mis à jour réussi",
+    "UpdatePassword": "Mettre à jour le mot de passe",
+    "Wrong_former_password": "Mot de passe actuel incorrect.",
+    "Your_not_authenticated": "Vous n'êtes pas authentifié.",
+    "New_password_not_correctly_confirmed_or_too_short": "Votre nouveau mot de passe est trop court ou mal confirmé.",
+    "Password_updated": "Votre mot de passe a été mis à jour.",
     "Delete": "Suppression",
     "ConfirmDeletionQuestion": "Êtes vous sûr de vouloir supprimer votre profil?",
     "ConfirmedDeletion": "You have deleted the user profile for {email}",
@@ -95,12 +102,32 @@
     "passwordhasbeenreset": {
       "head01Title": "PokerFace",
       "headTitle": "Votre mot de passe PokerFace a ete mis a jour avec succes",
-      "head01TextOnly": "Pokerface password updated"
+      "head01TextOnly": "Pokerface mot de passe mis à jour"
+    },
+    "passwordhasbeenupdated": {
+      "head01Title": "PokerFace",
+      "headTitle": "Votre mot de passe PokerFace a ete mis a jour avec succes",
+      "head01TextOnly": "Pokerface mot de passe mis à jour",
+      "ContentTitle": "Bonjour {name},",
+      "ContentText": "Votre mot de passe a été mis à jour. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+      "ButtonLabel": "Se connecter",
+      "FooterTitle": "Plus d'information",
+      "FooterText1": "Pour raison de sécurité, nous vous informons que cette requête nous a été adressé depuis l'adresse IP {ip_address}, un système '{operating_system}' et avec comme navigateur '{browser_name}'.",
+      "FooterText2": "Si vous n'êtes pas à l'origine de cette mise à jour de votre mot de passe, veuillez vous connecter et le modifier ou contactez <a href='{support_url}'>le support</a> si vous avez des questions.",
+      "Thanks":"Cordiallement,",
+      "Signature":"L'équipe de PokerFace",
+      "EndText": "Si vous avez des problème avec le bouton ci-dessus, copier-coller l'URL ci-dessous dans votre navigateur."
     }
   },
   "password": {
     "meter": "Indice de complexité du mot de passe. La lettre correspond à une aide pour la vérification de la bonne saisie du mot de passe.",
     "Ensure_this_field_has_at_least_6_characters": "Votre mot de passe doit faire plus de 6 caractères."
+  },
+  "newPassword": {
+    "PleaseInputYourFormerPassword": "Veuillez saisir votre mot de passe actuel.",
+    "Ensure_this_field_has_at_least_6_characters": "Votre nouveau mot de passe doit faire plus de 6 caractères.",
+    "NewPasswordSimilarToFormerOne": "Votre nouveau mot de passe doit être différent de l'actuel.",
+    "ConfirmedPasswordIncorrect": "Les 2 mots de passe sont différents."
   },
   "email": {
     "This_field_must_be_unique": "Courriel déjà present dans l'application. Si vous avez oublié votre mot de passe utilisez le bouton \"Mot de passe oublié\"."
@@ -111,5 +138,6 @@
   "Network Error": "Erreur de reseau",
   "You need to be login": "Vous devez être connecté.",
   "Request failed with status code 404": "Requête en erreur. L'adresse demandée n'a pas été trouvée.",
-  "Request failed with status code 429": "Vous avez fait trop de requêtes. Veuillez réessayer dans une heure."
+  "Request failed with status code 429": "Vous avez fait trop de requêtes. Veuillez réessayer dans une heure.",
+  "Request failed with status code 500": "Requête en erreur. Le serveur n'a pas su traiter votre requête."
 }
