@@ -109,7 +109,7 @@
       "ContentTitle": "Hi {name},",
       "ContentText": "Your password has been updated successfully. You can now use your new password to log in.",
       "ButtonLabel": "Login",
-      "FooterTitle": "More informations",
+      "FooterTitle": "More information",
       "FooterText1": "For security, this request was received from {ip_address} on a {operating_system} device, using {browser_name}.",
       "FooterText2": "If you did not request a password update, please connect to PokerFace and change your password or <a href='{support_url}'>contact support</a> if you have questions.",
       "Thanks": "Thanks,",

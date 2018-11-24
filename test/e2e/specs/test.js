@@ -52,7 +52,7 @@ module.exports = {
       .click('button#secondary-button')
       .pause(500)
       .click('button#OkDialog')
-      .pause(500)
+      .pause(2000)
       .assert.containsText('h2.card__title.mdl-card__title-text', 'Inscription')
       .end()
   }

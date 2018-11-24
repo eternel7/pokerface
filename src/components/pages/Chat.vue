@@ -8,30 +8,40 @@
 </template>
 
 <script>
-export default {
-  name: 'chat',
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js PWA'
+  import PageBase from '@/components/pages/Page'
+
+  export default {
+    name: 'chat',
+    extends: PageBase,
+    data () {
+      return {
+        msg: Math.random(10).toString(24) + ' Welcome to Your Vue.js PWA ' + Math.random(10).toString(24),
+        displaySearch: true,
+        displayBack: true
+      }
     }
   }
-}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  h1, h2 {
+    font-weight: normal;
+    color: #fff;
+  }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
 
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
+  li {
+    display: inline-block;
+    margin: 0 10px;
+    color: #fff;
+  }
 
-a {
-  color: #35495E;
-}
+  a {
+    color: #fff;
+  }
 </style>

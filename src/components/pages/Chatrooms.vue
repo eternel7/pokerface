@@ -12,13 +12,17 @@
 </template>
 
 <script>
+  import PageBase from '@/components/pages/Page'
   import ChatroomItem from '@/components/Chatroom-item'
+
   export default {
     name: 'chatrooms',
+    extends: PageBase,
     components: {ChatroomItem},
     data () {
       return {
-        chatrooms: [{msg: '1'}, {msg: '2'}, {msg: '3'}]
+        chatrooms: [{msg: '1'}, {msg: '2'}, {msg: '3'}],
+        displaySearch: true
       }
     }
   }
@@ -28,5 +32,11 @@
 <style scoped>
   h1, h2 {
     font-weight: normal;
+    color: #fff;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
   }
 </style>

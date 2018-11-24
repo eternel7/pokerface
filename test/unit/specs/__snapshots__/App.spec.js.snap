@@ -8,6 +8,21 @@ exports[`App.vue should match Snapshot 1`] = `
   <header
     class="mdl-layout__header"
   >
+    <div
+      aria-expanded="false"
+      class="mdl-layout__drawer-button"
+      role="button"
+      tabindex="10"
+    >
+      <i
+        class="material-icons"
+        mode="out-in"
+        name="fade"
+      >
+        menu
+      </i>
+    </div>
+     
     <loading-stub />
      
     <div
@@ -66,7 +81,8 @@ exports[`App.vue should match Snapshot 1`] = `
         class="section-inner"
       >
         <router-view-stub
-          name="default"
+          mode="out-in"
+          name="fade-slide-right"
         />
       </div>
     </section>

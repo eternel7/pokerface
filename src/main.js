@@ -56,6 +56,7 @@ new Vue({
   router,
   template: '<App ref="App" v-bind:message="message" ' +
     'v-bind:searchAvailable="searchAvailable"' +
+    'v-bind:backAvailable="backAvailable"' +
     'v-bind:errors="errors"/>',
   components: {App},
   data () {
@@ -67,7 +68,8 @@ new Vue({
       actionHandler: false,
       actionText: false,
       errors: [],
-      searchAvailable: false
+      searchAvailable: false,
+      backAvailable: false
     }
   },
   computed: {
@@ -81,6 +83,9 @@ new Vue({
     },
     setSearch: function (val) {
       this.searchAvailable = !!val
+    },
+    setBack: function (val) {
+      this.backAvailable = !!val
     },
     showSnackbar: function (msg) {
       if (typeof msg === 'string') {
@@ -107,11 +112,6 @@ new Vue({
   template: '<Cookies-accept ref="Cookies-accept"/>',
   components: {CookiesAccept},
   data () {
-    return {
-      loading: false,
-      message: '',
-      errors: [],
-      searchAvailable: false
-    }
+    return {}
   }
 })
