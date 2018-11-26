@@ -137,5 +137,8 @@
   "You need to be login": "You need to sign in.",
   "Request failed with status code 404": "Request failed. URL addressed was not found.",
   "Request failed with status code 429": "You have sent too many requests. Try again in one hour.",
-  "Request failed with status code 500": "Request failed. Server couldn't handle your request."
+  "Request failed with status code 500": "Request failed. Server couldn't handle your request.",
+  "chat": {
+    "Start": "Start a chat"
+  }
 }

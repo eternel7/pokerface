@@ -139,5 +139,7 @@
   "You need to be login": "Vous devez être connecté.",
   "Request failed with status code 404": "Requête en erreur. L'adresse demandée n'a pas été trouvée.",
   "Request failed with status code 429": "Vous avez fait trop de requêtes. Veuillez réessayer dans une heure.",
-  "Request failed with status code 500": "Requête en erreur. Le serveur n'a pas su traiter votre requête."
-}
+  "Request failed with status code 500": "Requête en erreur. Le serveur n'a pas su traiter votre requête.",
+  "chat": {
+    "Start": "Démarrer une Discussion"
+  }}

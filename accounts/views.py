@@ -1,4 +1,3 @@
-from copy import deepcopy
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view, throttle_classes
 from rest_framework import status
@@ -16,6 +15,8 @@ from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.conf import settings
 from django_user_agents.utils import get_user_agent
+from project.tools import format_translations
+
 import json
 
 defaultImage = "/static/img/icons/apple-touch-icon-76x76.png"
@@ -23,16 +24,6 @@ defaultImage = "/static/img/icons/apple-touch-icon-76x76.png"
 
 class LimitPerDayUserThrottle(UserRateThrottle):
   rate = '5555/hour'
-
-
-def formatTranslations(datadict, translationKey):
-  # deepcopy before data manipulation
-  newdict = deepcopy(datadict[translationKey])
-  # format each values of the translation dict
-  for key, value in datadict[translationKey].items():
-    newdict[key] = value.format(**datadict)
-  return newdict
-
 
 @api_view(['POST'])
 @csrf_exempt
@@ -131,7 +122,7 @@ def user_forgetPasswordSendMail(request, format='json'):
       json_data.close()
       infos['t'] = translation_data['emails']['forgotPassword']
       emailTitle = infos['t']['headTitle']
-      infos['t'] = formatTranslations(infos, 't')
+      infos['t'] = format_translations(infos, 't')
     msg_plain = render_to_string('../templates/project/emails/forgotpassword.txt', infos)
     msg_html = render_to_string('../templates/project/emails/forgotpassword.html', infos)
     print('sending reset password instructions...', request.build_absolute_uri('/#/support'))
@@ -160,7 +151,7 @@ def user_forgetPasswordSendMail(request, format='json'):
       infos['LANGUAGE_CODE'] = lang
       infos['t'] = translation_data['emails']['forgotpasswordnoaccount']
       emailTitle = infos['t']['headTitle']
-      infos['t'] = formatTranslations(infos, 't')
+      infos['t'] = format_translations(infos, 't')
     msg_plain = render_to_string('../templates/project/emails/forgotpasswordnoaccount.txt', infos)
     msg_html = render_to_string('../templates/project/emails/forgotpasswordnoaccount.html', infos)
     print('sending reset password ask to unknown account...')
@@ -219,7 +210,7 @@ def user_updatePassword(request, format='json'):
           json_data.close()
           infos['t'] = translation_data['emails']['passwordhasbeenupdated']
           emailTitle = infos['t']['headTitle']
-          infos['t'] = formatTranslations(infos, 't')
+          infos['t'] = format_translations(infos, 't')
         msg_plain = render_to_string('../templates/project/emails/passwordhasbeenupdated.txt', infos)
         msg_html = render_to_string('../templates/project/emails/passwordhasbeenupdated.html', infos)
         print('sending update password confirmation mail.')
@@ -283,7 +274,7 @@ def user_resetPassword(request, format='json'):
             json_data.close()
             infos['t'] = translation_data['emails']['passwordhasbeenreset']
             emailTitle = infos['t']['headTitle']
-            infos['t'] = formatTranslations(infos, 't')
+            infos['t'] = format_translations(infos, 't')
           msg_plain = render_to_string('../templates/project/emails/passwordhasbeenreset.txt', infos)
           msg_html = render_to_string('../templates/project/emails/passwordhasbeenreset.html', infos)
           print('sending reset password confirmation mail.')

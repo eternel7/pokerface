@@ -17,7 +17,7 @@ from django.conf.urls import re_path, include
 from django.contrib import admin
 from .views import HomePageView, check_token
 from accounts import views as account_views
-from django.views.generic import TemplateView
+from chatrooms import views as chatrooms_views
 
 urlpatterns = [
   re_path(r'^admin/', admin.site.urls),
@@ -35,5 +35,6 @@ urlpatterns = [
   re_path(r'^api/uuser/', account_views.user_update, name='updateUser'),
   re_path(r'^api/guser/', account_views.user_get, name='getUser'),
   re_path(r'^api/duser/', account_views.user_delete, name='deleteUser'),
+  re_path(r'^api/chatrooms/', chatrooms_views.chatrooms_get, name='getChatrooms'),
   re_path(r'^$', HomePageView.as_view(), name='home'),
 ]
