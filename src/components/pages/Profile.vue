@@ -292,6 +292,39 @@
     display: none;
   }
 
+  .mdl-tabs__tab {
+    display: block;
+    position: relative;
+    text-decoration: none;
+    -webkit-transition: color .2s ease-in-out;
+    transition: color .2s ease-in-out;
+  }
+
+  .mdl-tabs__tab:before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    width: 0;
+    border-bottom: solid 2px;
+  }
+
+  .mdl-tabs__tab:before {
+    left: 0;
+  }
+
+  .mdl-tabs__tab:hover {
+    color: rgb(255, 64, 129);
+  }
+
+  .mdl-tabs__tab:hover:before {
+    width: 100%;
+  }
+
+  .mdl-tabs__tab:before {
+    -webkit-transition: width .2s ease-in-out;
+    transition: width .2s ease-in-out;
+  }
+
   @media all and (min-width: 0) and (max-width: 480px) {
     .mdl-card {
       width: 100%;

@@ -1,13 +1,17 @@
 <template>
   <div class="chatrooms">
     <h1>Chat with</h1>
-    <ul>
-      <chatroom-item
-              v-for="chatroom in chatrooms"
-              v-bind:key="chatroom.id"
-              v-bind:chatroom="chatroom"
-      ></chatroom-item>
-    </ul>
+    <transition name="fade-slide-up" mode="out-in">
+      <ul v-if="chatrooms.length">
+        <li is="chatroom-item"
+                v-for="(chatroom, index) in chatrooms"
+                v-bind:key="chatroom.id"
+                v-bind:index="index"
+                v-bind:chatroom="chatroom"
+        ></li>
+      </ul>
+      <h4 v-else>Looking for a chatroom...</h4>
+    </transition>
   </div>
 </template>
 
@@ -38,7 +42,6 @@
             vm.$root.loading = false
             // handle success
             if (response.data.chatrooms) {
-              console.log(response.data.chatrooms)
               vm.chatrooms = response.data.chatrooms
             } else {
               vm.errors = []
@@ -66,10 +69,11 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .chatrooms{
+  .chatrooms {
     margin-top: -60px;
   }
-  h1, h2 {
+
+  h1, h2, h3, h4 {
     font-weight: normal;
     color: #fff;
   }
@@ -77,5 +81,18 @@
   ul {
     list-style-type: none;
     padding: 0;
+  }
+
+  .fade-slide-up-enter-active {
+    transition: all 0.5s ease;
+  }
+
+  .fade-slide-up-leave-active {
+    transition: all 0.5s ease;
+  }
+
+  .fade-slide-up-enter, .fade-slide-up-leave-to {
+    transform: translateY(-40px);
+    opacity: 0;
   }
 </style>

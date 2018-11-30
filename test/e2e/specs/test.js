@@ -2,20 +2,6 @@
 // http://nightwatchjs.org/guide#usage
 
 module.exports = {
-  'home e2e tests': function (browser) {
-    // automatically uses dev Server port from /config.index.js
-    // default: http://localhost:8080
-    // see nightwatch.conf.js
-    const devServer = browser.globals.devServerURL
-    browser
-      .url(devServer)
-      .waitForElementVisible('#app-content', 1500)
-      .assert.containsText('span.mdl-layout-title', 'Pokerface')
-      .assert.elementCount('main', 1)
-      .assert.elementPresent('.section')
-      .assert.elementPresent('.section-inner')
-      .end()
-  },
   'user management e2e tests': function (browser) {
     // automatically uses dev Server port from /config.index.js
     // default: http://localhost:8080
@@ -33,7 +19,7 @@ module.exports = {
       .setValue('input#passwordConfirm', 'masse.david.07@gmail.com')
       .click('button#main-button')
       .pause(1500)
-      .assert.containsText('h2.card__title.mdl-card__title-text', 'Profil')
+      .assert.containsText('div.chatrooms > h1', 'Chat with')
       .click('div.mdl-layout__drawer-button')
       .click('a#nav_logout')
       .pause(1500)
@@ -42,6 +28,10 @@ module.exports = {
       .setValue('input#email', 'masse.david.07@gmail.com')
       .setValue('input#password', 'masse.david.07@gmail.com')
       .click('button#main-button')
+      .pause(1500)
+      .assert.containsText('div.chatrooms > h1', 'Chat with')
+      .click('div.mdl-layout__drawer-button')
+      .click('a#nav_profile')
       .pause(1500)
       .assert.containsText('h2.card__title.mdl-card__title-text', 'Profil')
       .pause(500)

@@ -59,7 +59,7 @@
           vm.errors.push({message: 'password.Ensure_this_field_has_at_least_6_characters'})
         }
         if (vm.errors.length < 1) {
-          vm.login(vm, vm.user)
+          vm.login(vm, vm.user, 'Chatrooms')
         }
       }
     }

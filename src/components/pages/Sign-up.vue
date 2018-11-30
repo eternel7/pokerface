@@ -74,36 +74,11 @@
           vm.errors.push({message: 'SignUp.ConfirmedPasswordIncorrect'})
         }
         if (vm.errors.length < 1) {
-          let user = {
+          vm.register(vm, {
             'username': vm.user.email,
             'email': vm.user.email,
             'password': vm.user.password
-          }
-          vm.$root.loading = true
-          vm.$auth.register(user).then(response => {
-            vm.errors = []
-            vm.$root.loading = false
-            if (!response.data.token) {
-              for (let field in response.data) {
-                for (let erOnfield in response.data[field]) {
-                  vm.errors.push({message: field + '.' + response.data[field][erOnfield].replace(/ /g, '_').replace(/\./g, '')})
-                }
-              }
-            } else {
-              vm.authSuccess({
-                email: response.data.email,
-                first_name: response.data.first_name || '',
-                last_name: response.data.last_name || '',
-                username: response.data.username,
-                avatar_image: response.data.avatar_image
-              }, vm, response.data.token)
-            }
-          }).catch(e => {
-            console.log('catch error in register', e)
-            vm.$root.loading = false
-            vm.errors = []
-            vm.errors.push(e)
-          })
+          }, 'Chatrooms')
         }
       }
     }

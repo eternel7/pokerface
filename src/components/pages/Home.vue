@@ -1,13 +1,14 @@
 <template>
   <div>
     <signIn v-if="!$root.authenticated"></signIn>
-    <profile v-if="$root.authenticated"></profile>
+    <chatrooms v-if="$root.authenticated"></chatrooms>
   </div>
 </template>
 
 <script>
   import SignIn from '@/components/pages/Sign-in'
   import Profile from '@/components/pages/Profile'
+  import Chatrooms from '@/components/pages/Chatrooms'
 
   require('material-design-lite')
 
@@ -15,7 +16,8 @@
     name: 'home',
     components: {
       signIn: SignIn,
-      profile: Profile
+      profile: Profile,
+      chatrooms: Chatrooms
     }
   }
 </script>

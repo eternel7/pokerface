@@ -34,7 +34,6 @@ export const authMixin = {
         window.localStorage.setItem('vue-authenticate.vueauth_token', token)
       }
       vm.authStoreUser(user, vm)
-      vm.$router.push({name: 'Profile'})
     },
     authError: function (error, vm) {
       console.log('authError', error)
@@ -83,7 +82,7 @@ export const authMixin = {
         that.authError(error, that)
       })
     },
-    login: function (vm, user) {
+    login: function (vm, user, successRoute) {
       vm.$root.loading = true
       vm.$auth.login(user).then(response => {
         vm.errors = []
@@ -96,6 +95,7 @@ export const authMixin = {
             username: response.data.username,
             avatar_image: response.data.avatar_image
           }, vm, response.data.token)
+          vm.$router.push({name: successRoute})
         } else {
           vm.authError(response.data.message, vm)
           if (response.data.message) {
@@ -106,6 +106,34 @@ export const authMixin = {
       }).catch(e => {
         vm.$root.loading = false
         vm.authError(e, vm)
+        vm.errors = []
+        vm.errors.push(e)
+      })
+    },
+    register: function (vm, user, successRoute) {
+      vm.$root.loading = true
+      vm.$auth.register(user).then(response => {
+        vm.errors = []
+        vm.$root.loading = false
+        if (!response.data.token) {
+          for (let field in response.data) {
+            for (let erOnfield in response.data[field]) {
+              vm.errors.push({message: field + '.' + response.data[field][erOnfield].replace(/ /g, '_').replace(/\./g, '')})
+            }
+          }
+        } else {
+          vm.authSuccess({
+            email: response.data.email,
+            first_name: response.data.first_name || '',
+            last_name: response.data.last_name || '',
+            username: response.data.username,
+            avatar_image: response.data.avatar_image
+          }, vm, response.data.token)
+          vm.$router.push({name: successRoute})
+        }
+      }).catch(e => {
+        console.log('catch error in register', e)
+        vm.$root.loading = false
         vm.errors = []
         vm.errors.push(e)
       })
