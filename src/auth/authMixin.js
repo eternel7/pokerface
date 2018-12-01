@@ -95,7 +95,9 @@ export const authMixin = {
             username: response.data.username,
             avatar_image: response.data.avatar_image
           }, vm, response.data.token)
-          vm.$router.push({name: successRoute})
+          if (successRoute) {
+            vm.$router.push({name: successRoute})
+          }
         } else {
           vm.authError(response.data.message, vm)
           if (response.data.message) {
@@ -129,7 +131,9 @@ export const authMixin = {
             username: response.data.username,
             avatar_image: response.data.avatar_image
           }, vm, response.data.token)
-          vm.$router.push({name: successRoute})
+          if (successRoute) {
+            vm.$router.push({name: successRoute})
+          }
         }
       }).catch(e => {
         console.log('catch error in register', e)

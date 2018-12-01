@@ -5,8 +5,13 @@ exports[`App.vue should match Snapshot 1`] = `
   class="mdl-layout mdl-js-layout mdl-layout--fixed-header"
   id="app-content"
 >
+  <loading-stub />
+   
   <header
     class="mdl-layout__header"
+    mode="out-in"
+    name="fade-slide-up"
+    style="display: none;"
   >
     <div
       aria-expanded="false"
@@ -22,8 +27,6 @@ exports[`App.vue should match Snapshot 1`] = `
         menu
       </i>
     </div>
-     
-    <loading-stub />
      
     <div
       class="mdl-layout__header-row"

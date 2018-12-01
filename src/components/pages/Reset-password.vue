@@ -62,7 +62,6 @@
           'confirmPassword': '',
           'resetPasswordToken': (this.$route.params.resetPasswordToken) ? this.$route.params.resetPasswordToken : ''
         },
-        state: 0,
         errors: []
       }
     },
@@ -93,9 +92,8 @@
               // handle success
               console.log(response)
               if (response.data.state === 1) {
-                vm.state = 1
                 // try to log in
-                vm.login(vm, vm.user)
+                vm.login(vm, vm.user, 'Home')
               } else {
                 vm.$root.loading = false
                 vm.errors = []
@@ -106,7 +104,6 @@
               // handle error
               vm.$root.loading = false
               console.log(error)
-              vm.state = 0
               vm.errors = []
               vm.errors.push(error)
             })
@@ -133,6 +130,7 @@
 
   #form-container {
     margin: auto;
+    margin-top: 7vh;
   }
 
   #main-button {
@@ -152,6 +150,7 @@
   #fourth-button {
     float: none;
   }
+
   .smaller {
     font-size: small;
   }

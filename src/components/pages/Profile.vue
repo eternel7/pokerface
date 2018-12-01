@@ -17,7 +17,7 @@
       </div>
     </dialog>
     <div class="mdl-card__supporting-text">
-      <cardFabTitle userTitle="Page.Profile"></cardFabTitle>
+      <cardFabTitle userTitle=""></cardFabTitle>
       <!-- Tabs -->
       <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect is-upgraded">
         <div class="mdl-tabs__tab-bar">
@@ -281,6 +281,7 @@
 
   #container {
     margin: auto;
+    margin-top: 7vh;
   }
 
   .mdl-tabs__tab {

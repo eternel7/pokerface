@@ -21,19 +21,25 @@
   {% if DJANGO_ENV != 'DEV' or DJANGO_E2E_TEST %}
     {% block css %}
     {% endblock %}
-  {%  endif %}
+  {% endif %}
   <style>
+    body {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+    }
+
     .section {
       border: none;
-      padding-top: 50px;
     }
 
     .section-inner {
+      position: relative;
       box-sizing: border-box;
-      margin: auto;
+      margin: 0 auto 0 auto;
+      width: 100%;
       max-width: 900px;
       text-align: center;
-      width: 100%;
     }
 
     .mdl-card {
@@ -43,6 +49,10 @@
     .mdl-textfield__input.getmdl-select {
       cursor: hand;
       cursor: pointer;
+    }
+
+    .mdl-textfield__input {
+      border-bottom: 1px solid rgb(255, 255, 255);
     }
 
     .getmdl-select .mdl-icon-toggle__label {
@@ -88,7 +98,7 @@
 {% if DJANGO_ENV  != 'DEV' or DJANGO_E2E_TEST %}
   {% block js %}
   {% endblock %}
-{%  else %}
+{% else %}
   {% render_bundle 'app' %}
 {% endif %}
 </body>

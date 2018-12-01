@@ -98,6 +98,7 @@
 
   #form-container {
     margin: auto;
+    margin-top: 7vh;
   }
 
   #main-button {

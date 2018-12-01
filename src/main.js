@@ -49,6 +49,23 @@ const userDefault = {
   username: false,
   social_info: false
 }
+
+function rootDefault () {
+  return {
+    loading: false,
+    user: userDefault,
+    message: '',
+    timeout: 2750,
+    actionHandler: false,
+    actionText: false,
+    chatrooms: [],
+    errors: [],
+    searchAvailable: false,
+    backAvailable: false,
+    headerAvailable: true
+  }
+}
+
 /* eslint-disable no-new */
 new Vue({
   i18n,
@@ -57,20 +74,11 @@ new Vue({
   template: '<App ref="App" v-bind:message="message" ' +
     'v-bind:searchAvailable="searchAvailable"' +
     'v-bind:backAvailable="backAvailable"' +
+    'v-bind:headerAvailable="headerAvailable"' +
     'v-bind:errors="errors"/>',
   components: {App},
   data () {
-    return {
-      loading: false,
-      user: userDefault,
-      message: '',
-      timeout: 2750,
-      actionHandler: false,
-      actionText: false,
-      errors: [],
-      searchAvailable: false,
-      backAvailable: false
-    }
+    return rootDefault()
   },
   computed: {
     authenticated: function () {
@@ -79,13 +87,16 @@ new Vue({
   },
   methods: {
     setUnauthenticated: function () {
-      this.user = userDefault
+      Object.assign(this.$data, rootDefault())
     },
     setSearch: function (val) {
       this.searchAvailable = !!val
     },
     setBack: function (val) {
       this.backAvailable = !!val
+    },
+    setHeader: function (val) {
+      this.headerAvailable = !!val
     },
     showSnackbar: function (msg) {
       if (typeof msg === 'string') {

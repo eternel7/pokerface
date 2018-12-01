@@ -1,6 +1,5 @@
 <template>
   <div class="chatrooms">
-    <h1>Chat with</h1>
     <transition name="fade-slide-up" mode="out-in">
       <ul v-if="chatrooms.length">
         <li is="chatroom-item"
@@ -28,8 +27,12 @@
     components: {ChatroomItem},
     data () {
       return {
-        chatrooms: [],
         displaySearch: true
+      }
+    },
+    computed: {
+      chatrooms: function () {
+        return this.$root.chatrooms
       }
     },
     methods: {
@@ -42,7 +45,7 @@
             vm.$root.loading = false
             // handle success
             if (response.data.chatrooms) {
-              vm.chatrooms = response.data.chatrooms
+              vm.$root.chatrooms = response.data.chatrooms
             } else {
               vm.errors = []
               vm.errors.push({message: response.data.message})
@@ -69,9 +72,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .chatrooms {
-    margin-top: -60px;
-  }
 
   h1, h2, h3, h4 {
     font-weight: normal;
