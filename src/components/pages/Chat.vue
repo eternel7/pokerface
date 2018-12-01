@@ -262,7 +262,7 @@
 
 
   #chat-messages {
-    height: calc(100% - 35vh);
+    height: 65vh;
     margin-top: 1vh;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -344,12 +344,8 @@
     bottom: -22px;
   }
 
-  #send:hover {
-    cursor: pointer;
-  }
-
   #sendmessage {
-    height: 7vh;
+    height: 9vh;
     position: relative;
     bottom: 0;
   }
@@ -361,7 +357,7 @@
     left: 2vh;
     margin: 0;
     width: 80%;
-    height: 6vh;
+    height: 100%;
     border: none;
     padding: 0;
     font-size: 13px;
@@ -379,15 +375,20 @@
     bottom: 0;
     right: 0;
     width: 20%;
+    height: 100%;
   }
 
   .mdl-button--fab {
     max-width: 56px;
     max-height: 56px;
-    width: 9vh;
-    height: 9vh;
+    width: 8vh;
+    height: 8vh;
     min-width: 8vh;
     min-height: 8vh;
+    position: absolute;
+    top: 50%;
+    right: 2vh;
+    transform: translateY(-50%);
   }
 
   @media screen and (min-height: 640px) {
@@ -398,6 +399,7 @@
   }
 
   #send button {
+    cursor: pointer;
     -webkit-transition: all 500ms ease-out;
     -moz-transition: all 500ms ease-out;
     -ms-transition: all 500ms ease-out;
