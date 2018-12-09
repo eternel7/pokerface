@@ -29,56 +29,58 @@ ALLOWED_HOSTS = ['kosh.herokuapp.com', 'localhost', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
-  'webpack_loader',
-  'django.contrib.admin',
-  'django.contrib.auth',
-  'django.contrib.contenttypes',
-  'django.contrib.sessions',
-  'django.contrib.messages',
-  'django.contrib.staticfiles',
-  'oauth2_provider',
-  'rest_framework',
-  'corsheaders',
-  'rest_framework.authtoken',
-  'social_django',
-  'rest_social_auth',
-  'rest_framework_social_oauth2',
-  'django_user_agents',
-  'accounts',
+    'webpack_loader',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'oauth2_provider',
+    'rest_framework',
+    'corsheaders',
+    'rest_framework.authtoken',
+    'social_django',
+    'rest_social_auth',
+    'rest_framework_social_oauth2',
+    'django_user_agents',
+    'accounts',
+    'chatrooms',
+    'chatterbot.ext.django_chatterbot',
 ]
 
 MIDDLEWARE = [
-  'django.middleware.security.SecurityMiddleware',
-  'django.contrib.sessions.middleware.SessionMiddleware',
-  'corsheaders.middleware.CorsMiddleware',
-  'django.middleware.common.CommonMiddleware',
-  'corsheaders.middleware.CorsPostCsrfMiddleware',
-  'django.middleware.csrf.CsrfViewMiddleware',
-  'django.contrib.auth.middleware.AuthenticationMiddleware',
-  'django.contrib.messages.middleware.MessageMiddleware',
-  'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'corsheaders.middleware.CorsPostCsrfMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'project.urls'
 
 TEMPLATES = [
-  {
-    'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': [
-      os.path.join(BASE_DIR, 'templates'),
-    ],
-    'APP_DIRS': True,
-    'OPTIONS': {
-      'context_processors': [
-        'django.template.context_processors.debug',
-        'django.template.context_processors.request',
-        'django.contrib.auth.context_processors.auth',
-        'django.contrib.messages.context_processors.messages',
-        'social_django.context_processors.backends',
-        'social_django.context_processors.login_redirect',
-      ],
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
+            ],
+        },
     },
-  },
 ]
 
 WSGI_APPLICATION = 'project.wsgi.application'
@@ -87,62 +89,62 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-  'default': {
-    'ENGINE': 'django.db.backends.postgresql_psycopg2',
-    'NAME': os.environ['DATABASE_NAME'],
-    'USER': os.environ['DATABASE_USER'],
-    'PASSWORD': os.environ['DATABASE_PASSWORD'],
-    'HOST': os.environ['DATABASE_HOST'],
-    'PORT': 5432
-  },
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ['DATABASE_NAME'],
+        'USER': os.environ['DATABASE_USER'],
+        'PASSWORD': os.environ['DATABASE_PASSWORD'],
+        'HOST': os.environ['DATABASE_HOST'],
+        'PORT': 5432
+    },
 }
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-  {
-    'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-  },
-  {
-    'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-  },
-  {
-    'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-  },
-  {
-    'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-  },
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
 ]
 
 REST_FRAMEWORK = {
-  'DEFAULT_FILTER_BACKENDS': (
-    'django_filters.rest_framework.DjangoFilterBackend',
-  ),
-  'DEFAULT_AUTHENTICATION_CLASSES': (
-    'rest_framework.authentication.TokenAuthentication',
-    'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
-    'rest_framework_social_oauth2.authentication.SocialAuthentication',
-  ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
+    ),
 }
 
 AUTHENTICATION_BACKENDS = (
-  
-  # Facebook OAuth2
-  'social_core.backends.facebook.FacebookAppOAuth2',
-  'social_core.backends.facebook.FacebookOAuth2',
-  
-  # Google OAuth2
-  'social_core.backends.google.GoogleOAuth2',
-  
-  # Twitter OAuth
-  'social_core.backends.twitter.TwitterOAuth',
-  
-  # django-rest-framework-social-oauth2
-  'rest_framework_social_oauth2.backends.DjangoOAuth2',
-  
-  # Django
-  'django.contrib.auth.backends.ModelBackend',
+    
+    # Facebook OAuth2
+    'social_core.backends.facebook.FacebookAppOAuth2',
+    'social_core.backends.facebook.FacebookOAuth2',
+    
+    # Google OAuth2
+    'social_core.backends.google.GoogleOAuth2',
+    
+    # Twitter OAuth
+    'social_core.backends.twitter.TwitterOAuth',
+    
+    # django-rest-framework-social-oauth2
+    'rest_framework_social_oauth2.backends.DjangoOAuth2',
+    
+    # Django
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 SOCIAL_AUTH_RAISE_EXCEPTIONS = True
@@ -155,7 +157,7 @@ SOCIAL_AUTH_FACEBOOK_SECRET = os.environ['DJANGO_SOCIAL_AUTH_FACEBOOK_SECRET']
 # Email is not sent by default, to get it, you must request the email permission:
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
-  'fields': 'id, name, email'
+    'fields': 'id, name, email'
 }
 
 # Google configuration
@@ -196,14 +198,31 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-  os.path.join(BASE_DIR, 'dist'),
-  os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'dist'),
+    os.path.join(BASE_DIR, 'static'),
 )
 STATIC_ROOT = os.path.join(BASE_DIR, 'public')
 
 WEBPACK_LOADER = {
-  'DEFAULT': {
-    'BUNDLE_DIR_NAME': 'dist/',
-    'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
-  }
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'dist/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
+    }
+}
+
+CHATTERBOT = {
+    'name': 'Pokerface',
+    'preprocessors': [
+        'chatterbot.preprocessors.clean_whitespace',
+        'chatterbot.preprocessors.unescape_html',
+    ],
+    'logic_adapters': [
+        'chatterbot.logic.BestMatch',
+        'chatterbot.logic.MathematicalEvaluation',
+        'chatterbot.logic.TimeLogicAdapter'
+    ],
+    'trainer': 'chatterbot.trainers.ChatterBotCorpusTrainer',
+    'training_data': [
+        'chatterbot.corpus.english.greetings'
+    ]
 }

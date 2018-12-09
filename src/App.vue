@@ -48,8 +48,8 @@
 
 <script>
   import PageBase from '@/components/pages/Page'
-  import Loading from '@/components/Loading'
-  import NavBar from '@/components/Navbar'
+  import Loading from '@/components/sub-components/Loading'
+  import NavBar from '@/components/sub-components/Navbar'
 
   export default {
     name: 'app',

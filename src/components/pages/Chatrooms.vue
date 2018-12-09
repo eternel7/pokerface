@@ -16,7 +16,7 @@
 
 <script>
   import PageBase from '@/components/pages/Page'
-  import ChatroomItem from '@/components/Chatroom-item'
+  import ChatroomItem from '@/components/sub-components/Chatroom-item'
   import {authMixin} from '@/auth/authMixin.js'
   import axios from 'axios'
 

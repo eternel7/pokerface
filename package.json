@@ -1,8 +1,8 @@
 {
-  "name": "django-vue-template",
-  "version": "1.0.0",
-  "description": "A Vue.js and Django example",
-  "author": "Alejandro Riera <info@ariera.net>",
+  "name": "pokerface",
+  "version": "0.0.1",
+  "description": "Chat bot or conversation with a real human will you choose right?",
+  "author": "David MASSE <masse.david.07@gmail.com>",
   "private": true,
   "scripts": {
     "dev": "start webpack-dev-server --inline --progress --config build/webpack.dev.conf.js && start python manage.py runserver 8000",

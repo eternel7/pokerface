@@ -18,6 +18,7 @@ from django.contrib import admin
 from .views import HomePageView, check_token
 from accounts import views as account_views
 from chatrooms import views as chatrooms_views
+from chatrooms import apps
 
 urlpatterns = [
   re_path(r'^admin/', admin.site.urls),
@@ -36,5 +37,8 @@ urlpatterns = [
   re_path(r'^api/guser/', account_views.user_get, name='getUser'),
   re_path(r'^api/duser/', account_views.user_delete, name='deleteUser'),
   re_path(r'^api/chatrooms/', chatrooms_views.chatrooms_get, name='getChatrooms'),
+  re_path(r'^api/chatterbot/', chatrooms_views.chat_post, name='chatterbot'),
   re_path(r'^$', HomePageView.as_view(), name='home'),
 ]
+
+apps.init_chatbot()

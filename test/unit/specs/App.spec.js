@@ -1,8 +1,8 @@
 import {shallowMount} from '@vue/test-utils'
 import App from '@/App'
 import router from '@/router'
-import Loading from '@/components/Loading'
-import NavBar from '@/components/Navbar'
+import Loading from '@/components/sub-components/Loading'
+import NavBar from '@/components/sub-components/Navbar'
 
 describe('App.vue', () => {
   let wrapper

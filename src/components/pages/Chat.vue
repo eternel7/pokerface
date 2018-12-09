@@ -7,99 +7,19 @@
       <div id="user">{{chatroom.user_label}}</div>
     </div>
     <div id="chat-messages" ref="chatmessages">
-      <div class="message">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1_copy.jpg"/>
-        <div class="bubble">
-          Really cool stuff!
-          <div class="corner"></div>
-          <span>3 min</span>
-        </div>
+      <div is="MsgItem" v-for="msg in chats"
+           v-bind:user="user"
+           v-bind:msg="msg"
+           v-bind:now="now">
       </div>
-      <div class="message right">
-        <img v-bind:src="user.avatar_image"/>
-        <div class="bubble">
-          Can you share a link for the tutorial?
-          <div class="corner"></div>
-          <span>1 min</span>
-        </div>
-      </div>
-
-      <div class="message">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1_copy.jpg"/>
-        <div class="bubble">
-          Yeah, hold on
-          <div class="corner"></div>
-          <span>Now</span>
-        </div>
-      </div>
-
-      <div class="message right">
-        <img v-bind:src="user.avatar_image"/>
-        <div class="bubble">
-          Can you share a link for the tutorial?
-          <div class="corner"></div>
-          <span>1 min</span>
-        </div>
-      </div>
-
-      <div class="message">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1_copy.jpg"/>
-        <div class="bubble">
-          Yeah, hold on
-          <div class="corner"></div>
-          <span>Now</span>
-        </div>
-      </div>
-      <div class="message">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1_copy.jpg"/>
-        <div class="bubble">
-          Really cool stuff!
-          <div class="corner"></div>
-          <span>3 min</span>
-        </div>
-      </div>
-      <div class="message right">
-        <img v-bind:src="user.avatar_image"/>
-        <div class="bubble">
-          Can you share a link for the tutorial?
-          <div class="corner"></div>
-          <span>1 min</span>
-        </div>
-      </div>
-
-      <div class="message">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1_copy.jpg"/>
-        <div class="bubble">
-          Yeah, hold on
-          <div class="corner"></div>
-          <span>Now</span>
-        </div>
-      </div>
-
-      <div class="message right">
-        <img v-bind:src="user.avatar_image"/>
-        <div class="bubble">
-          Can you share a link for the tutorial?
-          <div class="corner"></div>
-          <span>1 min</span>
-        </div>
-      </div>
-
-      <div class="message">
-        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1_copy.jpg"/>
-        <div class="bubble">
-          Yeah, hold on
-          <div class="corner"></div>
-          <span>Now</span>
-        </div>
-      </div>
-
     </div>
 
     <div id="sendmessage">
-      <input type="text" placeholder="Send message..."/>
+      <input type="text" ref="message" placeholder="Send message..."
+             @keyup.enter="sendMessage"/>
       <div id="send">
-        <button class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+        <button id="sendButton" @click="sendMessage"
+                class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
           <i class="material-icons">send</i>
         </button>
       </div>
@@ -109,16 +29,29 @@
 
 <script>
   import PageBase from '@/components/pages/Page'
+  import MsgItem from '@/components/sub-components/Msg-item'
+  import {authMixin} from '@/auth/authMixin.js'
+  import axios from 'axios'
 
   export default {
     name: 'chat',
     extends: PageBase,
+    mixins: [authMixin],
+    components: {MsgItem},
     data () {
       return {
         displaySearch: true,
         displayBack: true,
-        displayHeader: false
+        displayHeader: false,
+        chats: [],
+        now: Date.now()
       }
+    },
+    mounted: function () {
+      let vm = this
+      setInterval(function () {
+        vm.$data.now = Date.now()
+      }, 1000)
     },
     computed: {
       chatroom: function () {
@@ -133,17 +66,58 @@
         this.$router.push({name: 'Home'})
       } else {
         let vm = this
+        vm.$nextTick(vm.scrollDown())
+      }
+    },
+    methods: {
+      backHome: function () {
+        this.$router.push({name: 'Home'})
+      },
+      scrollDown: function () {
+        let vm = this
         vm.$nextTick(function () {
           let messages = vm.$refs['chatmessages']
           if (messages) {
             messages.scrollTop = messages.scrollHeight
           }
         })
-      }
-    },
-    methods: {
-      backHome: function () {
-        this.$router.push({name: 'Home'})
+      },
+      sendMessage: function (evt) {
+        let vm = this
+        let msg = vm.$refs['message']
+        if (msg.value && msg.value.length > 0) {
+          vm.chats.push({
+            origin: 1,
+            text: msg.value,
+            date: new Date()
+          })
+          vm.$nextTick(vm.tryGetResponse(msg.value))
+          msg.value = ''
+          msg.focus()
+          vm.$nextTick(vm.scrollDown())
+        }
+      },
+      tryGetResponse (msg) {
+        let vm = this
+        vm.errors = []
+        axios.post('api/chatterbot/', {text: msg}, vm.authHeader())
+          .then(function (response) {
+            // handle success
+            if (response.data.text && response.data.text.length > 0) {
+              vm.chats.push({
+                origin: 0,
+                text: response.data.text,
+                date: new Date()
+              })
+            }
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error)
+          })
+          .then(function () {
+            vm.$nextTick(vm.scrollDown())
+          })
       }
     }
   }
@@ -213,11 +187,11 @@
     opacity: 1;
   }
 
-  #close>i:hover {
+  #close > i:hover {
     opacity: 1;
   }
 
-  #close>i {
+  #close > i {
     opacity: 0.8;
     -webkit-animation: myrotate 3s forwards; /* Safari 4.0 - 8.0 */
     animation: myrotate 3s forwards;
@@ -269,81 +243,6 @@
     padding-right: 20px;
   }
 
-  #chat-messages label {
-    color: #aab8c2;
-    font-weight: 600;
-    font-size: 12px;
-    text-align: center;
-    margin: 15px 0;
-    width: 290px;
-    display: block;
-  }
-
-  #chat-messages div.message {
-    padding: 0 0 30px 58px;
-    clear: both;
-    margin-bottom: 45px;
-  }
-
-  #chat-messages div.message.right {
-    padding: 0 58px 30px 0;
-    margin-right: -19px;
-    margin-left: 19px;
-  }
-
-  #chat-messages .message img {
-    float: left;
-    margin-left: -38px;
-    border-radius: 50%;
-    width: 30px;
-    margin-top: 12px;
-  }
-
-  #chat-messages div.message.right img {
-    float: right;
-    margin-left: 0;
-    margin-right: -38px;
-  }
-
-  .message .bubble {
-    background: #f0f4f7;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 12px 13px;
-    border-radius: 5px 5px 5px 0px;
-    color: #8495a3;
-    position: relative;
-    float: left;
-  }
-
-  #chat-messages div.message.right .bubble {
-    float: right;
-    border-radius: 5px 5px 0px 5px;
-  }
-
-  .bubble .corner {
-    background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/bubble-corner.png") 0 0 no-repeat;
-    position: absolute;
-    width: 7px;
-    height: 7px;
-    left: -5px;
-    bottom: 0;
-  }
-
-  div.message.right .corner {
-    background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/bubble-cornerR.png") 0 0 no-repeat;
-    left: auto;
-    right: -5px;
-  }
-
-  .bubble span {
-    color: #aab8c2;
-    font-size: 11px;
-    position: absolute;
-    right: 0;
-    bottom: -22px;
-  }
-
   #sendmessage {
     height: 9vh;
     position: relative;
@@ -385,10 +284,9 @@
     height: 8vh;
     min-width: 8vh;
     min-height: 8vh;
-    position: absolute;
-    top: 50%;
-    right: 2vh;
-    transform: translateY(-50%);
+    position: fixed;
+    bottom: 2vh;
+    right: 2vw;
   }
 
   @media screen and (min-height: 640px) {
