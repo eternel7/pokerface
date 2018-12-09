@@ -37,7 +37,7 @@
     clear: both;
     margin-bottom: 0.5vh;
     text-align: left;
-    max-width: 75%;
+    max-width: 60%;
   }
 
   #message.right {
@@ -81,15 +81,16 @@
   }
 
   #message .bubble {
-    width: max-content;
     background: #dbe3f9;
     font-size: 13px;
     font-weight: 600;
     padding: 12px 13px;
     border-radius: 5px 5px 5px 0px;
-    color: #2e3c58;
+    color: #365dad;
     position: relative;
     float: left;
+    width: max-content;
+    max-width: 100%; /* do not oversize message width*/
   }
 
   #message .bubble:after {
@@ -125,8 +126,8 @@
 
   #message > .time {
     clear: both;
-    color: #aab8c2;
-    font-size: 12px;
+    color: #8eace8;
+    font-size: 0.8em;
     position: relative;
     bottom: -0.5vh;
     width: max-content;

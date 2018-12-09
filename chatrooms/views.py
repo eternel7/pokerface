@@ -46,7 +46,7 @@ def compute_response_time(request, response):
     rlen = len(response)
     rand = random.randrange(1, 3)
     randMax = random.randrange(50, 60)
-    response_time = min(math.ceil(rand * (rlen + rqlen) / 6), randMax)
+    response_time = max(3, min((rlen + rqlen) / (5 + rand), randMax))
     
     return response_time
 
