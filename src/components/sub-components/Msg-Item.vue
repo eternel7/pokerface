@@ -4,9 +4,8 @@
     <img v-if="msg.origin!==1" alt="you" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1_copy.jpg"/>
     <div class="bubble">
       {{msg.text}}
-      <div class="corner"></div>
-      <span>{{ago}}</span>
     </div>
+    <div class="time">{{ago}}</div>
   </div>
 </template>
 
@@ -33,22 +32,22 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   #message {
-    margin-top: 1vh;
-    padding: 0 0 30px 58px;
+    padding: 0 0 5px 58px;
     clear: both;
-    margin-bottom: 45px;
+    margin-bottom: 0.5vh;
     text-align: left;
     max-width: 75%;
   }
 
   #message.right {
     float: right;
-    padding: 0 58px 30px 0;
+    padding: 0 58px 5px 0;
     margin-right: -19px;
     margin-left: 19px;
   }
 
   #message img {
+    bottom: 1vh;
     float: left;
     margin-left: -38px;
     border-radius: 50%;
@@ -63,14 +62,34 @@
   }
 
   #message .bubble {
-    background: #f0f4f7;
+    width: max-content;
+    background: #dbe3f9;
     font-size: 13px;
     font-weight: 600;
     padding: 12px 13px;
     border-radius: 5px 5px 5px 0px;
-    color: #8495a3;
+    color: #2e3c58;
     position: relative;
     float: left;
+  }
+
+  #message .bubble:after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    width: 0;
+    height: 0;
+    border: 7px solid transparent;
+    border-bottom: 0;
+    margin-top: -7px;
+
+  }
+
+  #message.left .bubble:after {
+    left: 0;
+    border-right-color: #dbe3f9;
+    border-left: 0;
+    margin-left: -7px;
   }
 
   #message.right .bubble {
@@ -78,34 +97,27 @@
     border-radius: 5px 5px 0px 5px;
   }
 
-  .bubble .corner {
-    background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/bubble-corner.png") 0 0 no-repeat;
-    position: absolute;
-    width: 7px;
-    height: 7px;
-    left: -5px;
-    bottom: 0;
+  #message.right .bubble:after {
+    right: 0;
+    border-left-color: #dbe3f9;
+    border-right: 0;
+    margin-right: -7px;
   }
 
-  #message.right .corner {
-    background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/bubble-cornerR.png") 0 0 no-repeat;
-    left: auto;
-    right: -5px;
-  }
-
-  #message > .bubble span {
+  #message > .time {
+    clear: both;
     color: #aab8c2;
-    font-size: 11px;
-    position: absolute;
-    bottom: -2vh;
+    font-size: 12px;
+    position: relative;
+    bottom: -0.5vh;
     width: max-content;
   }
 
-  #message.left > .bubble span {
+  #message.left > .time {
     left: 0;
   }
 
-  #message.right > .bubble span {
+  #message.right > .time {
     right: 0;
   }
 </style>

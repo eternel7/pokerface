@@ -2,7 +2,8 @@
   <li class="chatroom-item mdl-list__item mdl-list__item--three-line"
       v-on:click="gotoChat(index)">
     <div class="mdl-list__item-primary-content">
-      <img v-if="chatroom.img" src="" />
+      <div class="img" v-if="chatroom.user_portrait"
+           v-bind:style="'background-image: url('+chatroom.user_portrait+')'" ></div>
       <i v-else class="material-icons mdl-list__item-avatar">person</i>
       <span>{{chatroom.user_label}}</span>
       <span class="mdl-list__item-text-body">
@@ -43,10 +44,13 @@
   }
 
 
-  .chatroom-item img {
+  .chatroom-item div.img {
     width: 40px;
+    height: 40px;
     border-radius: 50%;
-    margin: 15px;
+    margin-right: 16px;
+    background-size: cover;
+    background-position: center center;
     float: left;
   }
 

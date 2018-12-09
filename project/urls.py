@@ -41,5 +41,7 @@ urlpatterns = [
   re_path(r'^$', HomePageView.as_view(), name='home'),
 ]
 
-# migrate chatterBot running following line
+# migrate chatterBot
+# ==> python manage.py migrate django_chatterbot
+# before running following line
 apps.init_chatbot()

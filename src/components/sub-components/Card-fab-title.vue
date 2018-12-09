@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="fab" class="mdl-color--accent mdl-color-text--white">
-      <img id="icon" src="/static/img/icons/android-chrome-512x512.png" width="45"/>
+      <img id="icon" src="/static/img/chat-icon_white.png" width="45"/>
     </div>
     <div v-if="userTitle" class="mdl-card__title">
       <h2 class="card__title mdl-card__title-text">

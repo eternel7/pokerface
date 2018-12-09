@@ -18,16 +18,22 @@ def chatrooms_get(request, format='json'):
     if user:
         chatrooms = [
             {"id": 1,
-             "user_label": "Bob Synclar",
-             "user_notepad": "Bryan Cranston played the role of Walter in Breaking Bad. He is also known for playing Hal in Malcom in the Middle."
+             "user_label": "Jane Doe",
+             "user_notepad": "I played the role of Georgia in Breaking Bad. I'm also known for playing Malcom mother in Malcom in the Middle.",
+             "user_portrait": "/static/img/profile/chatting_01_portrait.png",
+             "user_image": "/static/img/profile/chatting_01.jpg"
              },
             {"id": 2,
-             "user_label": "Jone Doe",
-             "user_notepad": "Jone Doe played the role of Walter in Breaking Bad. He is also known for playing Hal in Malcom in the Middle.",
+             "user_label": "Clara Kent",
+             "user_notepad": "I'm a fictional character first created for comic books by Jerry Siegel and Joe Shuster in 1938 as the alternate identity of Superman cousine.",
+             "user_portrait": "/static/img/profile/chatting_02_portrait.png",
+             "user_image": "/static/img/profile/chatting_02.jpg"
              },
             {"id": 3,
-             "user_label": "Clark Kent",
-             "user_notepad": "Clark Kent is a fictional character first created for comic books by Jerry Siegel and Joe Shuster in 1938 as the alternate identity of Superman.",
+             "user_label": "Bryan Cranston",
+             "user_notepad": "I played the role of Walter in Breaking Bad. I'm also known for playing Hal in Malcom in the Middle.",
+             "user_portrait": "/static/img/profile/chatting_03_portrait.png",
+             "user_image": "/static/img/profile/chatting_03.jpg"
              }
         ]
         return JsonResponse({"chatrooms": chatrooms}, status=status.HTTP_200_OK)
@@ -51,6 +57,7 @@ def chat_post(request, format='json'):
     start_time = time.time()
     text = request.data['text']
     user = get_user_from_token(get_authorization_header(request))
+    print("receiving message from", user, "at", start_time)
     if user:
         if not text:
             return JsonResponse({
@@ -58,13 +65,17 @@ def chat_post(request, format='json'):
                     'The attribute "text" is required.'
                 ]
             }, status=400)
-            
+        
+        print("message was", text)
         PokerFaceBot = get_chatBot()
+        print("chatbot is", PokerFaceBot)
         response = PokerFaceBot.get_response({'text': text})
         response_data = response.serialize()
+        print("answer will be", response_data['text'])
         response_time = compute_response_time(text, response_data['text'])
         now_time = time.time()
         spend_time = now_time - start_time
+        print("answer will be return in", response_time, "s")
         print(start_time, now_time, response_time, spend_time, response_time - spend_time)
         
         if spend_time < response_time:

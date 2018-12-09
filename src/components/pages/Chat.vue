@@ -1,6 +1,7 @@
 <template>
   <div v-if="chatroom" id="chatview">
-    <div id="profile">
+    <div id="profile"
+    v-bind:style="'background-image: url('+chatroom.user_image+')'">
       <div id="close" v-on:click="backHome">
         <i class="material-icons">close</i>
       </div>
@@ -100,8 +101,10 @@
       tryGetResponse (msg) {
         let vm = this
         vm.errors = []
+        console.log('send message')
         axios.post('api/chatterbot/', {text: msg}, vm.authHeader())
           .then(function (response) {
+            console.log('received response')
             // handle success
             if (response.data.text && response.data.text.length > 0) {
               vm.chats.push({
@@ -153,7 +156,6 @@
     overflow: hidden;
     text-align: center;
     background-color: #e4e4e4;
-    background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1_copy.jpg');
     background-size: cover;
     background-repeat: no-repeat;
     color: #fff;
@@ -193,6 +195,7 @@
 
   #close > i {
     opacity: 0.8;
+    background-color: rgba(55, 55, 55, 0.3);
     -webkit-animation: myrotate 3s forwards; /* Safari 4.0 - 8.0 */
     animation: myrotate 3s forwards;
   }
