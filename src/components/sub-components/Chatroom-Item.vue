@@ -3,11 +3,11 @@
       v-on:click="gotoChat(index)">
     <div class="mdl-list__item-primary-content">
       <div class="img" v-if="chatroom.user_portrait"
-           v-bind:style="'background-image: url('+chatroom.user_portrait+')'" ></div>
+           v-bind:style="'background-image: url('+chatroom.user_portrait+')'"></div>
       <i v-else class="material-icons mdl-list__item-avatar">person</i>
       <span>{{chatroom.user_label}}</span>
       <span class="mdl-list__item-text-body">
-        {{chatroom.user_notepad}}
+        {{notepad}}
       </span>
     </div>
     <div class="mdl-list__item-secondary-content">
@@ -22,6 +22,11 @@
   export default {
     name: 'chatroom-item',
     props: ['chatroom', 'index'],
+    data: function () {
+      return {
+        notepad: (this.chatroom.user_notepad.length > 60) ? this.chatroom.user_notepad.substr(0, 57) + '...' : this.chatroom.user_notepad
+      }
+    },
     methods: {
       gotoChat: function (index) {
         this.$router.push({name: 'Chat', params: {id: index}})

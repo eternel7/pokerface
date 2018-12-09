@@ -10,6 +10,7 @@
     <div id="chat-messages" ref="chatmessages">
       <div is="MsgItem" v-for="msg in chats"
            v-bind:user="user"
+           v-bind:chatroom="chatroom"
            v-bind:msg="msg"
            v-bind:now="now">
       </div>

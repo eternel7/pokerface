@@ -1,7 +1,8 @@
 <template>
   <div id="message" v-bind:class="{ 'right': msg.origin===1, 'left': msg.origin!==1}">
     <img v-if="msg.origin===1" alt="me" v-bind:src="user.avatar_image"/>
-    <img v-if="msg.origin!==1" alt="you" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1_copy.jpg"/>
+    <div class="img" v-if="msg.origin!==1" alt="you"
+         v-bind:style="'background-image: url(' + chatroom.user_portrait + ')'"></div>
     <div class="bubble">
       {{msg.text}}
     </div>
@@ -12,7 +13,7 @@
 <script>
   export default {
     name: 'msg-item',
-    props: ['msg', 'user', 'now'],
+    props: ['msg', 'user', 'chatroom', 'now'],
     computed: {
       ago: function () {
         if (!this.msg || !this.now) return ''
@@ -56,6 +57,24 @@
   }
 
   #message.right img {
+    float: right;
+    margin-left: 0;
+    margin-right: -38px;
+  }
+
+  #message div.img {
+    bottom: 1vh;
+    float: left;
+    margin-left: -38px;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    margin-top: 12px;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  #message.right div.img {
     float: right;
     margin-left: 0;
     margin-right: -38px;
