@@ -41,4 +41,5 @@ urlpatterns = [
   re_path(r'^$', HomePageView.as_view(), name='home'),
 ]
 
-apps.init_chatbot()
+# migrate chatterBot before uncomment
+# apps.init_chatbot()
