@@ -3,10 +3,10 @@
     <transition name="fade-slide-up" mode="out-in">
       <ul v-if="chatrooms.length">
         <li is="chatroom-item"
-                v-for="(chatroom, index) in chatrooms"
-                v-bind:key="chatroom.id"
-                v-bind:index="index"
-                v-bind:chatroom="chatroom"
+            v-for="(chatroom, index) in chatrooms"
+            v-bind:key="chatroom.id"
+            v-bind:index="index"
+            v-bind:chatroom="chatroom"
         ></li>
       </ul>
       <h4 v-else>Looking for a chatroom...</h4>
@@ -23,6 +23,7 @@
   export default {
     name: 'chatrooms',
     extends: PageBase,
+    props: ['search'],
     mixins: [authMixin],
     components: {ChatroomItem},
     data () {
@@ -32,7 +33,16 @@
     },
     computed: {
       chatrooms: function () {
-        return this.$root.chatrooms
+        let vm = this
+        if (typeof vm.search === 'string' && vm.search !== '') {
+          return vm.$root.chatrooms.filter(function (row) {
+            return Object.keys(row).some(function (key) {
+              return String(row[key]).toLowerCase().indexOf(vm.search) > -1
+            })
+          })
+        } else {
+          return vm.$root.chatrooms
+        }
       }
     },
     methods: {

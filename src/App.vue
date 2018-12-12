@@ -22,7 +22,7 @@
               </label>
               <div class="mdl-textfield__expandable-holder">
                 <input class="mdl-textfield__input" type="text" name="search"
-                       id="fixed-header-drawer-exp">
+                       id="fixed-header-drawer-exp" v-model="search">
               </div>
             </div>
           </transition>
@@ -34,7 +34,7 @@
       <section class="section">
         <div class="section-inner">
           <transition name="fade-slide-right" mode="out-in">
-            <router-view></router-view>
+            <router-view v-bind:search="search"></router-view>
           </transition>
         </div>
       </section>
@@ -60,7 +60,9 @@
       loading: Loading
     },
     data () {
-      return {}
+      return {
+        search: ''
+      }
     },
     methods: {
       showSnackbar: function () {

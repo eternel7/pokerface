@@ -89,7 +89,7 @@ new Vue({
     setUnauthenticated: function () {
       Object.assign(this.$data, rootDefault())
     },
-    setSearch: function (val) {
+    setSearchDisplay: function (val) {
       this.searchAvailable = !!val
     },
     setBack: function (val) {

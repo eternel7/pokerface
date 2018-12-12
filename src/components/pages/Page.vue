@@ -11,8 +11,8 @@
       componentHandler.upgradeDom()
       // eslint-disable-next-line
       componentHandler.upgradeAllRegistered()
-      if (this.$root.setSearch) {
-        this.$root.setSearch(!!this.displaySearch)
+      if (this.$root.setSearchDisplay) {
+        this.$root.setSearchDisplay(!!this.displaySearch)
       }
       if (this.$root.setBack) {
         this.$root.setBack(!!this.displayBack)

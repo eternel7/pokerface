@@ -1,7 +1,7 @@
 <template>
   <div>
     <signIn v-if="!$root.authenticated"></signIn>
-    <chatrooms v-if="$root.authenticated"></chatrooms>
+    <chatrooms v-if="$root.authenticated" v-bind:search="search"></chatrooms>
   </div>
 </template>
 
@@ -14,6 +14,7 @@
 
   export default {
     name: 'home',
+    props: ['search'],
     components: {
       signIn: SignIn,
       profile: Profile,
