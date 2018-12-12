@@ -2,12 +2,14 @@
   <div class="chatrooms">
     <transition name="fade-slide-up" mode="out-in">
       <ul v-if="chatrooms.length">
-        <li is="chatroom-item"
-            v-for="(chatroom, index) in chatrooms"
-            v-bind:key="chatroom.id"
-            v-bind:index="index"
-            v-bind:chatroom="chatroom"
-        ></li>
+        <transition-group name="shrink">
+          <li is="chatroom-item"
+              v-for="(chatroom, index) in chatrooms"
+              v-bind:key="chatroom.id"
+              v-bind:index="index"
+              v-bind:chatroom="chatroom"
+          ></li>
+        </transition-group>
       </ul>
       <h4 v-else>Looking for a chatroom...</h4>
     </transition>
@@ -93,16 +95,32 @@
     padding: 0;
   }
 
-  .fade-slide-up-enter-active {
-    transition: all 0.5s ease;
-  }
-
-  .fade-slide-up-leave-active {
+  .fade-slide-up-enter-active, .fade-slide-up-leave-active {
     transition: all 0.5s ease;
   }
 
   .fade-slide-up-enter, .fade-slide-up-leave-to {
     transform: translateY(-40px);
     opacity: 0;
+  }
+
+  .shrink, .shrink-move, .shrink-enter-active, .shrink-leave-active {
+    transition: all 0.5s ease;
+    -webkit-transform-origin: top;
+    -moz-transform-origin: top;
+    -o-transform-origin: top;
+    transform-origin: top;
+  }
+
+  .shrink-enter, .shrink-leave-to {
+    -webkit-transform: scaleY(0);
+    -ms-transform: scaleY(0);
+    transform: scaleY(0);
+  }
+
+  .shrink-leave, .shrink-enter-to {
+    -webkit-transform: scaleY(1);
+    -ms-transform: scaleY(1);
+    transform: scaleY(1);
   }
 </style>

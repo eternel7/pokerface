@@ -6,7 +6,7 @@
            v-bind:style="'background-image: url('+chatroom.user_portrait+')'"></div>
       <i v-else class="material-icons mdl-list__item-avatar">person</i>
       <span>{{chatroom.user_label}}</span>
-      <span class="mdl-list__item-text-body">
+      <span class="mdl-list__item-text-body" :alt="chatroom.user_notepad">
         {{notepad}}
       </span>
     </div>
