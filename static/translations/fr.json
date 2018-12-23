@@ -7,7 +7,9 @@
     "ForgotPassword": "Mot de passe oublié",
     "ResetPassword": "Modification du mot de passe",
     "Chat": "Discussion",
-    "Chatrooms": "Discussions"
+    "Chatrooms": "Discussions",
+    "Privacy_policy": "Charte pour la protection des données",
+    "Cookies_policy": "Utilisation des cookies"
   },
   "Nav": {
     "Home": "Accueil",

@@ -6,42 +6,19 @@
     </button>
     <div>
       <h6>Notice</h6>
-      <p>This website or its third-party tools use cookies, which are necessary to its functioning and required to
-        achieve
-        the purposes illustrated in the <a href="#" target="_blank">Privacy Shield Policy</a>. By closing this banner,
-        clicking a link or continuing to
-        browse otherwise, you agree to the use of cookies.
+      <p>This site uses cookies. By continuing to use this site or clicking "I Agree", you agree to the use of cookies.
+        Read our <a class="click" href="/#/cookiespolicy">cookies policy</a> and
+        <a class="click" href="/#/privacystatement">privacy statement</a> for more information.
       </p>
       <button
-        class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white"
-        v-on:click.prevent="accept">That's Fine
+              class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored mdl-color-text--white"
+              v-on:click.prevent="accept">I agree
       </button>
     </div>
   </div>
 </template>
 <script>
-  function setCookie (cname, cvalue, exdays) {
-    let d = new Date()
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000))
-    let expires = 'expires=' + d.toUTCString()
-    document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/'
-  }
-
-  function getCookie (cname) {
-    let name = cname + '='
-    let decodedCookie = decodeURIComponent(document.cookie)
-    let ca = decodedCookie.split(';')
-    for (let i = 0; i < ca.length; i++) {
-      let c = ca[i]
-      while (c.charAt(0) === ' ') {
-        c = c.substring(1)
-      }
-      if (c.indexOf(name) === 0) {
-        return c.substring(name.length, c.length)
-      }
-    }
-    return ''
-  }
+  import Cookies from '@/assets/cookies-management.js'
 
   let enableCookieId = 'cb-enabled'
   export default {
@@ -53,13 +30,13 @@
     },
     computed: {
       visible: function () {
-        let enable = getCookie(enableCookieId)
+        let enable = Cookies.get(enableCookieId)
         return (enable !== 'true' && !this.hideMe)
       }
     },
     methods: {
       accept () {
-        setCookie(enableCookieId, true, 30)
+        Cookies.set(enableCookieId, true, 30)
         this.hideMe = true
       }
     }
@@ -96,5 +73,10 @@
 
   #closeCookieConsent:hover {
     color: #FFF;
+  }
+  .click {
+    color: rgb(255, 64, 129);
+    cursor: pointer;
+    text-decoration: underline;
   }
 </style>

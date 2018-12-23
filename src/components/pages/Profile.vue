@@ -37,7 +37,12 @@
         </div>
       </div>
       <div class="mdl-tabs__panel is-active" id="1" v-if="tabActive==='1'">
-        <div class="page-content">More<!-- Your content goes here --></div>
+        <div class="page-content">
+          <p class="center-align">{{$t('user.BeforeDeleteMessage')}}</p>
+          <button id="third-button" v-on:click.prevent="tryDelete"
+                  class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white">
+            {{$t('user.Delete')}}
+          </button></div>
       </div>
       <div class="mdl-tabs__panel is-active" id="2" v-if="tabActive==='2'">
         <profilePwdUpdate></profilePwdUpdate>

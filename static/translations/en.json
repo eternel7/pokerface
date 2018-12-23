@@ -7,7 +7,9 @@
     "ForgotPassword": "Forgot password",
     "ResetPassword": "Reset password",
     "Chat": "Chat",
-    "Chatrooms": "Choose a chat"
+    "Chatrooms": "Choose a chat",
+    "Privacy_policy": "Privacy policy",
+    "Cookies_policy": "Cookies policy"
   },
   "Nav": {
     "Home": "Home",

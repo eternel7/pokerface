@@ -7,6 +7,8 @@ import SignUp from '@/components/pages/Sign-up'
 import Profile from '@/components/pages/Profile'
 import ForgotPassword from '@/components/pages/Forgot-password'
 import ResetPassword from '@/components/pages/Reset-password'
+import CookiesPolicy from '@/components/pages/Cookies-Policy'
+import PrivacyStatement from '@/components/pages/Privacy-Statement'
 import Chat from '@/components/pages/Chat'
 import Chatrooms from '@/components/pages/Chatrooms'
 
@@ -46,6 +48,16 @@ export default new Router({
       path: '/resetpassword/:resetPasswordToken?',
       name: 'ResetPassword',
       component: ResetPassword
+    },
+    {
+      path: '/cookiespolicy',
+      name: 'Cookies policy',
+      component: CookiesPolicy
+    },
+    {
+      path: '/privacystatement',
+      name: 'Privacy statement',
+      component: PrivacyStatement
     },
     {
       path: '/chat/:id',
