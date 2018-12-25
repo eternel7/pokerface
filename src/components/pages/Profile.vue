@@ -65,7 +65,6 @@
   import CardFabTitle from '@/components/sub-components/Card-fab-title'
   import ProfileDetails from '@/components/user-components/Profile-details'
   import ProfilePwdUpdate from '@/components/user-components/Profile-password-update'
-  import ErrorMessages from '@/components/sub-components/ErrorMessages'
   import {authMixin} from '@/auth/authMixin.js'
   import axios from 'axios'
 
@@ -77,8 +76,7 @@
     components: {
       cardFabTitle: CardFabTitle,
       profileDetails: ProfileDetails,
-      profilePwdUpdate: ProfilePwdUpdate,
-      errorMessages: ErrorMessages
+      profilePwdUpdate: ProfilePwdUpdate
     },
     data () {
       return {

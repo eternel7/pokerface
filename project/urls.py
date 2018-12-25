@@ -37,11 +37,11 @@ urlpatterns = [
   re_path(r'^api/guser/', account_views.user_get, name='getUser'),
   re_path(r'^api/duser/', account_views.user_delete, name='deleteUser'),
   re_path(r'^api/chatrooms/', chatrooms_views.chatrooms_get, name='getChatrooms'),
-  re_path(r'^api/chatterbot/', chatrooms_views.chat_post, name='chatterbot'),
+  re_path(r'^api/chatroom/', chatrooms_views.chatroom_post, name='postChatroom'),
   re_path(r'^$', HomePageView.as_view(), name='home'),
 ]
 
 # migrate chatterBot
 # ==> python manage.py migrate django_chatterbot
 # before running following line
-apps.init_chatbot()
+#apps.init_chatbot()

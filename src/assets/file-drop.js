@@ -2,13 +2,13 @@
 /**
  * Created by eternel7 on 26/03/2016.
  */
-var FileDrop = (function () {
+const FileDrop = (function () {
   function FileDrop () {
     this.files = []
   }
 
   FileDrop.getFilesOnDrop = function (event, callback) {
-    var transfer = FileDrop._getTransfer(event)
+    let transfer = FileDrop._getTransfer(event)
     if (!transfer) {
       return
     }

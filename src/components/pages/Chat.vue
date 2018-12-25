@@ -1,11 +1,11 @@
 <template>
   <div v-if="chatroom" id="chatview">
     <div id="profile"
-    v-bind:style="'background-image: url('+chatroom.user_image+')'">
+         v-bind:style="'background-image: url('+chatroom.image+')'">
       <div id="close" v-on:click="backHome">
         <i class="material-icons">close</i>
       </div>
-      <div id="user">{{chatroom.user_label}}</div>
+      <div id="user">{{chatroom.label}}</div>
     </div>
     <div id="chat-messages" ref="chatmessages">
       <div is="MsgItem" v-for="msg in chats"
@@ -15,10 +15,9 @@
            v-bind:now="now">
       </div>
     </div>
-
     <div id="sendmessage">
-      <input type="text" ref="message" placeholder="Send message..."
-             @keyup.enter="sendMessage"/>
+      <textarea type="text" ref="message" placeholder="Send message..."
+                @keyup.ctrl.enter="sendMessage"></textarea>
       <div id="send">
         <button id="sendButton" @click="sendMessage"
                 class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
@@ -33,7 +32,7 @@
   import PageBase from '@/components/pages/Page'
   import MsgItem from '@/components/sub-components/Msg-item'
   import {authMixin} from '@/auth/authMixin.js'
-  import axios from 'axios'
+  import ReconnectingWebSocket from 'reconnecting-websocket'
 
   export default {
     name: 'chat',
@@ -42,11 +41,13 @@
     components: {MsgItem},
     data () {
       return {
+        sessionStarted: false,
         displaySearch: true,
         displayBack: true,
         displayHeader: false,
         chats: [],
-        now: Date.now()
+        now: Date.now(),
+        chatSocket: undefined
       }
     },
     mounted: function () {
@@ -57,7 +58,10 @@
     },
     computed: {
       chatroom: function () {
-        return this.$root.chatrooms[this.$route.params.id]
+        let vm = this
+        return vm.$root.chatrooms.filter(function (row) {
+          return row.id === vm.$route.params.id
+        })[0]
       },
       user: function () {
         return this.$root.user
@@ -69,11 +73,67 @@
       } else {
         let vm = this
         vm.$nextTick(vm.scrollDown())
+        vm.startChatSession()
+      }
+    },
+    beforeDestroy: function () {
+      if (this.chatSocket) {
+        this.chatSocket.close()
       }
     },
     methods: {
       backHome: function () {
         this.$router.push({name: 'Home'})
+      },
+      addChat: function (msg, user) {
+        let vm = this
+        if (msg && !user) {
+          vm.chats.push({
+            origin: 0,
+            message: msg,
+            date: new Date()
+          })
+        } else if (msg) {
+          vm.chats.push({
+            origin: user,
+            message: msg,
+            date: new Date()
+          })
+        }
+        vm.$nextTick(vm.scrollDown())
+      },
+      manageMessage: function (msg) {
+        let vm = this
+        console.log('receiving message data', msg.data)
+        let msgJson = JSON.parse(msg.data)
+        if (msgJson.text) {
+          vm.addChat(msgJson.text)
+        }
+        if (msgJson.username !== vm.user.username) {
+          if (msgJson.msg_type === 4) {
+            vm.addChat(msgJson.username + ' join the room.')
+          }
+          if (msgJson.msg_type === 5) {
+            vm.addChat(msgJson.username + ' leave the room.')
+          }
+          if (msgJson.msg_type === 0) {
+            vm.addChat(msgJson.message, {
+              username: msgJson.username,
+              portrait: msgJson.portrait
+            })
+          }
+        }
+      },
+      startChatSession () {
+        let vm = this
+        if (vm.$route.params.id) {
+          vm.sessionStarted = true
+          let wsScheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
+          vm.chatSocket = new ReconnectingWebSocket(wsScheme + '://' + window.location.host + '/ws/chat/' + vm.$route.params.id + '/')
+          vm.chatSocket.onmessage = function (message) {
+            vm.manageMessage(message)
+          }
+        }
       },
       scrollDown: function () {
         let vm = this
@@ -88,12 +148,19 @@
         let vm = this
         let msg = vm.$refs['message']
         if (msg.value && msg.value.length > 0) {
+          let txt = msg.value
           vm.chats.push({
             origin: 1,
-            text: msg.value,
+            command: 'send',
+            message: txt,
             date: new Date()
           })
-          vm.$nextTick(vm.tryGetResponse(msg.value))
+          vm.$nextTick(vm.tryGetResponse({
+            origin: 1,
+            command: 'send',
+            message: txt,
+            date: new Date()
+          }))
           msg.value = ''
           msg.focus()
           vm.$nextTick(vm.scrollDown())
@@ -102,26 +169,10 @@
       tryGetResponse (msg) {
         let vm = this
         vm.errors = []
-        console.log('send message')
-        axios.post('api/chatterbot/', {text: msg}, vm.authHeader())
-          .then(function (response) {
-            console.log('received response')
-            // handle success
-            if (response.data.text && response.data.text.length > 0) {
-              vm.chats.push({
-                origin: 0,
-                text: response.data.text,
-                date: new Date()
-              })
-            }
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error)
-          })
-          .then(function () {
-            vm.$nextTick(vm.scrollDown())
-          })
+        console.log('send message', msg)
+        if (vm.chatSocket) {
+          vm.chatSocket.send(JSON.stringify(msg))
+        }
       }
     }
   }
@@ -245,31 +296,32 @@
     overflow-y: scroll;
     overflow-x: hidden;
     padding-right: 20px;
+    border-bottom: solid 1px #e4e4e4;
   }
 
   #sendmessage {
-    height: 9vh;
+    height: 14vh;
     position: relative;
     bottom: 0;
   }
 
-  #sendmessage input {
+  #sendmessage textarea {
     background: #fff;
     position: absolute;
-    top: 0;
+    top: 5%;
     left: 2vh;
     margin: 0;
     width: 80%;
-    height: 100%;
+    height: 90%;
     border: none;
     padding: 0;
     font-size: 13px;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Roboto", "Open Sans", sans-serif;
     font-weight: 400;
-    color: #585858;
+    color: #403f3e;
   }
 
-  #sendmessage input:focus {
+  #sendmessage textarea:focus {
     outline: 0;
   }
 
@@ -289,7 +341,7 @@
     min-width: 8vh;
     min-height: 8vh;
     position: fixed;
-    bottom: 2vh;
+    bottom: 3.5vh;
     right: 2vw;
   }
 
@@ -297,6 +349,17 @@
     .mdl-button--fab {
       min-width: 56px;
       min-height: 56px;
+    }
+  }
+
+  @media screen and (max-height: 640px) {
+    .mdl-button--fab {
+      bottom: 2.5vh;
+      right: 1vw;
+    }
+
+    .mdl-button--fab > i {
+      font-size: 20px;
     }
   }
 

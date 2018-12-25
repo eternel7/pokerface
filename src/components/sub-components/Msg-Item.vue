@@ -1,32 +1,21 @@
 <template>
   <div id="message" v-bind:class="{ 'right': msg.origin===1, 'left': msg.origin!==1}">
-    <img v-if="msg.origin===1" alt="me" v-bind:src="user.avatar_image"/>
-    <div class="img" v-if="msg.origin!==1" alt="you"
-         v-bind:style="'background-image: url(' + chatroom.user_portrait + ')'"></div>
+    <img v-if="msg.origin===1" alt="Me" v-bind:src="user.avatar_image"/>
+    <img v-if="msg.origin.portrait" v-bind:alt="msg.origin.username" v-bind:src="msg.origin.portrait"/>
+    <div class="img" v-if="msg.origin===0" alt="Bot"
+         v-bind:style="'background-image: url(' + chatroom.portrait + ')'"></div>
     <div class="bubble">
-      {{msg.text}}
+      {{msg.message}}
     </div>
-    <div class="time">{{ago}}</div>
+    <div v-if="!msg.origin.portrait" class="time">{{msg.date.toLocaleTimeString()}}</div>
+    <div v-else class="time">{{msg.date.toLocaleTimeString() + ' - ' + msg.origin.username}}</div>
   </div>
 </template>
 
 <script>
   export default {
     name: 'msg-item',
-    props: ['msg', 'user', 'chatroom', 'now'],
-    computed: {
-      ago: function () {
-        if (!this.msg || !this.now) return ''
-        let now = new Date(this.now)
-        let secondsDiff = (now.getTime() - this.msg.date.getTime()) / 1000
-        let minutes = Math.floor(secondsDiff / 60)
-        let seconds = secondsDiff - minutes * 60
-        let dateFormat = this.msg.date.toLocaleTimeString() + ' - '
-        dateFormat += (minutes > 0) ? minutes.toFixed(0) + 'm' : ''
-        dateFormat += seconds.toFixed(0) + 's ago'
-        return dateFormat
-      }
-    }
+    props: ['msg', 'user', 'chatroom', 'now']
   }
 </script>
 

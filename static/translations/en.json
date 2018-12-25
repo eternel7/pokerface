@@ -142,5 +142,14 @@
   "Request failed with status code 500": "Request failed. Server couldn't handle your request.",
   "chat": {
     "Start": "Start a chat"
+  },
+  "room": {
+    "Label": "Name",
+    "Description": "Description",
+    "Portrait": "Portrait",
+    "Image": "Image",
+    "ClickOrDropToAddAPortrait": "You can click or drop an image to update this workplace portrait.",
+    "ClickOrDropToAddAnImage": "You can click or drop an image to update this workplace background image.",
+    "CreationConfirmed": "Workplace created"
   }
 }

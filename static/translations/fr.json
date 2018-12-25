@@ -77,7 +77,6 @@
       "Text1": "Nous avons envoyer un courriel à {email} avec les informations nécessaires à la mise à jour du mot de passe.",
       "emailTitle": "Reset password on PokerFace",
       "Text2": "Vous n'avez pas reçu le courriel? Vérifiez dans votre répertoire de spams/indésirables à la recherche d'un courriel ayant pour sujet : {0}.",
-
       "Text3": "Si vous ne voyez toujours pas le courriel ",
       "Text3link": "réessayez"
     },
@@ -116,8 +115,8 @@
       "FooterTitle": "Plus d'information",
       "FooterText1": "Pour raison de sécurité, nous vous informons que cette requête nous a été adressé depuis l'adresse IP {ip_address}, un système '{operating_system}' et avec comme navigateur '{browser_name}'.",
       "FooterText2": "Si vous n'êtes pas à l'origine de cette mise à jour de votre mot de passe, veuillez vous connecter et le modifier ou contactez <a href='{support_url}'>le support</a> si vous avez des questions.",
-      "Thanks":"Cordiallement,",
-      "Signature":"L'équipe de PokerFace",
+      "Thanks": "Cordiallement,",
+      "Signature": "L'équipe de PokerFace",
       "EndText": "Si vous avez des problème avec le bouton ci-dessus, copier-coller l'URL ci-dessous dans votre navigateur."
     }
   },
@@ -144,4 +143,14 @@
   "Request failed with status code 500": "Requête en erreur. Le serveur n'a pas su traiter votre requête.",
   "chat": {
     "Start": "Démarrer une Discussion"
-  }}
+  },
+  "room": {
+    "Label": "Nom",
+    "Description": "Description",
+    "Portrait": "Portrait",
+    "Image": "Image",
+    "ClickOrDropToAddAPortrait": "Vous pouvez cliquer ou dropper une image pour associer un portrait à ce lieu d'échange.",
+    "ClickOrDropToAddAnImage": "Vous pouvez cliquer ou dropper une image pour associer une image de fond à ce lieu d'échange.",
+    "CreationConfirmed": "Lieu d'échange crée"
+  }
+}

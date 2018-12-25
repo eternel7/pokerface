@@ -1,17 +1,17 @@
 <template>
-  <li class="chatroom-item mdl-list__item mdl-list__item--three-line"
-      v-on:click="gotoChat(index)">
-    <div class="mdl-list__item-primary-content">
-      <div class="img" v-if="chatroom.user_portrait"
-           v-bind:style="'background-image: url('+chatroom.user_portrait+')'"></div>
+  <li class="chatroom-item mdl-list__item mdl-list__item--three-line">
+    <div class="mdl-list__item-primary-content" v-on:click="gotoChat(chatroom.id)">
+      <div class="img" v-if="chatroom.portrait"
+           v-bind:style="'background-image: url('+chatroom.portrait+')'"></div>
       <i v-else class="material-icons mdl-list__item-avatar">person</i>
-      <span>{{chatroom.user_label}}</span>
-      <span class="mdl-list__item-text-body" :alt="chatroom.user_notepad">
+      <span>{{chatroom.label}}</span>
+      <span class="mdl-list__item-text-body" :alt="chatroom.description">
         {{notepad}}
       </span>
     </div>
-    <div class="mdl-list__item-secondary-content">
-      <i class="tooltip material-icons">chat</i>
+    <div class="mdl-list__item-secondary-content"
+         v-on:click="addContent(chatroom.id)">
+      <i class="tooltip material-icons">cloud_upload</i>
     </div>
     <router-link :to="'/chat/'+chatroom.id" class="mdl-list__item-secondary-action mdl-js-ripple-effect">
     </router-link>
@@ -24,12 +24,16 @@
     props: ['chatroom', 'index'],
     data: function () {
       return {
-        notepad: (this.chatroom.user_notepad.length > 60) ? this.chatroom.user_notepad.substr(0, 57) + '...' : this.chatroom.user_notepad
+        notepad: (this.chatroom.description.length > 60) ? this.chatroom.description.substr(0, 57) + '...' : this.chatroom.description,
+        displayRoomForm: false
       }
     },
     methods: {
       gotoChat: function (index) {
         this.$router.push({name: 'Chat', params: {id: index}})
+      },
+      addContent: function (index) {
+        console.log('trying to add content to room id :', index)
       }
     }
   }
