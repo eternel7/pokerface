@@ -1,5 +1,5 @@
 from django.db import models
-
+import re
 
 class Room(models.Model):
     """
@@ -28,3 +28,30 @@ class Room(models.Model):
         messages as they are generated.
         """
         return "room-%s" % self.id
+
+
+def generate_path(self, filename):
+    print(self.room, self.room.label)
+    url = "datasets/%s/%s/%s" % (re.sub('[^a-z0-9]+', '', self.room.label.lower()),
+                                 re.sub('[^a-z0-9]+', '', self.label.lower()),
+                                 filename)
+    return url
+
+
+class Data(models.Model):
+    label = models.CharField(max_length=255)
+    description = models.CharField(max_length=4000)
+    raw_data = models.FileField(upload_to=generate_path)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    room = models.ForeignKey(Room, related_name='datasets', on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ('label',)
+    
+    def __str__(self):
+        return self.label
+
+    def __unicode__(self):
+        return '%s' % (self.label)

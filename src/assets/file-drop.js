@@ -5,7 +5,7 @@
 const FileDrop = (function () {
   function FileDrop () {
     this.files = []
-  }
+  }// eslint-disable-next-line
 
   FileDrop.getFilesOnDrop = function (event, callback) {
     let transfer = FileDrop._getTransfer(event)

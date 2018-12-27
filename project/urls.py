@@ -18,7 +18,6 @@ from django.contrib import admin
 from .views import HomePageView, check_token
 from accounts import views as account_views
 from chatrooms import views as chatrooms_views
-from chatrooms import apps
 
 urlpatterns = [
   re_path(r'^admin/', admin.site.urls),
@@ -38,10 +37,8 @@ urlpatterns = [
   re_path(r'^api/duser/', account_views.user_delete, name='deleteUser'),
   re_path(r'^api/chatrooms/', chatrooms_views.chatrooms_get, name='getChatrooms'),
   re_path(r'^api/chatroom/', chatrooms_views.chatroom_post, name='postChatroom'),
+  re_path(r'^api/uchatroom/', chatrooms_views.chatroom_update, name='updateChatroom'),
+  re_path(r'^api/dchatroom/(?P<room_id>\w{0,50})$', chatrooms_views.chatroom_delete, name='deleteChatroom'),
+  re_path(r'^api/chatroomdata/', chatrooms_views.chatroom_addData, name='postChatroomData'),
   re_path(r'^$', HomePageView.as_view(), name='home'),
 ]
-
-# migrate chatterBot
-# ==> python manage.py migrate django_chatterbot
-# before running following line
-#apps.init_chatbot()

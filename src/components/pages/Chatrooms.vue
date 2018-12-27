@@ -1,12 +1,15 @@
 <template>
   <div class="chatrooms">
-    <dialog ref="dialog" class="mdl-dialog">
+    <dialog ref="dialogChatroom" class="mdl-dialog">
+      <h5 v-if="label!==''">{{$t('room.Update')}}</h5>
+      <h5 v-else>{{$t('room.New')}}</h5>
       <div class="mdl-dialog__content">
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+             v-bind:class="{'is-dirty' : (label) ? true : false}">
           <input class="mdl-textfield__input" type="text" id="label" v-model.trim="label"/>
           <label class="mdl-textfield__label" for="label">{{$t('room.Label')}}</label>
         </div>
-        <div class="mdl-textfield mdl-js-textfield">
+        <div class="mdl-textfield mdl-js-textfield" v-bind:class="{'is-dirty' : (description) ? true : false}">
           <textarea class="mdl-textfield__input" type="text" rows="3" id="description"
                     v-model.trim="description"></textarea>
           <label class="mdl-textfield__label" for="description">{{$t('room.Description')}}</label>
@@ -27,14 +30,47 @@
                  accept="image/*">
           <p class="center-align">{{$t('room.ClickOrDropToAddAnImage')}}</p>
         </div>
+        <errorMessages v-bind:errors="errors"></errorMessages>
       </div>
       <div class="mdl-dialog__actions">
         <button type="button" tabindex="10" id="OkDialog"
                 class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white"
-                @click="tryRoomCreation">
+                @click="tryRoomCreationOrUpdate">
           Ok
         </button>
         <button type="button" tabindex="20" id="CancelDialog" class="mdl-button close" v-on:click="hideRoomForm(true)">
+          Cancel
+        </button>
+      </div>
+    </dialog>
+    <dialog ref="deleteDialogChatroom" class="mdl-dialog">
+      <h5>{{$t('room.Delete')}}</h5>
+      <div class="mdl-dialog__content">
+        <div>
+          <img v-if="portrait" id="portrait-delete" v-bind:src="portrait" width="40px">
+        </div>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+             v-bind:class="{'is-dirty' : (label) ? true : false}">
+          <input class="mdl-textfield__input" readonly="readonly" type="text" id="label-delete" v-model.trim="label"/>
+          <label class="mdl-textfield__label" for="label">{{$t('room.Label')}}</label>
+        </div>
+        <div class="mdl-textfield mdl-js-textfield" v-bind:class="{'is-dirty' : (description) ? true : false}">
+          <textarea class="mdl-textfield__input" readonly="readonly" type="text" rows="3" id="description-delete"
+                    v-model.trim="description"></textarea>
+          <label class="mdl-textfield__label" for="description">{{$t('room.Description')}}</label>
+        </div>
+        <div>
+          <img v-if="image" id="image-delete" v-bind:src="image" width="80%">
+        </div>
+      </div>
+      <div class="mdl-dialog__actions">
+        <button type="button" tabindex="10" id="Ok-deleteDialog"
+                class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white"
+                @click="tryRoomDeletion(id)">
+          Ok
+        </button>
+        <button type="button" tabindex="20" id="Cancel-deleteDialog" class="mdl-button close"
+                v-on:click="hideDeleteRoomForm(true)">
           Cancel
         </button>
       </div>
@@ -47,6 +83,8 @@
               v-bind:key="chatroom.id"
               v-bind:index="index"
               v-bind:chatroom="chatroom"
+              v-on:edit="editRoom"
+              v-on:remove="removeRoom"
           ></li>
         </transition-group>
       </ul>
@@ -73,6 +111,7 @@
   import PageBase from '@/components/pages/Page'
   import ImageTools from '@/assets/image-tools.js'
   import FileDrop from '@/assets/file-drop.js'
+  import DialogUtils from '@/assets/dialog-utils.js'
   import ChatroomItem from '@/components/sub-components/Chatroom-item'
   import ErrorMessages from '@/components/sub-components/ErrorMessages'
   import {authMixin} from '@/auth/authMixin.js'
@@ -93,7 +132,9 @@
         image: '',
         portrait: '',
         label: '',
-        description: ''
+        description: '',
+        id: undefined,
+        errors: []
       }
     },
     computed: {
@@ -139,30 +180,51 @@
             vm.$root.loading = false
           })
       },
-      displayRoomForm: function (evt) {
+      displayRoomForm: function (evt, chatroom) {
         let vm = this
         vm.errors = []
         if (vm.$root.authenticated) {
-          vm.image = ''
-          vm.portrait = ''
-          vm.label = ''
-          vm.description = ''
-          let dialog = vm.$refs['dialog']
-          // eslint-disable-next-line no-undef
-          dialogPolyfill.registerDialog(dialog)
-          dialog.showModal()
+          if (!chatroom) {
+            vm.image = ''
+            vm.portrait = ''
+            vm.label = ''
+            vm.description = ''
+            vm.id = undefined
+          } else {
+            Object.assign(vm.$data, chatroom)
+          }
+          DialogUtils.showModal(vm, 'dialogChatroom')
         } else {
           vm.$router.push({name: 'Sign in'})
         }
       },
-      hideRoomForm: function (val) {
+      hideRoomForm: function (index) {
         let vm = this
-        let dialog = vm.$refs['dialog']
-        if (dialog) {
-          // eslint-disable-next-line no-undef
-          dialogPolyfill.registerDialog(dialog)
-          dialog.close()
+        DialogUtils.close(vm, 'dialogChatroom')
+      },
+      getChatroom: function (index) {
+        let vm = this
+        let filter = vm.$root.chatrooms.filter(function (row) {
+          return (row.id === index)
+        })
+        return filter[0]
+      },
+      editRoom: function (index) {
+        let vm = this
+        let chatroom = vm.getChatroom(index)
+        vm.displayRoomForm(null, chatroom)
+      },
+      removeRoom: function (index) {
+        let vm = this
+        let chatroom = vm.getChatroom(index)
+        if (chatroom) {
+          Object.assign(vm.$data, chatroom)
+          DialogUtils.showModal(vm, 'deleteDialogChatroom')
         }
+      },
+      hideDeleteRoomForm: function (val) {
+        let vm = this
+        DialogUtils.close(vm, 'deleteDialogChatroom')
       },
       updatePreview (file, data, ref, imposedWidth, imposedHeight) {
         const vm = this
@@ -203,7 +265,7 @@
         // Allow drop there
         return true
       },
-      tryRoomCreation: function (evt) {
+      tryRoomCreationOrUpdate: function (evt) {
         let vm = this
         let room = {
           label: vm.label,
@@ -213,29 +275,89 @@
         }
         vm.hideRoomForm(true)
         vm.$root.loading = true
-        axios.post('/api/chatroom/', room, vm.authHeader())
-          .then(function (response) {
-            // handle success
-            vm.$root.loading = false
-            if (response.data.chatrooms) {
-              vm.$root.chatrooms = response.data.chatrooms
-              vm.$root.showSnackbar(vm.$i18n.t('room.CreationConfirmed'))
-            } else {
+        if (typeof vm.id === 'number') {
+          room['id'] = vm.id
+          axios.put('/api/uchatroom/', room, vm.authHeader())
+            .then(function (response) {
+              // handle success
+              vm.$root.loading = false
+              if (response.data.chatrooms) {
+                vm.$root.chatrooms = response.data.chatrooms
+                vm.$root.showSnackbar(vm.$i18n.t('room.UpdateConfirmed'))
+              } else {
+                vm.errors = []
+                vm.errors.push({message: response.data.message})
+              }
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error)
+              vm.$root.loading = false
               vm.errors = []
-              vm.errors.push({message: response.data.message})
-            }
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error)
-            vm.$root.loading = false
-            vm.errors = []
-            vm.errors.push(error)
-          })
-          .then(function () {
-            // always executed
-            vm.$root.loading = false
-          })
+              vm.errors.push(error)
+            })
+            .then(function () {
+              // always executed
+              vm.$root.loading = false
+            })
+        } else {
+          axios.post('/api/chatroom/', room, vm.authHeader())
+            .then(function (response) {
+              // handle success
+              vm.$root.loading = false
+              if (response.data.chatrooms) {
+                vm.$root.chatrooms = response.data.chatrooms
+                vm.$root.showSnackbar(vm.$i18n.t('room.CreationConfirmed'))
+              } else {
+                vm.errors = []
+                vm.errors.push({message: response.data.message})
+              }
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error)
+              vm.$root.loading = false
+              vm.errors = []
+              vm.errors.push(error)
+            })
+            .then(function () {
+              // always executed
+              vm.$root.loading = false
+            })
+        }
+      },
+      tryRoomDeletion: function (index) {
+        let vm = this
+        console.log('tryRoomDeletion', index)
+        vm.hideDeleteRoomForm(true)
+        vm.$root.loading = true
+        if (typeof vm.id === 'number') {
+          axios.delete('/api/dchatroom/' + vm.id, vm.authHeader())
+            .then(function (response) {
+              console.log(response.data)
+              // handle success
+              vm.$root.loading = false
+              if (response.data.chatrooms) {
+                vm.$root.chatrooms = response.data.chatrooms
+                vm.$root.showSnackbar(vm.$i18n.t('room.DeletionConfirmed'))
+              } else {
+                vm.errors = []
+                vm.errors.push({message: response.data.message})
+                vm.$root.showSnackbar(vm.$i18n.t(response.data.message))
+              }
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error)
+              vm.$root.loading = false
+              vm.errors = []
+              vm.errors.push(error)
+            })
+            .then(function () {
+              // always executed
+              vm.$root.loading = false
+            })
+        }
       }
     },
     created: function (e) {
@@ -247,9 +369,9 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-  h1, h2, h3, h4 {
+  h1, h2, h3, h4, h5 {
     font-weight: normal;
-    color: #fff;
+    color: #424242;
   }
 
   ul {
@@ -258,6 +380,7 @@
   }
 
   .mdl-dialog {
+    text-align: center;
     top: 2vh;
     padding: 0;
   }
@@ -266,6 +389,10 @@
     position: fixed;
     bottom: 2vh;
     right: 2vw;
+  }
+
+  #DeleteDialog {
+    float: left
   }
 
   .link-accent {

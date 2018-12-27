@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'channels',
     'accounts',
     'chatrooms',
-    'chatterbot.ext.django_chatterbot',
 ]
 
 MIDDLEWARE = [
@@ -204,7 +203,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_FIELDS = ['email', 'username']
 SOCIAL_AUTH_TWITTER_KEY = 'nF5AOvrq4l8FmvjeRgEPpk6ID'
 SOCIAL_AUTH_TWITTER_SECRET = os.environ['DJANGO_SOCIAL_AUTH_TWITTER_SECRET']
 
-CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
 CORS_ORIGIN_ALLOW_ALL = True
 
 # email configuration
@@ -244,21 +243,4 @@ WEBPACK_LOADER = {
         'BUNDLE_DIR_NAME': 'dist/',
         'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json'),
     }
-}
-
-CHATTERBOT = {
-    'name': 'Pokerface',
-    'preprocessors': [
-        'chatterbot.preprocessors.clean_whitespace',
-        'chatterbot.preprocessors.unescape_html',
-    ],
-    'logic_adapters': [
-        'chatterbot.logic.BestMatch',
-        'chatterbot.logic.MathematicalEvaluation',
-        'chatterbot.logic.TimeLogicAdapter'
-    ],
-    'trainer': 'chatterbot.trainers.ChatterBotCorpusTrainer',
-    'training_data': [
-        'chatterbot.corpus.english'
-    ]
 }

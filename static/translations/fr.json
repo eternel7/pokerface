@@ -151,6 +151,23 @@
     "Image": "Image",
     "ClickOrDropToAddAPortrait": "Vous pouvez cliquer ou dropper une image pour associer un portrait à ce lieu d'échange.",
     "ClickOrDropToAddAnImage": "Vous pouvez cliquer ou dropper une image pour associer une image de fond à ce lieu d'échange.",
-    "CreationConfirmed": "Lieu d'échange crée"
+    "CreationConfirmed": "Lieu d'échange créé",
+    "New": "Nouveau lieu d'échange",
+    "Update": "Mise à jour",
+    "Delete": "Supprimer le lieu d'échange"
+  },
+  "data": {
+    "Label": "Nom",
+    "Description": "Description",
+    "CreationConfirmed": "Données rattachées au lieu d'échange",
+    "New": "Nouvelle donnée"
+  },
+  "room_menu": {
+    "action": {
+      "open": "Rejoindre",
+      "edit": "Mettre à jour",
+      "remove": "Supprimer",
+      "addData": "Ajouter des informations"
+    }
   }
 }

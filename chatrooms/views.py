@@ -5,7 +5,8 @@ from accounts.models import get_user_from_token
 from rest_framework.authentication import get_authorization_header
 from django.http import JsonResponse
 from chatrooms.models import Room
-from chatrooms.serializers import RoomSerializer
+from chatrooms.serializers import RoomSerializer, DataSerializer
+
 
 # Create your views here.
 @api_view(['GET'])
@@ -14,29 +15,6 @@ def chatrooms_get(request, format='json'):
     user = get_user_from_token(get_authorization_header(request))
     if user:
         rooms = RoomSerializer(Room.objects.all(), many=True)
-        """[
-            {"id": 1,
-             "label": "Jane Doe",
-             "description": "I played the role of Georgia in Breaking Bad. I'm also known for playing "
-                             "Malcom mother in Malcom in the Middle.",
-             "portrait": "/static/img/profile/chatting_01_portrait.png",
-             "image": "/static/img/profile/chatting_01.jpg"
-             },
-            {"id": 2,
-             "label": "Clara Kent",
-             "notepad": "I'm a fictional character first created for comic books by Jerry Siegel and "
-                             "Joe Shuster in 1938 as the alternate identity of Superman cousine.",
-             "portrait": "/static/img/profile/chatting_02_portrait.png",
-             "image": "/static/img/profile/chatting_02.jpg"
-             },
-            {"id": 3,
-             "label": "Bryan Cranston",
-             "notepad": "I played the role of Walter in Breaking Bad. I'm also known for playing Hal in "
-                             "Malcom in the Middle.",
-             "portrait": "/static/img/profile/chatting_03_portrait.png",
-             "image": "/static/img/profile/chatting_03.jpg"
-             }
-        ]"""
         return JsonResponse({"chatrooms": rooms.data}, status=status.HTTP_200_OK)
     return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)
 
@@ -56,3 +34,75 @@ def chatroom_post(request, format='json'):
             return JsonResponse({"message": "chatrooms.couldNotCreatedTheRoom"}, status=status.HTTP_201_CREATED)
         return JsonResponse({"message": "chatrooms.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
     return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@csrf_exempt
+def chatroom_addData(request, format='json'):
+    user = get_user_from_token(get_authorization_header(request))
+    if user:
+        data = {
+            "label": request.data['label'],
+            "description": request.data['description'],
+            "raw_data": request.data['raw_data'],
+            "room": request.data['room'],
+        }
+        serializer = DataSerializer(data=data)
+        if serializer.is_valid(raise_exception=False):
+            data = serializer.save()
+            if data:
+                rooms = RoomSerializer(Room.objects.all(), many=True)
+                return JsonResponse({"chatrooms": rooms.data}, status=status.HTTP_200_OK)
+            return JsonResponse({"message": "chatrooms.couldNotAddDataToTheRoom"}, status=status.HTTP_201_CREATED)
+        return JsonResponse({"message": "chatrooms.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
+    return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)
+
+
+@api_view(['PUT'])
+@csrf_exempt
+def chatroom_update(request, format='json'):
+    user = get_user_from_token(get_authorization_header(request))
+    
+    if isinstance(user, str):
+        return JsonResponse({"message": user}, status=status.HTTP_200_OK)
+    
+    if user:
+        roomId = request.data['id']
+        room = Room.objects.filter(id=roomId)
+        if room.count() == 1:
+            room = room.first()
+            room.label = request.data['label']
+            room.description = request.data['description']
+            image = request.data['image']
+            if image.startswith("data:image/"):
+                room.image = image
+            portrait = request.data['portrait']
+            if portrait.startswith("data:image/"):
+                room.portrait = portrait
+            room.save()
+            
+            rooms = RoomSerializer(Room.objects.all(), many=True)
+            return JsonResponse({"chatrooms": rooms.data}, status=status.HTTP_200_OK)
+        return JsonResponse({"message": "room.room_not_found_for_update"}, status=status.HTTP_200_OK)
+    return JsonResponse({"message": "Profile.unauthorized_access"}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+@api_view(['DELETE'])
+@csrf_exempt
+def chatroom_delete(request, room_id):
+    user = get_user_from_token(get_authorization_header(request))
+    
+    if isinstance(user, str):
+        return JsonResponse({"message": user}, status=status.HTTP_200_OK)
+    
+    if user:
+        if room_id is not None:
+            room = Room.objects.filter(id=room_id)
+            if room.count() == 1:
+                room = room.first()
+                room.delete()
+                
+                rooms = RoomSerializer(Room.objects.all(), many=True)
+                return JsonResponse({"chatrooms": rooms.data}, status=status.HTTP_200_OK)
+        return JsonResponse({"message": "room.room_not_found_before_removing"}, status=status.HTTP_200_OK)
+    return JsonResponse({"message": "Profile.unauthorized_access"}, status=status.HTTP_401_UNAUTHORIZED)

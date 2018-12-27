@@ -150,6 +150,23 @@
     "Image": "Image",
     "ClickOrDropToAddAPortrait": "You can click or drop an image to update this workplace portrait.",
     "ClickOrDropToAddAnImage": "You can click or drop an image to update this workplace background image.",
-    "CreationConfirmed": "Workplace created"
+    "CreationConfirmed": "Workplace created",
+    "New": "New workplace",
+    "Update": "Update workplace",
+    "Delete": "Delete workplace"
+  },
+  "data": {
+    "Label": "Name",
+    "Description": "Description",
+    "CreationConfirmed": "Data created",
+    "New": "New data"
+  },
+  "room_menu":{
+    "action": {
+      "open": "Open",
+      "edit": "Edit",
+      "remove": "Remove",
+      "addData": "Add data"
+    }
   }
 }
