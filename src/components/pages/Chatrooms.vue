@@ -140,10 +140,13 @@
     computed: {
       chatrooms: function () {
         let vm = this
+        let searchInKeys = ['label', 'description']
         if (typeof vm.search === 'string' && vm.search !== '') {
           return vm.$root.chatrooms.filter(function (row) {
             return Object.keys(row).some(function (key) {
-              return String(row[key]).toLowerCase().indexOf(vm.search) > -1
+              if (searchInKeys.indexOf(key) > -1) {
+                return String(row[key]).toLowerCase().indexOf(vm.search) > -1
+              }
             })
           })
         } else {
@@ -389,10 +392,6 @@
     position: fixed;
     bottom: 2vh;
     right: 2vw;
-  }
-
-  #DeleteDialog {
-    float: left
   }
 
   .link-accent {

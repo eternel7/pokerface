@@ -36,7 +36,8 @@
                 mdl-color-text--white" @click="tryDataCreation">
           Ok
         </button>
-        <button type="button" tabindex="20" id="CancelDialog" class="mdl-button close" v-on:click="hideDataForm(chatroom.id)">
+        <button type="button" tabindex="20" id="CancelDialog" class="mdl-button close"
+                v-on:click="hideDataForm(chatroom.id)">
           Cancel
         </button>
       </div>
@@ -275,11 +276,11 @@
     float: left;
   }
 
-  li {
+  li.chatroom-item {
     border-bottom: solid 1px #e4e4e4;
   }
 
-  li > div > i {
+  li.chatroom-item > div > i {
     color: rgba(0, 0, 0, .54);
   }
 
