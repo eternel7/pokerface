@@ -46,9 +46,8 @@
       <div class="img" v-if="chatroom.portrait"
            v-bind:style="'background-image: url('+chatroom.portrait+')'"></div>
       <i v-else class="material-icons mdl-list__item-avatar">person</i>
-      <span>{{chatroom.label}}</span>
-      <span class="mdl-list__item-text-body" :alt="chatroom.description">
-        {{notepad}}
+      <span v-html="labelH"></span>
+      <span class="mdl-list__item-text-body" :alt="descriptionH" v-html="notepadH">
       </span>
     </div>
     <div class="mdl-list__item-secondary-content" :id="'room_menu'+chatroom.id">
@@ -65,6 +64,7 @@
 </template>
 
 <script>
+  import Search from '@/assets/search-utils.js'
   import FileDrop from '@/assets/file-drop.js'
   import {authMixin} from '@/auth/authMixin.js'
   import ErrorMessages from '@/components/sub-components/ErrorMessages'
@@ -74,7 +74,7 @@
 
   export default {
     name: 'chatroom-item',
-    props: ['chatroom', 'index'],
+    props: ['chatroom', 'index', 'search'],
     mixins: [authMixin],
     components: {
       errorMessages: ErrorMessages
@@ -113,6 +113,17 @@
       componentHandler.upgradeDom()
       // eslint-disable-next-line
       componentHandler.upgradeAllRegistered()
+    },
+    computed: {
+      descriptionH: function () {
+        return Search.highlight(this.chatroom.description, this.search)
+      },
+      notepadH: function () {
+        return Search.highlight(this.notepad, this.search)
+      },
+      labelH: function () {
+        return Search.highlight(this.chatroom.label, this.search)
+      }
     },
     methods: {
       doAction: function (actionName, index) {
@@ -200,7 +211,6 @@
           formData.append('label', vm.label)
           formData.append('description', vm.description)
           formData.append('room', vm.chatroom.id)
-          console.log(formData)
           vm.hideDataForm(vm.chatroom.id)
           vm.$root.loading = true
           let header = vm.authHeader()
@@ -264,7 +274,6 @@
     cursor: pointer;
     cursor: hand;
   }
-
 
   .chatroom-item div.img {
     width: 40px;

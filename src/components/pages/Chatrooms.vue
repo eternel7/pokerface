@@ -83,13 +83,14 @@
               v-bind:key="chatroom.id"
               v-bind:index="index"
               v-bind:chatroom="chatroom"
+              v-bind:search="search"
               v-on:edit="editRoom"
               v-on:remove="removeRoom"
           ></li>
         </transition-group>
       </ul>
       <div v-else-if="$root.loading===false">
-        <h4>No workplace.</h4>
+        <h4 class="solo">No workplace.</h4>
         <p>
           <button tabindex="0" type="button"
                   class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white"
@@ -97,7 +98,7 @@
           </button>
         </p>
       </div>
-      <h4 v-else>Looking for a workplace...</h4>
+      <h4 class="solo" v-else>Looking for a workplace...</h4>
     </transition>
     <button tabindex="30" type="button"
             class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--fab mdl-button--colored"
@@ -381,7 +382,9 @@
     list-style-type: none;
     padding: 0;
   }
-
+  h4.solo{
+    color: #eeeeee;
+  }
   .mdl-dialog {
     text-align: center;
     top: 2vh;
