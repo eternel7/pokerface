@@ -1,33 +1,27 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
 from django.contrib.auth.models import User
-import json
 from .exceptions import ClientError
 from .utils import get_room_or_error
 import asyncio
+import nltk
 
 defaultImage = "/static/img/icons/apple-touch-icon-76x76.png"
-"""
-from chatrooms.apps import get_chatBot
 
-async def receive(self, text_data):
-    print("websocket received", text_data, self.scope["user"], self.scope["url_route"])
-    jsondata = json.loads(text_data)
-    print("websocket received json contain", jsondata)
-    text_data = jsondata["text"]
-    if not text_data or text_data == "\"\"":
-        await self.send(text_data=json.dumps({'text': 'Hello there'}))
-    else:
-        PokerFaceBot = get_chatBot()
-        response = PokerFaceBot.get_response({'text': text_data})
-        response_data = response.serialize()
-        await self.send(text_data=json.dumps(response_data))
-"""
+try:
+    nltk.data.find('tokenizers/punkt')
+except LookupError:
+    nltk.download('punkt')
+try:
+    nltk.data.find('corpora/stopwords')
+except LookupError:
+    nltk.download('stopwords')
 
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
     
-    async def getUserAvatar(self, username):
+    @staticmethod
+    async def getuseravatar(username):
         # Get corresponding user avatar image
         user = User.objects.filter(username=username)
         avatar_image = defaultImage
@@ -52,11 +46,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             await self.accept()
             await self.join_room(self.room_id)
     
-    async def disconnect(self, close_code):
-        print("websocket disconnected")
-        pass
-    
-    async def receive_json(self, content):
+    async def receive_json(self, content, **kwargs):
         """
         Called when we get a text frame. Channels will JSON-decode the payload
         for us and pass it as the first argument.
@@ -104,16 +94,18 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         print('Connected to room', room, 'with user', self.scope["user"])
         # Send a join message if it's turned on
         if settings.NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
-            await self.send_json({"text": "Welcome " + self.scope["user"].username + ". I'm " + room.label +
-                                          ", your host in this room. What are you searching for?"})
-            await self.channel_layer.group_send(
+            await asyncio.ensure_future(self.send_json(
+                {"text": "Welcome " + self.scope["user"].username + ". I'm " + room.label +
+                         ", your host in this room. What are you searching for?"})
+            )
+            await asyncio.ensure_future(self.channel_layer.group_send(
                 room.group_name,
                 {
                     "type": "chat.join",
                     "room_id": room_id,
                     "username": self.scope["user"].username,
                 }
-            )
+            ))
         
         # Store that we're in the room
         self.rooms.add(room_id)
@@ -136,14 +128,14 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         room = await get_room_or_error(room_id, self.scope["user"])
         # Send a leave message if it's turned on
         if settings.NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
-            await self.channel_layer.group_send(
+            await asyncio.ensure_future(self.channel_layer.group_send(
                 room.group_name,
                 {
                     "type": "chat.leave",
                     "room_id": room_id,
                     "username": self.scope["user"].username,
                 }
-            )
+            ))
         # Remove that we're in the room
         self.rooms.discard(room_id)
         # Remove them from the group so they no longer get room messages
@@ -171,7 +163,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             }
         )
     
-    ##### Handlers for messages sent over the channel layer
+    # Handlers for messages sent over the channel layer
     
     # These helper methods are named by the types we send - so chat.join becomes chat_join
     async def chat_join(self, event):
@@ -200,13 +192,23 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             },
         )
     
+    async def bot_message(self, message, event):
+        await self.send_json(
+            {
+                "msg_type": settings.MSG_TYPE_MESSAGE,
+                "room": event["room_id"],
+                "username": 0,
+                "message": message,
+            },
+        )
+    
     async def chat_message(self, event):
         """
         Called when someone has messaged our chat.
         """
-        avatar_image = await self.getUserAvatar(event["username"])
+        avatar_image = await self.getuseravatar(event["username"])
         # Send a message down to the client
-        await self.send_json(
+        await asyncio.ensure_future(self.send_json(
             {
                 "msg_type": settings.MSG_TYPE_MESSAGE,
                 "room": event["room_id"],
@@ -214,4 +216,27 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "portrait": avatar_image,
                 "message": event["message"],
             },
-        )
+        ))
+        await asyncio.ensure_future(self.bot_message("I'l try to parse what you say to ensure I can reply", event))
+        await asyncio.ensure_future(self.chat_bot_parse(event))
+    
+    async def chat_bot_parse(self, event):
+        """
+        Called when someone has messaged our chat.
+        One of the bot answers
+        """
+        message = ""
+        # tokenize the pattern
+        tokens = nltk.word_tokenize(event['message'])
+        clean_tokens = tokens[:]
+        stpw_en = nltk.corpus.stopwords.words('english')
+        stpw_fr = nltk.corpus.stopwords.words('french')
+        for token in tokens:
+            if token in stpw_en:
+                clean_tokens.remove(token)
+            if token in stpw_fr:
+                clean_tokens.remove(token)
+        freq = nltk.FreqDist(clean_tokens)
+        for key, val in freq.items():
+            message += str(key) + ':' + str(val) + ' - '
+        await self.bot_message(message, event)

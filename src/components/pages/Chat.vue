@@ -104,23 +104,25 @@
       },
       manageMessage: function (msg) {
         let vm = this
-        console.log('receiving message data', msg.data)
+        // console.log('receiving message data', msg.data)
         let msgJson = JSON.parse(msg.data)
-        if (msgJson.text) {
-          vm.addChat(msgJson.text)
-        }
-        if (msgJson.username !== vm.user.username) {
-          if (msgJson.msg_type === 4) {
-            vm.addChat(msgJson.username + ' join the room.')
-          }
-          if (msgJson.msg_type === 5) {
-            vm.addChat(msgJson.username + ' leave the room.')
-          }
-          if (msgJson.msg_type === 0) {
-            vm.addChat(msgJson.message, {
-              username: msgJson.username,
-              portrait: msgJson.portrait
-            })
+        if (msgJson.text || msgJson.username === 0) {
+          // Bot message
+          vm.addChat(msgJson.text || msgJson.message)
+        } else {
+          if (msgJson.username !== vm.user.username) {
+            if (msgJson.msg_type === 4) {
+              vm.addChat(msgJson.username + ' join the room.')
+            }
+            if (msgJson.msg_type === 5) {
+              vm.addChat(msgJson.username + ' leave the room.')
+            }
+            if (msgJson.msg_type === 0) {
+              vm.addChat(msgJson.message, {
+                username: msgJson.username,
+                portrait: msgJson.portrait
+              })
+            }
           }
         }
       },

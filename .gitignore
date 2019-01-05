@@ -30,3 +30,5 @@ db.sqlite3
 
 public/
 /project/setting.json
+/datasets
+datasets
