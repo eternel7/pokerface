@@ -59,8 +59,6 @@
     width: 30px;
     height: 30px;
     margin-top: 12px;
-    background-size: cover;
-    background-repeat: no-repeat;
   }
 
   #message.right div.img {
