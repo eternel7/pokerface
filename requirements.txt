@@ -67,7 +67,6 @@ PyHamcrest==1.9.0
 PyJWT==1.6.4
 pymongo==3.7.2
 pyparsing==2.3.0
-pypiwin32==223
 pyreadline==2.1
 python-dateutil==2.6.1
 python-twitter==3.5
