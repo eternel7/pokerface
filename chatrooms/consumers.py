@@ -24,11 +24,12 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     async def getuseravatar(username):
         # Get corresponding user avatar image
         user = User.objects.filter(username=username)
-        avatar_image = defaultImage
+        default_image = "/static/img/icons/apple-touch-icon-76x76.png"
         if user.count() == 1:
             user = user.first()
-            avatar_image = user.userinfo.avatarImage if user.userinfo and user.userinfo.avatarImage != "" else defaultImage
-        return avatar_image
+            avatar_image = user.userinfo.avatarImage if user.userinfo and user.userinfo.avatarImage != "" else default_image
+            return avatar_image
+        return default_image
     
     async def connect(self):
         print("websocket connection try")
@@ -170,12 +171,14 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         """
         Called when someone has joined our chat.
         """
+        avatar_image = await self.getuseravatar(event["username"])
         # Send a message down to the client
         await self.send_json(
             {
                 "msg_type": settings.MSG_TYPE_ENTER,
                 "room": event["room_id"],
-                "username": event["username"]
+                "username": event["username"],
+                "portrait": avatar_image
             },
         )
     
@@ -228,15 +231,15 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         message = ""
         # tokenize the pattern
         tokens = nltk.word_tokenize(event['message'])
-        clean_tokens = tokens[:]
         stpw_en = nltk.corpus.stopwords.words('english')
         stpw_fr = nltk.corpus.stopwords.words('french')
-        for token in tokens:
+        for token in tokens[:]:
             if token in stpw_en:
-                clean_tokens.remove(token)
+                tokens.remove(token)
+        for token in tokens[:]:
             if token in stpw_fr:
-                clean_tokens.remove(token)
-        freq = nltk.FreqDist(clean_tokens)
+                tokens.remove(token)
+        freq = nltk.FreqDist(tokens)
         for key, val in freq.items():
             message += str(key) + ':' + str(val) + ' - '
         await self.bot_message(message, event)
