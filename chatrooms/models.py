@@ -1,6 +1,7 @@
 from django.db import models
 import re
 
+
 class Room(models.Model):
     """
     A room for people to chat in.

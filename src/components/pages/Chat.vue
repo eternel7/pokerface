@@ -5,16 +5,18 @@
       <div id="close" v-on:click="backHome">
         <i class="material-icons">close</i>
       </div>
-      <ul v-if="users" id="connected" ref="connectedUsers" v-bind:class="{ collapse: pgNum<0 }">
+      <ul v-if="users" id="connected" ref="connectedUsers" v-bind:class="{ collapse: pgNum<0 || users.length<1}">
         <li v-for="u in connectedUsers" v-if="u.portrait">
           <img class="mdl-list__item-icon" v-bind:alt="u.username"
                v-bind:src="u.portrait"/>
           <span>{{u.username}}</span>
         </li>
-        <li class="paginate-tool" v-if="users.length>3">
+        <li class="paginate-tool" v-if="users.length>0">
           <i v-if="pgNum > -1" class="material-icons left link" @click="pgNum--">chevron_left</i>
-          <i @click="pgNum = (pgNum===0) ?  -1 : 0 " class="material-icons link  mdl-badge mdl-badge--overlap" v-bind:data-badge="users.length">supervised_user_circle</i>
-          <i v-if="pgNum < (users.length/pgSize - 1)"class="material-icons right link" @click="pgNum++">chevron_right</i>
+          <i @click="pgNum = (pgNum===0) ?  -1 : 0 " class="material-icons link  mdl-badge mdl-badge--overlap"
+             v-bind:data-badge="users.length">supervised_user_circle</i>
+          <i v-if="pgNum < (users.length/pgSize - 1)" class="material-icons right link"
+             @click="pgNum++">chevron_right</i>
         </li>
       </ul>
       <div id="user">{{chatroom.label}}</div>
@@ -82,7 +84,8 @@
         return this.$root.user
       },
       connectedUsers: function () {
-        return this.users.slice(this.pgNum * this.pgSize, (this.pgNum + 1) * this.pgSize)
+        let vm = this
+        return vm.users.slice(vm.pgNum * vm.pgSize, (vm.pgNum + 1) * vm.pgSize)
       }
     },
     created () {
@@ -120,29 +123,29 @@
         }
         vm.$nextTick(vm.scrollDown())
       },
-      addUserToRoom: function (username, portrait) {
-        this.users.push({'username': username, 'portrait': portrait})
+      addUserToRoom: function (username, allConnected) {
+        console.log('connection of', username, allConnected)
+        this.users = allConnected
       },
-      removeUserFromRoom: function (username) {
-        this.users = this.users.filter(function (row) {
-          return row.username !== username
-        })
+      removeUserFromRoom: function (username, allConnected) {
+        console.log('disconnection of', username, allConnected)
+        this.users = allConnected
       },
       manageMessage: function (msg) {
         let vm = this
-        // console.log('receiving message data', msg.data)
+        console.log('receiving message data', msg.data)
         let msgJson = JSON.parse(msg.data)
         if (msgJson.text || msgJson.username === 0) {
           // Bot message
           vm.addChat(msgJson.text || msgJson.message)
         } else {
+          if (msgJson.msg_type === 4) {
+            vm.addUserToRoom(msgJson.username, msgJson.all_users)
+          }
+          if (msgJson.msg_type === 5) {
+            vm.removeUserFromRoom(msgJson.username, msgJson.all_users)
+          }
           if (msgJson.username !== vm.user.username) {
-            if (msgJson.msg_type === 4) {
-              vm.addUserToRoom(msgJson.username, msgJson.portrait)
-            }
-            if (msgJson.msg_type === 5) {
-              vm.removeUserFromRoom(msgJson.username)
-            }
             if (msgJson.msg_type === 0) {
               vm.addChat(msgJson.message, {
                 username: msgJson.username,
@@ -251,7 +254,7 @@
     background-color: rgba(88, 88, 88, 0.34);
   }
 
-  #connected.collapse{
+  #connected.collapse {
     margin-top: 2vh;
   }
 
