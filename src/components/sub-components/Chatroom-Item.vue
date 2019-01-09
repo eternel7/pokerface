@@ -3,12 +3,14 @@
     <dialog :ref="'dialog'+chatroom.id" class="mdl-dialog">
       <h5>{{$t('data.New')}}</h5>
       <div class="mdl-dialog__content">
-        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
+             v-bind:class="{'is-dirty' : (label) ? true : false}">
           <input class="mdl-textfield__input" type="text" id="label" minlength="4"
                  v-model.trim="label"/>
           <label class="mdl-textfield__label" for="label">{{$t('data.Label')}}</label>
         </div>
-        <div class="mdl-textfield mdl-js-textfield">
+        <div class="mdl-textfield mdl-js-textfield"
+             v-bind:class="{'is-dirty' : (description) ? true : false}">
           <textarea class="mdl-textfield__input" type="text" rows="3" id="description"
                     v-model.trim="description"></textarea>
           <label class="mdl-textfield__label" for="description">{{$t('data.Description')}}</label>
@@ -148,6 +150,8 @@
         if (vm.$root.authenticated) {
           vm.label = ''
           vm.description = ''
+          vm.filename = ''
+          vm.$refs['fileInput'].value = ''
           let dialog = vm.$refs['dialog' + index]
           // eslint-disable-next-line no-undef
           dialogPolyfill.registerDialog(dialog)
@@ -170,12 +174,16 @@
         if (file !== undefined) {
           if (file.type === 'change') {
             if (vm.$refs[ref].files[0]) {
-              file = vm.$refs[ref].files[0]
               vm.$data[data] = vm.$refs[ref].files[0].name
             } else {
-              file = ''
               vm.$data[data] = ''
             }
+          } else if (file[0] && file[0].name) {
+            vm.$refs[ref].files = file
+            vm.$data[data] = file[0].name
+          }
+          if (vm.label === '') {
+            vm.label = vm.$data[data]
           }
         }
         return true
@@ -189,7 +197,7 @@
         const vm = this
         FileDrop.getFilesOnDrop(e, function (r) {
           if (r) {
-            vm.updateFile(r[0], ref, data)
+            vm.updateFile(r, ref, data)
           }
         })
         return true
@@ -260,8 +268,10 @@
 
   .filename {
     background-color: rgb(255, 64, 129);
+    box-shadow: 10px 0 0 rgb(255, 64, 129), -10px 0 0 rgb(255, 64, 129);
     color: #ffffff;
-    padding: 5px 10px 5px 10px;
+    padding: 5px 1px 5px 1px;
+    word-break: break-word;
   }
 
   .chatroom-item {
