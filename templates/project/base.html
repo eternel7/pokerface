@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimal-ui">
   <title>Pokerface</title>
   <link rel="icon" type="image/png" sizes="32x32"
         href="/static/img/icons/favicon-32x32.png">
@@ -89,6 +89,18 @@
         crossorigin="anonymous"></script>
 <script defer src="/static/js/dialog-polyfill.js" async
         crossorigin="anonymous"></script>
+<script crossorigin="anonymous">
+  var body = document.documentElement
+  if (body.requestFullscreen) {
+    body.requestFullscreen()
+  } else if (body.webkitrequestFullscreen) {
+    body.webkitrequestFullscreen()
+  } else if (body.mozrequestFullscreen) {
+    body.mozrequestFullscreen()
+  } else if (body.msrequestFullscreen) {
+    body.msrequestFullscreen()
+  }
+</script>
 {% if DJANGO_ENV  != 'DEV' or DJANGO_E2E_TEST %}
   {% block js %}
   {% endblock %}

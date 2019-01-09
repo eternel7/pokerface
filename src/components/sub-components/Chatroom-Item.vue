@@ -265,12 +265,17 @@
   }
 
   .chatroom-item {
+    border-left: 4px rgb(255, 255, 255) solid;
     text-align: left;
     background-color: #fff;
+    -webkit-transition: border 500ms ease;
+    -moz-transition: border 500ms ease;
+    -o-transition: border 500ms ease;
+    transition: border 500ms ease;
   }
 
   .chatroom-item:hover {
-    background-color: #eeeeee;
+    border-left: 4px rgb(255, 64, 129) solid;
     cursor: pointer;
     cursor: hand;
   }

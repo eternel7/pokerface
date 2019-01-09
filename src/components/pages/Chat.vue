@@ -6,10 +6,10 @@
         <i class="material-icons">close</i>
       </div>
       <ul v-if="users" id="connected" ref="connectedUsers" v-bind:class="{ collapse: pgNum<0 || users.length<1}">
-        <li v-for="u in connectedUsers" v-if="u.portrait">
+        <li v-for="u in connectedUsers" :key="u.username"
+            v-if="u.portrait">
           <img class="mdl-list__item-icon" v-bind:alt="u.username"
                v-bind:src="u.portrait"/>
-          <span>{{u.username}}</span>
         </li>
         <li class="paginate-tool" v-if="users.length>0">
           <i v-if="pgNum > -1" class="material-icons left link" @click="pgNum--">chevron_left</i>
@@ -22,7 +22,7 @@
       <div id="user">{{chatroom.label}}</div>
     </div>
     <div id="chat-messages" ref="chatmessages">
-      <div is="MsgItem" v-for="msg in chats"
+      <div is="MsgItem" v-for="msg in chats" :key="user.username + msg.date"
            v-bind:user="user"
            v-bind:chatroom="chatroom"
            v-bind:msg="msg"

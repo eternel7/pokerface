@@ -85,8 +85,8 @@
               v-bind:chatroom="chatroom"
               v-bind:search="search"
               v-on:edit="editRoom"
-              v-on:remove="removeRoom"
-          ></li>
+              v-on:remove="removeRoom">
+          </li>
         </transition-group>
       </ul>
       <div v-else-if="$root.loading===false">
