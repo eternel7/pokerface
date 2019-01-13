@@ -34,7 +34,7 @@ class Room(models.Model):
 
 
 def generate_path(data, filename):
-    url = "datasets/%s/%s" % (re.sub('[^a-z0-9]+', '', data.room.label.lower()),
+    url = "datasets/%s/%s" % (re.sub('[^a-z0-9]+', '', data.room.group_name.lower()),
                                  filename)
     return url
 
