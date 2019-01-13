@@ -1,13 +1,20 @@
 <template>
   <div id="message" v-bind:class="{ 'right': msg.origin===1, 'left': msg.origin!==1}">
-    <img v-if="msg.origin===1" alt="Me" v-bind:src="user.avatar_image"/>
-    <img v-if="msg.origin.portrait" v-bind:alt="msg.origin.username" v-bind:src="msg.origin.portrait"/>
-    <div class="img" v-if="msg.origin===0" alt="Bot"
-         v-bind:style="'background-image: url(' + chatroom.portrait + ')'"></div>
-    <div class="bubble">
-      {{msg.message}}
+    <div class="img-and-bubble">
+      <img v-if="msg.origin===1" alt="Me" v-bind:src="user.avatar_image"/>
+      <img v-else-if="msg.origin===0" alt="Me" v-bind:src="chatroom.portrait"/>
+      <img v-else-if="msg.origin.portrait" v-bind:alt="msg.origin.username" v-bind:src="msg.origin.portrait"/>
+      <div class="bubble">
+        {{msg.message}}
+      </div>
     </div>
-    <div v-if="!msg.origin.portrait" class="time">{{msg.date.toLocaleTimeString()}}</div>
+    <div v-if="!msg.origin.portrait" class="time">{{msg.date.toLocaleTimeString()}}
+      <button v-if="msg.origin===1" v-bind:class="{ 'question': msg.question}"
+              class="mdl-button mdl-js-button mdl-button--icon"
+              @click="$emit('changeQuestion')">
+        <i class="material-icons">playlist_add_check</i>
+      </button>
+    </div>
     <div v-else class="time">{{msg.date.toLocaleTimeString() + ' - ' + msg.origin.username}}</div>
   </div>
 </template>
@@ -22,9 +29,10 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   #message {
+    display: flex;
+    flex-direction: column;
     padding: 0 0 5px 58px;
     clear: both;
-    margin-bottom: 0.5vh;
     text-align: left;
     max-width: 60%;
   }
@@ -36,48 +44,40 @@
     margin-left: 19px;
   }
 
+  #message div.img-and-bubble {
+    position: relative;
+  }
+
   #message img {
-    bottom: 1vh;
-    float: left;
-    margin-left: -38px;
+    position: absolute;
+    bottom: 0;
+    left: -38px;
     border-radius: 50%;
     width: 30px;
     margin-top: 12px;
   }
 
   #message.right img {
-    float: right;
-    margin-left: 0;
-    margin-right: -38px;
-  }
-
-  #message div.img {
-    bottom: 1vh;
-    float: left;
-    margin-left: -38px;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    margin-top: 12px;
-  }
-
-  #message.right div.img {
-    float: right;
-    margin-left: 0;
-    margin-right: -38px;
+    right: -38px;
+    left: auto;
   }
 
   #message .bubble {
+    position: relative;
+    float: left;
     background: #dbe3f9;
     font-size: 13px;
     font-weight: 600;
     padding: 12px 13px;
     border-radius: 5px 5px 5px 0px;
     color: #365dad;
-    position: relative;
-    float: left;
     width: max-content;
     max-width: 100%; /* do not oversize message width*/
+  }
+
+  #message.right .bubble {
+    float: right;
+    border-radius: 5px 5px 0px 5px;
   }
 
   #message .bubble:after {
@@ -99,11 +99,6 @@
     margin-left: -7px;
   }
 
-  #message.right .bubble {
-    float: right;
-    border-radius: 5px 5px 0px 5px;
-  }
-
   #message.right .bubble:after {
     right: 0;
     border-left-color: #dbe3f9;
@@ -116,15 +111,22 @@
     color: #8eace8;
     font-size: 0.8em;
     position: relative;
-    bottom: -0.5vh;
+    bottom: 0;
+    margin-bottom: 0.5em;
     width: max-content;
   }
 
   #message.left > .time {
-    left: 0;
+    margin-left: 0;
+    margin-right: auto;
   }
 
   #message.right > .time {
-    right: 0;
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  #message .question {
+    color: #64DD17;
   }
 </style>

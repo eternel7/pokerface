@@ -22,11 +22,12 @@
       <div id="user">{{chatroom.label}}</div>
     </div>
     <div id="chat-messages" ref="chatmessages">
-      <div is="MsgItem" v-for="msg in chats" :key="user.username + msg.date"
+      <div is="MsgItem" v-for="msg in chats" :key="chats.indexOf(msg)"
            v-bind:user="user"
            v-bind:chatroom="chatroom"
            v-bind:msg="msg"
-           v-bind:now="now">
+           v-bind:now="now"
+           v-on:changeQuestion="updateQuestion(msg)">
       </div>
     </div>
     <div id="sendmessage">
@@ -103,6 +104,9 @@
       }
     },
     methods: {
+      updateQuestion: function (msg) {
+        msg.question = !msg.question
+      },
       backHome: function () {
         this.$router.push({name: 'Home'})
       },
@@ -118,7 +122,8 @@
           vm.chats.push({
             origin: user,
             message: msg,
-            date: new Date()
+            date: new Date(),
+            question: false
           })
         }
         vm.$nextTick(vm.scrollDown())
@@ -184,7 +189,8 @@
             origin: 1,
             command: 'send',
             message: txt,
-            date: new Date()
+            date: new Date(),
+            question: false
           })
           vm.$nextTick(vm.tryGetResponse({
             origin: 1,
