@@ -48,6 +48,7 @@
   import MsgItem from '@/components/sub-components/Msg-item'
   import {authMixin} from '@/auth/authMixin.js'
   import ReconnectingWebSocket from 'reconnecting-websocket'
+  import axios from 'axios'
 
   export default {
     name: 'chat',
@@ -105,7 +106,40 @@
     },
     methods: {
       updateQuestion: function (msg) {
+        let vm = this
         msg.question = !msg.question
+        if (msg.question === true || msg.post_id) {
+          let postIndex = vm.chats.indexOf(msg)
+          msg.room = vm.$route.params.id
+          axios.post('/api/chatroomquestion/', msg, vm.authHeader())
+            .then(function (response) {
+              // handle success
+              vm.$root.loading = false
+              if (response.data.post) {
+                vm.$set(vm.chats, postIndex, msg)
+                vm.$set(msg, 'post_id', response.data.post.post_id)
+                if (msg.question) {
+                  vm.$root.showSnackbar(vm.$i18n.t('post.savedAsQuestion'))
+                } else {
+                  vm.$root.showSnackbar(vm.$i18n.t('post.notAQuestionAnymore'))
+                }
+              } else {
+                vm.errors = []
+                vm.errors.push({message: response.data.message})
+              }
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error)
+              vm.$root.loading = false
+              vm.errors = []
+              vm.errors.push(error)
+            })
+            .then(function () {
+              // always executed
+              vm.$root.loading = false
+            })
+        }
       },
       backHome: function () {
         this.$router.push({name: 'Home'})

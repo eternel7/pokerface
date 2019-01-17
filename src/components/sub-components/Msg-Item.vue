@@ -7,13 +7,13 @@
       <div class="bubble">
         {{msg.message}}
       </div>
+      <div v-if="msg.origin===1" class="link mdl-badge mdl-badge--overlap"
+           v-bind:class="{ 'is-it-a-question': !msg.question}"
+           v-bind:data-badge="(msg.question) ? msg.post_id : '?' " @click="$emit('changeQuestion')">
+      </div>
     </div>
-    <div v-if="!msg.origin.portrait" class="time">{{msg.date.toLocaleTimeString()}}
-      <button v-if="msg.origin===1" v-bind:class="{ 'question': msg.question}"
-              class="mdl-button mdl-js-button mdl-button--icon"
-              @click="$emit('changeQuestion')">
-        <i class="material-icons">playlist_add_check</i>
-      </button>
+    <div v-if="!msg.origin.portrait" class="time">
+      {{msg.date.toLocaleTimeString()}}
     </div>
     <div v-else class="time">{{msg.date.toLocaleTimeString() + ' - ' + msg.origin.username}}</div>
   </div>
@@ -28,6 +28,11 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  .is-it-a-question:after {
+    color: #ffffff;
+    background-color: #4CAF50;
+  }
+
   #message {
     display: flex;
     flex-direction: column;
@@ -124,9 +129,5 @@
   #message.right > .time {
     margin-left: auto;
     margin-right: 0;
-  }
-
-  #message .question {
-    color: #64DD17;
   }
 </style>

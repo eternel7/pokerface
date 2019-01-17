@@ -2,6 +2,7 @@ from django.db import models
 import re
 import PyPDF2
 import threading
+from django.contrib.auth.models import User
 
 
 class Room(models.Model):
@@ -35,7 +36,7 @@ class Room(models.Model):
 
 def generate_path(data, filename):
     url = "datasets/%s/%s" % (re.sub('[^a-z0-9]+', '', data.room.group_name.lower()),
-                                 filename)
+                              filename)
     return url
 
 
@@ -83,3 +84,23 @@ class Data(models.Model):
     
     class Meta:
         ordering = ('label',)
+
+
+class Post(models.Model):
+    """
+    A Post.
+    """
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='room_posts')
+    body = models.TextField(default='')
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_posts')
+    type = models.IntegerField(default=0)
+    answer = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True,
+                               related_name='question')
+    last_editor = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True,
+                                    related_name='user_last_edit')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return "<Post: {}-{}-{}<>".format(self.owner.__str__(), self.room.__str__(),
+                                          (self.body[:8] + '..') if len(self.body) > 10 else self.body)
