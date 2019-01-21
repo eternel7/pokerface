@@ -45,12 +45,12 @@
   .is-it-a-question-blink:after {
     color: #ffffff;
     background-color: #4CAF50;
-    animation: myfirst 5s;
-    -moz-animation: myfirst 5s infinite; /* Firefox */
-    -webkit-animation: myfirst 5s infinite; /* Safari and Chrome */
+    animation: colorRotate 5s infinite;
+    -moz-animation: colorRotate 5s infinite; /* Firefox */
+    -webkit-animation: colorRotate 5s infinite; /* Safari and Chrome */
   }
 
-  @-moz-keyframes myfirst /* Firefox */
+  @-moz-keyframes colorRotate /* Firefox */
   {
     0% {
       background: #4CAF50;
@@ -66,7 +66,23 @@
     }
   }
 
-  @-webkit-keyframes myfirst /* Safari and Chrome */
+  @-webkit-keyframes colorRotate /* Safari and Chrome */
+  {
+    0% {
+      background: #4CAF50;
+      -webkit-filter: hue-rotate(0deg);
+    }
+    50% {
+      background: rgb(255, 64, 129);
+      -webkit-filter: hue-rotate(360deg);
+    }
+    100% {
+      background: #4CAF50;
+      -webkit-filter: hue-rotate(0deg);
+    }
+  }
+
+  @keyframes colorRotate /* Safari and Chrome */
   {
     0% {
       background: #4CAF50;
