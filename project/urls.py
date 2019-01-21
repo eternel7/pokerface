@@ -42,4 +42,5 @@ urlpatterns = [
   re_path(r'^api/chatroomdata/', chatrooms_views.chatroom_addData, name='postChatroomData'),
   re_path(r'^api/chatroomquestion/', chatrooms_views.chat_question, name='postChatroomQuestion'),
   re_path(r'^$', HomePageView.as_view(), name='home'),
+  re_path(r'^index.html', HomePageView.as_view(), name='home'),
 ]
