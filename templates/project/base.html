@@ -88,6 +88,12 @@
         crossorigin="anonymous"></script>
 <script defer src="/static/js/dialog-polyfill.js" async
         crossorigin="anonymous"></script>
+<script type="text/javascript">
+  var isAndroid = navigator.userAgent.toLowerCase().indexOf("android") > -1; //&& ua.indexOf("mobile");
+  if (isAndroid) {
+    document.write('<meta name="viewport" content="width=device-width,height=' + window.innerHeight + ', initial-scale=1.0">');
+  }
+</script>
 {% if DJANGO_ENV  != 'DEV' or DJANGO_E2E_TEST %}
   {% block js %}
   {% endblock %}
