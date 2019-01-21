@@ -57,7 +57,8 @@
     extends: PageBase,
     components: {
       navbar: NavBar,
-      loading: Loading
+      loading: Loading,
+      alreadyGoneFullScreenOnce: false
     },
     data () {
       return {
@@ -80,14 +81,22 @@
       },
       requestFullScreen: function () {
         let elem = document.getElementById('app-content')
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen()
-        } else if (elem.msRequestFullscreen) {
-          elem.msRequestFullscreen()
-        } else if (elem.mozRequestFullScreen) {
-          elem.mozRequestFullScreen()
-        } else if (elem.webkitRequestFullscreen) {
-          elem.webkitRequestFullscreen()
+        if (!this.alreadyGoneFullScreenOnce &&
+          !(document.fullscreenElement ||
+            document.webkitFullscreenElement ||
+            document.mozFullScreenElement ||
+            document.msFullscreenElement)
+        ) {
+          this.alreadyGoneFullScreenOnce = true
+          if (elem.requestFullscreen) {
+            elem.requestFullscreen()
+          } else if (elem.msRequestFullscreen) {
+            elem.msRequestFullscreen()
+          } else if (elem.mozRequestFullScreen) {
+            elem.mozRequestFullScreen()
+          } else if (elem.webkitRequestFullscreen) {
+            elem.webkitRequestFullscreen()
+          }
         }
       }
     }

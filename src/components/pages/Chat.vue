@@ -407,7 +407,6 @@
 
   #chat-messages {
     height: 60vh;
-    margin-top: 1vh;
     overflow-y: scroll;
     overflow-x: hidden;
     padding-right: 20px;

@@ -8,7 +8,8 @@
         {{msg.message}}
       </div>
       <div v-if="msg.origin===1" class="link mdl-badge mdl-badge--overlap"
-           v-bind:class="{ 'is-it-a-question': !msg.question}"
+           v-bind:class="{ 'is-it-a-question': !msg.question,
+           'is-it-a-question-blink': couldBeAQuestion(msg)}"
            v-bind:data-badge="(msg.question) ? msg.post_id : '?' " @click="$emit('changeQuestion')">
       </div>
     </div>
@@ -22,7 +23,15 @@
 <script>
   export default {
     name: 'msg-item',
-    props: ['msg', 'user', 'chatroom', 'now']
+    props: ['msg', 'user', 'chatroom', 'now'],
+    methods: {
+      couldBeAQuestion: function (msg) {
+        if (msg.message.endsWith('?')) {
+          return true
+        }
+        return false
+      }
+    }
   }
 </script>
 
@@ -33,6 +42,46 @@
     background-color: #4CAF50;
   }
 
+  .is-it-a-question-blink:after {
+    color: #ffffff;
+    background-color: #4CAF50;
+    animation: myfirst 5s;
+    -moz-animation: myfirst 5s infinite; /* Firefox */
+    -webkit-animation: myfirst 5s infinite; /* Safari and Chrome */
+  }
+
+  @-moz-keyframes myfirst /* Firefox */
+  {
+    0% {
+      background: #4CAF50;
+      filter: hue-rotate(0deg);
+    }
+    50% {
+      background: rgb(255, 64, 129);
+      filter: hue-rotate(360deg);
+    }
+    100% {
+      background: #4CAF50;
+      filter: hue-rotate(0deg);
+    }
+  }
+
+  @-webkit-keyframes myfirst /* Safari and Chrome */
+  {
+    0% {
+      background: #4CAF50;
+      -webkit-filter: hue-rotate(0deg);
+    }
+    50% {
+      background: rgb(255, 64, 129);
+      -webkit-filter: hue-rotate(360deg);
+    }
+    100% {
+      background: #4CAF50;
+      -webkit-filter: hue-rotate(0deg);
+    }
+  }
+
   #message {
     display: flex;
     flex-direction: column;
@@ -40,6 +89,7 @@
     clear: both;
     text-align: left;
     max-width: 60%;
+    margin-top: 1vh;
   }
 
   #message.right {
@@ -73,10 +123,11 @@
     background: #dbe3f9;
     font-size: 13px;
     font-weight: 600;
-    padding: 12px 13px;
+    padding: 8px 8px;
     border-radius: 5px 5px 5px 0px;
     color: #365dad;
     width: max-content;
+    word-break: break-word;
     max-width: 100%; /* do not oversize message width*/
   }
 
