@@ -1,5 +1,5 @@
 <template>
-  <div id="app-content" class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+  <div id="app-content" class="mdl-layout mdl-js-layout mdl-layout--fixed-header" @click="requestFullScreen">
     <loading></loading>
     <transition name="fade-slide-up" mode="out-in">
       <header v-show="!!headerAvailable" class="mdl-layout__header">
@@ -76,6 +76,18 @@
           let layout = document.querySelector('.mdl-layout')
           layout.MaterialLayout.toggleDrawer()
           history.go(-1)
+        }
+      },
+      requestFullScreen: function () {
+        let elem = document.getElementById('app-content')
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen()
+        } else if (elem.msRequestFullscreen) {
+          elem.msRequestFullscreen()
+        } else if (elem.mozRequestFullScreen) {
+          elem.mozRequestFullScreen()
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen()
         }
       }
     }
