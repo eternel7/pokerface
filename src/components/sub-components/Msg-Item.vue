@@ -4,13 +4,25 @@
       <img v-if="msg.origin===1" alt="Me" v-bind:src="user.avatar_image"/>
       <img v-else-if="msg.origin===0" alt="Me" v-bind:src="chatroom.portrait"/>
       <img v-else-if="msg.origin.portrait" v-bind:alt="msg.origin.username" v-bind:src="msg.origin.portrait"/>
-      <div class="bubble">
-        {{msg.message}}
-      </div>
-      <div v-if="msg.origin===1" class="link mdl-badge mdl-badge--overlap"
-           v-bind:class="{ 'is-it-a-question': !msg.question,
-           'is-it-a-question-blink': couldBeAQuestion(msg)}"
-           v-bind:data-badge="(msg.question) ? msg.post_id : '?' " @click="$emit('changeQuestion')">
+      <div :id="'badge_menu'+msg.identifier"
+           v-bind:class="{ 'mdl-menu--bottom-right': msg.origin===1, 'mdl-menu--bottom-left': msg.origin!==1}">
+        <div class="bubble">
+          {{msg.message}}
+        </div>
+        <div v-if="msg.origin===1" class="link mdl-badge mdl-badge--overlap"
+             v-bind:class="{ 'is-it-a-question': !msg.question,
+                             'is-it-a-question-blink': couldBeAQuestion(msg)}"
+             v-bind:data-badge="badge_icon">
+        </div>
+        <ul v-if="!msg.origin.portrait" class="mdl-menu mdl-js-menu mdl-js-ripple-effect"
+            v-bind:class="{ 'mdl-menu--bottom-right': msg.origin===1, 'mdl-menu--bottom-left': msg.origin!==1}"
+            :for="'badge_menu'+msg.identifier" :data-mdl-for="'badge_menu'+msg.identifier">
+          <li v-for="action in badge_menu_actions" v-on:click="doAction(action.js, msg, action)"
+              class="mdl-menu__item" v-bind:class="{ 'mdl-menu__item--full-bleed-divider': action.separatorAfter}">
+            <span v-if="action.post" :title="action.post.body">{{$t('badge_menu.action.' + action.labelId)}} {{action.post.id}}</span>
+            <span v-else>{{$t('badge_menu.action.' + action.labelId)}}</span>
+          </li>
+        </ul>
       </div>
     </div>
     <div v-if="!msg.origin.portrait" class="time">
@@ -21,16 +33,129 @@
 </template>
 
 <script>
+  import {authMixin} from '@/auth/authMixin.js'
+  import axios from 'axios'
+
+  require('material-design-lite')
+
   export default {
     name: 'msg-item',
-    props: ['msg', 'user', 'chatroom', 'now'],
-    methods: {
-      couldBeAQuestion: function (msg) {
-        if (msg.message.endsWith('?')) {
-          return true
+    mixins: [authMixin],
+    props: ['msg', 'user', 'chatroom', 'questions'],
+    data: function () {
+      return {update_version: 0}
+    },
+    computed: {
+      badge_icon: function () {
+        if (this.msg.question) {
+          return this.msg.post_id || '...'
+        } else {
+          if (this.msg.message.endsWith('?')) {
+            return '?'
+          }
+          return '⋮'
         }
-        return false
+      },
+      type: function () {
+        if (this.msg.question) {
+          return 'question'
+        }
+        if (this.msg.answer) {
+          return 'answered_question'
+        }
+        if (this.msg.question) {
+          return 'answer'
+        }
+        return 'message'
+      },
+      badge_menu_actions: function () {
+        let vm = this
+        let entries = [{
+          'js': 'editMsg',
+          'labelId': 'editMsg'
+        }, {
+          'js': 'changeQuestion',
+          'labelId': 'isAQuestion',
+          'separatorAfter': true
+        }
+        ]
+        if (vm.questions instanceof Array && vm.questions.length > 0) {
+          let qEntries = []
+          for (const q of vm.questions) {
+            qEntries.push({
+              'js': 'AnswerTo',
+              'labelId': 'AnswerTo',
+              'post': q
+            })
+          }
+          qEntries.sort((a, b) => (a.post.id > b.post.id) ? 1 : (b.post.id > a.post.id) ? -1 : 0)
+          for (let action in qEntries) {
+            entries.push(qEntries[action])
+          }
+        }
+        return entries
       }
+    },
+    methods: {
+      updatemdl: function () {
+        // eslint-disable-next-line
+        componentHandler.upgradeDom()
+        // eslint-disable-next-line
+        componentHandler.upgradeAllRegistered()
+      },
+      couldBeAQuestion: function (msg) {
+        return !!(!msg.question && msg.message.endsWith('?'))
+      },
+      doAction: function (actionName, msg, action) {
+        let vm = this
+        if (actionName === 'changeQuestion') {
+          vm.updateQuestion(msg, action)
+        }
+      },
+      updateQuestion: function (msg) {
+        let vm = this
+        msg.question = !msg.question
+        if (msg.question === true || msg.post_id) {
+          // let postIndex = vm.chats.indexOf(msg)
+          msg.room = vm.$route.params.id
+          axios.post('/api/chatroomquestion/', msg, vm.authHeader())
+            .then(function (response) {
+              // handle success
+              vm.$root.loading = false
+              if (response.data.post) {
+                // vm.$set(vm.chats, postIndex, msg)
+                vm.$set(msg, 'post_id', response.data.post.post_id)
+                if (msg.question) {
+                  vm.$root.showSnackbar(vm.$i18n.t('post.savedAsQuestion'))
+                } else {
+                  vm.$root.showSnackbar(vm.$i18n.t('post.notAQuestionAnymore'))
+                }
+                if (response.data.questions && vm.$root.questions instanceof Object) {
+                  vm.$set(vm.$root.questions, vm.$route.params.id, response.data.questions)
+                }
+              } else {
+                vm.errors = []
+                vm.errors.push({message: response.data.message})
+              }
+            })
+            .catch(function (error) {
+              // handle error
+              console.log(error)
+              vm.$root.loading = false
+              vm.errors = []
+              vm.errors.push(error)
+            })
+            .then(function () {
+              // always executed
+              vm.$root.loading = false
+              vm.$nextTick(vm.updatemdl())
+            })
+        }
+      }
+    },
+    mounted: function () {
+      let vm = this
+      vm.updatemdl()
     }
   }
 </script>

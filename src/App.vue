@@ -1,5 +1,5 @@
 <template>
-  <div id="app-content" class="mdl-layout mdl-js-layout mdl-layout--fixed-header" @click="requestFullScreen">
+  <div id="app-content" class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
     <loading></loading>
     <transition name="fade-slide-up" mode="out-in">
       <header v-show="!!headerAvailable" class="mdl-layout__header">
@@ -57,8 +57,7 @@
     extends: PageBase,
     components: {
       navbar: NavBar,
-      loading: Loading,
-      alreadyGoneFullScreenOnce: false
+      loading: Loading
     },
     data () {
       return {
@@ -77,26 +76,6 @@
           let layout = document.querySelector('.mdl-layout')
           layout.MaterialLayout.toggleDrawer()
           history.go(-1)
-        }
-      },
-      requestFullScreen: function () {
-        let elem = document.getElementById('app-content')
-        if (!this.alreadyGoneFullScreenOnce &&
-          !(document.fullscreenElement ||
-            document.webkitFullscreenElement ||
-            document.mozFullScreenElement ||
-            document.msFullscreenElement)
-        ) {
-          this.alreadyGoneFullScreenOnce = true
-          if (elem.requestFullscreen) {
-            elem.requestFullscreen()
-          } else if (elem.msRequestFullscreen) {
-            elem.msRequestFullscreen()
-          } else if (elem.mozRequestFullScreen) {
-            elem.mozRequestFullScreen()
-          } else if (elem.webkitRequestFullscreen) {
-            elem.webkitRequestFullscreen()
-          }
         }
       }
     }

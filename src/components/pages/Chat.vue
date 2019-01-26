@@ -26,8 +26,7 @@
            v-bind:user="user"
            v-bind:chatroom="chatroom"
            v-bind:msg="msg"
-           v-bind:now="now"
-           v-on:changeQuestion="updateQuestion(msg)">
+           v-bind:questions="questions">
       </div>
     </div>
     <div id="sendmessage">
@@ -62,10 +61,10 @@
         displayBack: true,
         displayHeader: false,
         chats: [],
+        nextId: 1,
         users: [],
         pgNum: 0,
         pgSize: 3,
-        now: Date.now(),
         chatSocket: undefined
       }
     },
@@ -88,6 +87,13 @@
       connectedUsers: function () {
         let vm = this
         return vm.users.slice(vm.pgNum * vm.pgSize, (vm.pgNum + 1) * vm.pgSize)
+      },
+      questions: function () {
+        let vm = this
+        if (vm.$root.questions instanceof Object) {
+          return (vm.$root.questions[vm.$route.params.id]) ? vm.$root.questions[vm.$route.params.id] : []
+        }
+        return []
       }
     },
     created () {
@@ -95,6 +101,7 @@
         this.$router.push({name: 'Home'})
       } else {
         let vm = this
+        vm.tryGetChatroomQuestion()
         vm.$nextTick(vm.scrollDown())
         vm.startChatSession()
       }
@@ -105,41 +112,33 @@
       }
     },
     methods: {
-      updateQuestion: function (msg) {
+      tryGetChatroomQuestion (evt) {
         let vm = this
-        msg.question = !msg.question
-        if (msg.question === true || msg.post_id) {
-          let postIndex = vm.chats.indexOf(msg)
-          msg.room = vm.$route.params.id
-          axios.post('/api/chatroomquestion/', msg, vm.authHeader())
-            .then(function (response) {
-              // handle success
-              vm.$root.loading = false
-              if (response.data.post) {
-                vm.$set(vm.chats, postIndex, msg)
-                vm.$set(msg, 'post_id', response.data.post.post_id)
-                if (msg.question) {
-                  vm.$root.showSnackbar(vm.$i18n.t('post.savedAsQuestion'))
-                } else {
-                  vm.$root.showSnackbar(vm.$i18n.t('post.notAQuestionAnymore'))
-                }
-              } else {
-                vm.errors = []
-                vm.errors.push({message: response.data.message})
-              }
-            })
-            .catch(function (error) {
-              // handle error
-              console.log(error)
-              vm.$root.loading = false
+        vm.errors = []
+        vm.$root.loading = true
+        let roomId = vm.$route.params.id
+        axios.get('/api/chatroomquestions/' + roomId, vm.authHeader())
+          .then(function (response) {
+            vm.$root.loading = false
+            // handle success
+            if (response.data.questions) {
+              vm.$set(vm.$root.questions, roomId, response.data.questions)
+            } else {
               vm.errors = []
-              vm.errors.push(error)
-            })
-            .then(function () {
-              // always executed
-              vm.$root.loading = false
-            })
-        }
+              vm.errors.push({message: response.data.message})
+            }
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error)
+            vm.$root.loading = false
+            vm.errors = []
+            vm.errors.push(error)
+          })
+          .then(function () {
+            // always executed
+            vm.$root.loading = false
+          })
       },
       backHome: function () {
         this.$router.push({name: 'Home'})
@@ -148,12 +147,14 @@
         let vm = this
         if (msg && !user) {
           vm.chats.push({
+            identifier: vm.nextId++,
             origin: 0,
             message: msg,
             date: new Date()
           })
         } else if (msg) {
           vm.chats.push({
+            identifier: vm.nextId++,
             origin: user,
             message: msg,
             date: new Date(),
@@ -219,7 +220,9 @@
         let msg = vm.$refs['message']
         if (msg.value && msg.value.length > 0) {
           let txt = msg.value
+          txt = txt.trim()
           vm.chats.push({
+            identifier: vm.nextId++,
             origin: 1,
             command: 'send',
             message: txt,

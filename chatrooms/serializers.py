@@ -52,11 +52,16 @@ class PostSerializer(serializers.ModelSerializer):
                                                 allow_empty=True,
                                                 read_only=False,
                                                 queryset=Post.objects.all())
+    answer_to = serializers.PrimaryKeyRelatedField(required=False,
+                                                allow_null=True,
+                                                allow_empty=True,
+                                                read_only=False,
+                                                queryset=Post.objects.all())
     room = serializers.PrimaryKeyRelatedField(required=True,
                                               read_only=False,
                                               queryset=Room.objects.all())
     
     class Meta:
         model = Post
-        fields = ('id', 'body', 'owner', 'answer', 'last_editor', 'room',
+        fields = ('id', 'body', 'owner', 'answer', 'answer_to', 'last_editor', 'room',
                   'created_at', 'updated_at')

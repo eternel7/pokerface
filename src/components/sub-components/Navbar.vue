@@ -14,6 +14,11 @@
         {{ $t('Nav.Logout') }}
       </router-link>
       <localizerChooser></localizerChooser>
+      <div class="mdl-navigation__link link" @click="requestFullScreen">
+        <i v-if="!fullscreen" class="material-icons">fullscreen</i>
+        <i v-else class="material-icons">fullscreen_exit</i>
+        <span>{{$t('Fullscreen')}}</span>
+      </div>
     </nav>
   </div>
 </template>
@@ -42,6 +47,11 @@
       localizerChooser: LocalizerChooser
     },
     props: ['backAvailable'],
+    data: function () {
+      return {
+        fullscreen: false
+      }
+    },
     methods: {
       hideMenu: function () {
         let layout = document.querySelector('.mdl-layout')
@@ -50,6 +60,44 @@
       tryToLogout: function () {
         authMixin.methods.logout(this)
         this.hideMenu()
+      },
+      requestFullScreen: function () {
+        let elem = document.getElementById('app-content')
+        if (elem) {
+          if (elem.requestFullscreen) {
+            if (document.fullscreenElement) {
+              document.exitFullscreen()
+              this.fullscreen = false
+            } else {
+              elem.requestFullscreen()
+              this.fullscreen = true
+            }
+          } else if (elem.msRequestFullscreen) {
+            if (document.msFullscreenElement) {
+              document.msExitFullscreen()
+              this.fullscreen = false
+            } else {
+              elem.msRequestFullscreen()
+              this.fullscreen = true
+            }
+          } else if (elem.mozRequestFullScreen) {
+            if (document.mozFullScreenElement) {
+              document.mozCancelFullScreen()
+              this.fullscreen = false
+            } else {
+              elem.mozRequestFullScreen()
+              this.fullscreen = true
+            }
+          } else if (elem.webkitRequestFullscreen) {
+            if (document.webkitFullscreenElement) {
+              document.webkitExitFullscreen()
+              this.fullscreen = false
+            } else {
+              elem.webkitRequestFullscreen()
+              this.fullscreen = true
+            }
+          }
+        }
       }
     },
     watch: {

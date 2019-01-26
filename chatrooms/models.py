@@ -96,6 +96,8 @@ class Post(models.Model):
     type = models.IntegerField(default=0)
     answer = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True,
                                related_name='question')
+    answer_to = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True,
+                                  related_name='question_answer_by')
     last_editor = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True,
                                     related_name='user_last_edit')
     created_at = models.DateTimeField(auto_now_add=True)

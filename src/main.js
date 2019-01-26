@@ -59,6 +59,7 @@ function rootDefault () {
     actionHandler: false,
     actionText: false,
     chatrooms: [],
+    questions: {},
     errors: [],
     searchAvailable: false,
     backAvailable: false,

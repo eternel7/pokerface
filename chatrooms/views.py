@@ -130,7 +130,9 @@ def chat_question(request, format='json'):
                         "message": post.body,
                         "date": post.created_at,
                         "type": post.type}
-                return JsonResponse({"post": data}, status=status.HTTP_200_OK)
+
+                questions = PostSerializer(Post.objects.filter(room=request.data['room'], type=1), many=True)
+                return JsonResponse({"post": data, "questions": questions.data}, status=status.HTTP_200_OK)
         else:
             data = {
                 "body": request.data['message'],
@@ -146,8 +148,21 @@ def chat_question(request, format='json'):
                             "message": data.body,
                             "date": data.created_at,
                             "type": data.type}
-                    return JsonResponse({"post": post}, status=status.HTTP_200_OK)
+                    questions = PostSerializer(Post.objects.filter(room=request.data['room'], type=1), many=True)
+                    return JsonResponse({"post": post, "questions": questions.data}, status=status.HTTP_200_OK)
                 return JsonResponse({"message": "chatrooms.couldNotAddDataToTheRoom"}, status=status.HTTP_201_CREATED)
             return JsonResponse({"message": "chatrooms.invalidRequestDataGiven", "errors": serializer.errors},
                                 status=status.HTTP_200_OK)
+    return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@csrf_exempt
+def chat_questions(request, room_id, format='json'):
+    user = get_user_from_token(get_authorization_header(request))
+    if user:
+        if room_id:
+            questions = PostSerializer(Post.objects.filter(room=room_id, type=1), many=True)
+            return JsonResponse({"questions": questions.data}, status=status.HTTP_200_OK)
+        return JsonResponse({"message": "chatroom.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
     return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)

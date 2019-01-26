@@ -169,5 +169,17 @@
       "remove": "Supprimer",
       "addData": "Ajouter des informations"
     }
+  },
+  "Fullscreen": "Plein écran",
+  "badge_menu": {
+    "action": {
+      "editMsg": "Modifier",
+      "isAQuestion": "Est-ce une question?",
+      "AnswerTo": "Réponse à"
+    }
+  },
+  "post": {
+    "savedAsQuestion": "Sauvegardé en tant que question",
+    "notAQuestionAnymore": "N'est plus une question"
   }
 }
