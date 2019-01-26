@@ -382,9 +382,11 @@
     list-style-type: none;
     padding: 0;
   }
-  h4.solo{
+
+  h4.solo {
     color: #eeeeee;
   }
+
   .mdl-dialog {
     text-align: center;
     top: 2vh;
@@ -395,6 +397,12 @@
     position: fixed;
     bottom: 2vh;
     right: 2vw;
+  }
+
+  .fade-slide-right-leave-active button.mdl-button--fab,
+  .fade-slide-right-enter-active button.mdl-button--fab {
+    display: none;
+    visibility: hidden;
   }
 
   .link-accent {
