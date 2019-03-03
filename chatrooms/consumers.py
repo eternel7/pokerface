@@ -278,8 +278,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         """
         # tokenize the pattern
         user_entry = event['message'].lower()
-        robo_response = ''
-        f = open('datasets/room7/chatbot.txt', 'r', errors='ignore')
+        f = open('static/chat.txt', 'r', errors='ignore')
         raw = f.read()
         raw = raw.lower()
         sent_tokens = nltk.sent_tokenize(raw)  # converts to list of sentences
