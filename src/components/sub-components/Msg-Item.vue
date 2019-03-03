@@ -1,5 +1,5 @@
 <template>
-  <div id="message" v-bind:class="{ 'right': msg.origin===1, 'left': msg.origin!==1}">
+  <div id="message" class="messages" v-bind:class="{ 'right': msg.origin===1, 'left': msg.origin!==1}">
     <div class="img-and-bubble">
       <img v-if="msg.origin===1" alt="Me" v-bind:src="user.avatar_image"/>
       <img v-else-if="msg.origin===0" alt="Me" v-bind:src="chatroom.portrait"/>
@@ -82,11 +82,13 @@
         if (vm.questions instanceof Array && vm.questions.length > 0) {
           let qEntries = []
           for (const q of vm.questions) {
-            qEntries.push({
-              'js': 'AnswerTo',
-              'labelId': 'AnswerTo',
-              'post': q
-            })
+            if (q.answer_to === null) {
+              qEntries.push({
+                'js': 'AnswerTo',
+                'labelId': 'AnswerTo',
+                'post': q
+              })
+            }
           }
           qEntries.sort((a, b) => (a.post.id > b.post.id) ? 1 : (b.post.id > a.post.id) ? -1 : 0)
           for (let action in qEntries) {
@@ -110,26 +112,28 @@
         let vm = this
         if (actionName === 'changeQuestion') {
           vm.updateQuestion(msg, action)
+        } else if (actionName === 'AnswerTo') {
+          console.log(actionName, msg, action.post)
+          vm.setAnswer(msg, action.post)
         }
       },
       updateQuestion: function (msg) {
         let vm = this
         msg.question = !msg.question
         if (msg.question === true || msg.post_id) {
-          // let postIndex = vm.chats.indexOf(msg)
           msg.room = vm.$route.params.id
           axios.post('/api/chatroomquestion/', msg, vm.authHeader())
             .then(function (response) {
               // handle success
               vm.$root.loading = false
               if (response.data.post) {
-                // vm.$set(vm.chats, postIndex, msg)
                 vm.$set(msg, 'post_id', response.data.post.post_id)
                 if (msg.question) {
                   vm.$root.showSnackbar(vm.$i18n.t('post.savedAsQuestion'))
                 } else {
                   vm.$root.showSnackbar(vm.$i18n.t('post.notAQuestionAnymore'))
                 }
+                console.log(response.data.questions)
                 if (response.data.questions && vm.$root.questions instanceof Object) {
                   vm.$set(vm.$root.questions, vm.$route.params.id, response.data.questions)
                 }
@@ -151,6 +155,50 @@
               vm.$nextTick(vm.updatemdl())
             })
         }
+      },
+      setAnswer: function (answer, question) {
+        let vm = this
+        answer.room = vm.$route.params.id
+        let QandA = {
+          question: question,
+          answer: answer,
+          room: vm.$route.params.id
+        }
+        console.log(QandA)
+        axios.post('/api/chatroomsetanswer/', QandA, vm.authHeader())
+          .then(function (response) {
+            // handle success
+            vm.$root.loading = false
+            console.log(response.data)
+            if (response.data.question && response.data.answer) {
+              vm.$set(answer, 'id', response.data.answer.id)
+              vm.$set(answer, 'answer_to', response.data.answer.answer_to)
+              vm.$set(answer, 'type', response.data.answer.type)
+              if (response.data.question.answer) {
+                vm.$root.showSnackbar(vm.$i18n.t('post.questionAnswered'))
+              } else {
+                vm.$root.showSnackbar(vm.$i18n.t('post.answerRejected'))
+              }
+              if (response.data.questions && vm.$root.questions instanceof Object) {
+                vm.$set(vm.$root.questions, vm.$route.params.id, response.data.questions)
+              }
+            } else {
+              vm.errors = []
+              vm.errors.push({message: response.data.message})
+            }
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error)
+            vm.$root.loading = false
+            vm.errors = []
+            vm.errors.push(error)
+          })
+          .then(function () {
+            // always executed
+            vm.$root.loading = false
+            vm.$nextTick(vm.updatemdl())
+          })
       }
     },
     mounted: function () {

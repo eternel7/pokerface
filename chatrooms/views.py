@@ -110,6 +110,10 @@ def chatroom_delete(request, room_id):
     return JsonResponse({"message": "Profile.unauthorized_access"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
+def stored_questions(room_id):
+    return PostSerializer(Post.objects.filter(room=room_id, type=1), many=True)
+
+
 @api_view(['POST'])
 @csrf_exempt
 def chat_question(request, format='json'):
@@ -130,8 +134,8 @@ def chat_question(request, format='json'):
                         "message": post.body,
                         "date": post.created_at,
                         "type": post.type}
-
-                questions = PostSerializer(Post.objects.filter(room=request.data['room'], type=1), many=True)
+                
+                questions = stored_questions(request.data['room'])
                 return JsonResponse({"post": data, "questions": questions.data}, status=status.HTTP_200_OK)
         else:
             data = {
@@ -148,7 +152,7 @@ def chat_question(request, format='json'):
                             "message": data.body,
                             "date": data.created_at,
                             "type": data.type}
-                    questions = PostSerializer(Post.objects.filter(room=request.data['room'], type=1), many=True)
+                    questions = stored_questions(request.data['room'])
                     return JsonResponse({"post": post, "questions": questions.data}, status=status.HTTP_200_OK)
                 return JsonResponse({"message": "chatrooms.couldNotAddDataToTheRoom"}, status=status.HTTP_201_CREATED)
             return JsonResponse({"message": "chatrooms.invalidRequestDataGiven", "errors": serializer.errors},
@@ -162,7 +166,71 @@ def chat_questions(request, room_id, format='json'):
     user = get_user_from_token(get_authorization_header(request))
     if user:
         if room_id:
-            questions = PostSerializer(Post.objects.filter(room=room_id, type=1), many=True)
+            questions = stored_questions(room_id)
             return JsonResponse({"questions": questions.data}, status=status.HTTP_200_OK)
+        return JsonResponse({"message": "chatroom.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
+    return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@csrf_exempt
+def chat_updateAnswer(request, format='json'):
+    user = get_user_from_token(get_authorization_header(request))
+    if user:
+        question = request.data['question']
+        if question and 'id' in question:
+            q = Post.objects.filter(id=question['id'])
+            if q.count() == 1:
+                question = q.first()
+        else:
+            return JsonResponse({"message": "chatroom.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
+        
+        room_id = question.room.pk
+        answer = request.data['answer']
+        if answer:
+            if 'id' in answer:
+                a = Post.objects.filter(id=answer['id'])
+                if a.count() == 1:
+                    answer = a.first()
+                    answer.last_editor = user
+                    answer.type = 2
+                    answer.answer_to = question
+                    answer.room = question.room
+                    answer.save()
+            else:
+                data = {
+                    "body": answer['message'],
+                    "last_editor": user.pk,
+                    "owner": user.pk,
+                    "room": room_id,
+                    "type": 2,
+                    "answer_to": question.id
+                }
+                serializer = PostSerializer(data=data)
+                print("data back", data)
+                if serializer.is_valid(raise_exception=True):
+                    answer = serializer.save()
+                    print("data saved", answer)
+            
+            # save link question to answer
+            print("answer back", answer)
+            if answer:
+                question.answer = answer
+                question.save()
+
+            answer = {
+                "id": answer.pk,
+                "message": answer.body,
+                "date": answer.created_at,
+                "type": 2,
+                "answer_to": answer.answer_to.pk
+            }
+            question = {
+                "id": question.pk,
+                "answer": question.answer.pk
+            }
+            questions = stored_questions(room_id)
+            return JsonResponse({"question": question, "answer": answer, "questions": questions.data},
+                                status=status.HTTP_200_OK)
         return JsonResponse({"message": "chatroom.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
     return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)

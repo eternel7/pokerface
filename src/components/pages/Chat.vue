@@ -49,6 +49,32 @@
   import ReconnectingWebSocket from 'reconnecting-websocket'
   import axios from 'axios'
 
+  function scrollToPos (scrollableElt, to, duration) {
+    let start = scrollableElt.scrollTop
+    let change = to - start
+    let currentTime = 0
+    let increment = 20
+    let animateScroll = function () {
+      currentTime += increment
+      let val = Math.easeInOutQuad(currentTime, start, change, duration)
+      scrollableElt.scrollTop = val
+      if (currentTime < duration) {
+        setTimeout(animateScroll, increment)
+      }
+    }
+    animateScroll()
+  }
+
+  // t = current time
+  // b = start value
+  // c = change in value
+  // d = duration
+  Math.easeInOutQuad = function (t, b, c, d) {
+    t /= d / 2
+    if (t < 1) return c / 2 * t * t + b
+    t--
+    return -c / 2 * (t * (t - 2) - 1) + b
+  }
   export default {
     name: 'chat',
     extends: PageBase,
@@ -102,7 +128,6 @@
       } else {
         let vm = this
         vm.tryGetChatroomQuestion()
-        vm.$nextTick(vm.scrollDown())
         vm.startChatSession()
       }
     },
@@ -173,7 +198,6 @@
       },
       manageMessage: function (msg) {
         let vm = this
-        console.log('receiving message data', msg.data)
         let msgJson = JSON.parse(msg.data)
         if (msgJson.text || msgJson.username === 0) {
           // Bot message
@@ -209,9 +233,18 @@
       scrollDown: function () {
         let vm = this
         vm.$nextTick(function () {
-          let messages = vm.$refs['chatmessages']
-          if (messages) {
-            messages.scrollTop = messages.scrollHeight
+          let chat = vm.$refs['chatmessages']
+          let bubblesBottoms = [].slice.call(document.querySelectorAll('.left > .time'))
+          if (bubblesBottoms) {
+            let timeDIVHeight = 20
+            let nextY = bubblesBottoms.reduce(function (max, val) {
+              let pos = Math.ceil(val.offsetTop)
+              return (max > pos) ? max : pos
+            }, 0)
+            nextY = nextY - chat.offsetTop - chat.offsetHeight + timeDIVHeight
+            if (nextY > 0) {
+              scrollToPos(chat, nextY, 600)
+            }
           }
         })
       },
@@ -237,13 +270,11 @@
           }))
           msg.value = ''
           msg.focus()
-          vm.$nextTick(vm.scrollDown())
         }
       },
       tryGetResponse (msg) {
         let vm = this
         vm.errors = []
-        console.log('send message', msg)
         if (vm.chatSocket) {
           vm.chatSocket.send(JSON.stringify(msg))
         }

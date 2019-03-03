@@ -1,11 +1,15 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
 from django.contrib.auth.models import User
-import json
 import asyncio
 from .exceptions import ClientError
 from .utils import get_room_or_error
 import nltk
+import string
+# import gensim.downloader as gensim
+
+# download the model and return as object ready for use
+# model_gensim_wiki = gensim.load("glove-wiki-gigaword-100")
 
 defaultImage = "/static/img/icons/apple-touch-icon-76x76.png"
 
@@ -17,6 +21,26 @@ try:
     nltk.data.find('corpora/stopwords')
 except LookupError:
     nltk.download('stopwords')
+try:
+    nltk.data.find('corpora/wordnet')
+except LookupError:
+    nltk.download('wordnet')
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+lemmer = nltk.stem.WordNetLemmatizer()
+
+
+def LemTokens(tokens):
+    return [lemmer.lemmatize(token) for token in tokens]
+
+
+remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
+
+
+def LemNormalize(text):
+    return LemTokens(nltk.word_tokenize(text.lower().translate(remove_punct_dict)))
 
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
@@ -64,7 +88,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             elif command == "send":
                 await self.send_room(self.room_id, content["message"])
             elif not command:
-                await self.send_json({"text": "Welcome in room " + self.room_id + ". Let's work well together!"})
+                pass
         except ClientError as e:
             # Catch any errors and send it back
             await self.send_json({"error": e.code})
@@ -192,7 +216,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         """
         # Add user to room
         all_users = await self.add_user_to_room(event["room_id"], event["username"])
-
+        
         # Send a message down to the client
         await self.send_json(
             {
@@ -235,7 +259,6 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "message": event["message"],
             },
         ))
-        await asyncio.ensure_future(self.bot_message("I'l try to parse what you say to ensure I can reply", event))
         await asyncio.ensure_future(self.chat_bot_parse(event))
     
     async def bot_message(self, message, event):
@@ -253,21 +276,25 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         Called when someone has messaged our chat.
         One of the bot answers
         """
-        message = ""
         # tokenize the pattern
-        tokens = nltk.word_tokenize(event['message'])
-        stpw_en = nltk.corpus.stopwords.words('english')
-        stpw_fr = nltk.corpus.stopwords.words('french')
-        for token in tokens[:]:
-            if token in stpw_en:
-                tokens.remove(token)
-        for token in tokens[:]:
-            if token in stpw_fr:
-                tokens.remove(token)
-        freq = nltk.FreqDist(tokens)
-        for key, val in freq.items():
-            message += str(key) + ':' + str(val) + ' - '
-        await self.bot_message(message, event)
+        user_entry = event['message'].lower()
+        robo_response = ''
+        f = open('datasets/room7/chatbot.txt', 'r', errors='ignore')
+        raw = f.read()
+        raw = raw.lower()
+        sent_tokens = nltk.sent_tokenize(raw)  # converts to list of sentences
+        sent_tokens.append(user_entry)
+        TfidfVec = TfidfVectorizer(tokenizer=LemNormalize, stop_words='english')
+        tfidf = TfidfVec.fit_transform(sent_tokens)
+        vals = cosine_similarity(tfidf[-1], tfidf)
+        idx = vals.argsort()[0][-2]
+        flat = vals.flatten()
+        flat.sort()
+        req_tfidf = flat[-2]
+        if (req_tfidf == 0):
+            await self.bot_message("I am sorry! I don't understand you", event)
+        else:
+            await self.bot_message(sent_tokens[idx], event)
     
     @staticmethod
     async def getuser_avatar(username):
