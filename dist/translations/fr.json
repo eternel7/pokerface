@@ -142,7 +142,13 @@
   "Request failed with status code 429": "Vous avez fait trop de requêtes. Veuillez réessayer dans une heure.",
   "Request failed with status code 500": "Requête en erreur. Le serveur n'a pas su traiter votre requête.",
   "chat": {
-    "Start": "Démarrer une Discussion"
+    "Start": "Démarrer une Discussion",
+    "TabChat": "Discussion",
+    "TabUsers": "Utilisateurs",
+    "TabQuestions": "Questions",
+    "TabAnswers": "Réponses",
+    "TabData": "Données",
+    "TabSpace": ""
   },
   "room": {
     "Label": "Nom",

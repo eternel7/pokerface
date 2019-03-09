@@ -1,4 +1,5 @@
-{% load render_bundle from webpack_loader %}<html>
+{% load render_bundle from webpack_loader %}
+<html>
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -77,6 +78,76 @@
     input:-webkit-autofill:focus,
     input:-webkit-autofill:active {
       -webkit-box-shadow: 0 0 0 30px white inset;
+    }
+
+    .mdl-card__supporting-text {
+      margin: auto;
+    }
+
+    .mdl-tabs__tab {
+      font-size: calc(7px + .5vw);
+      padding: 0 4%;
+    }
+
+    .mdl-tabs__tab > i {
+      display: none;
+    }
+
+    .mdl-tabs__tab {
+      display: block;
+      position: relative;
+      text-decoration: none;
+      -webkit-transition: color .2s ease-in-out;
+      transition: color .2s ease-in-out;
+    }
+
+    .mdl-tabs__tab:before {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      width: 0;
+      border-bottom: solid 2px;
+    }
+
+    .mdl-tabs__tab:before {
+      left: 0;
+    }
+
+    .mdl-tabs__tab:hover {
+      color: rgb(255, 64, 129);
+    }
+
+    .mdl-tabs__tab:hover:before {
+      width: 100%;
+    }
+
+    .mdl-tabs__tab:before {
+      -webkit-transition: width .2s ease-in-out;
+      transition: width .2s ease-in-out;
+    }
+
+    @media all and (min-width: 0) and (max-width: 480px) {
+      .mdl-card {
+        width: 100%;
+      }
+
+      .mdl-tabs__tab-bar {
+        width: 100%;
+      }
+
+      .mdl-tabs__tab {
+        width: 100%;
+        margin: 0 auto;
+      }
+
+      .mdl-tabs__tab > i {
+        display: block;
+        margin-top: 10px;
+      }
+
+      .mdl-tabs__tab > span {
+        display: none;
+      }
     }
   </style>
 </head>

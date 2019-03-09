@@ -141,7 +141,13 @@
   "Request failed with status code 429": "You have sent too many requests. Try again in one hour.",
   "Request failed with status code 500": "Request failed. Server couldn't handle your request.",
   "chat": {
-    "Start": "Start a chat"
+    "Start": "Start a chat",
+    "TabChat": "Chat",
+    "TabUsers": "Users",
+    "TabQuestions": "Questions",
+    "TabAnswers": "Answers",
+    "TabData": "Data",
+    "TabSpace": ""
   },
   "room": {
     "Label": "Name",

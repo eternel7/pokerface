@@ -372,6 +372,10 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  .chatrooms {
+    max-width: 99%;
+    margin: auto;
+  }
 
   h1, h2, h3, h4, h5 {
     font-weight: normal;
