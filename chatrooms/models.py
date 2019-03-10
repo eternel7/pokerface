@@ -106,3 +106,14 @@ class Post(models.Model):
     def __str__(self):
         return "<Post: {}-{}-{}<>".format(self.owner.__str__(), self.room.__str__(),
                                           (self.body[:8] + '..') if len(self.body) > 10 else self.body)
+
+
+class UserInRoom(models.Model):
+    """
+    A user connected to a room
+    """
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='room_users')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_rooms')
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

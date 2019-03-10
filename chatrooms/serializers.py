@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from chatrooms.models import Room, Data, Post
+from chatrooms.models import Room, Data, Post, UserInRoom
 from django.contrib.auth.models import User
 
 
@@ -53,10 +53,10 @@ class PostSerializer(serializers.ModelSerializer):
                                                 read_only=False,
                                                 queryset=Post.objects.all())
     answer_to = serializers.PrimaryKeyRelatedField(required=False,
-                                                allow_null=True,
-                                                allow_empty=True,
-                                                read_only=False,
-                                                queryset=Post.objects.all())
+                                                   allow_null=True,
+                                                   allow_empty=True,
+                                                   read_only=False,
+                                                   queryset=Post.objects.all())
     room = serializers.PrimaryKeyRelatedField(required=True,
                                               read_only=False,
                                               queryset=Room.objects.all())
@@ -65,3 +65,19 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         fields = ('id', 'body', 'owner', 'answer', 'answer_to', 'last_editor', 'room',
                   'created_at', 'updated_at')
+
+
+class UserInRoomSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(allow_null=False,
+                                              allow_empty=False,
+                                              read_only=False,
+                                              queryset=User.objects.all())
+    created_at = serializers.ReadOnlyField(source='userInRoom.created_at')
+    updated_at = serializers.ReadOnlyField(source='userInRoom.updated_at')
+    room = serializers.PrimaryKeyRelatedField(required=True,
+                                              read_only=False,
+                                              queryset=Room.objects.all())
+    
+    class Meta:
+        model = Post
+        fields = ('id', 'user', 'room', 'created_at', 'updated_at')
