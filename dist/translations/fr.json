@@ -25,6 +25,10 @@
     "en": "English",
     "Choice": "Langue"
   },
+  "button": {
+    "Cancel" : "Annuler",
+    "Ok": "Ok"
+  },
   "user": {
     "TabUser": "Informations",
     "TabMore": "Préférences",
@@ -155,12 +159,22 @@
     "Description": "Description",
     "Portrait": "Portrait",
     "Image": "Image",
+    "label": "Nom",
+    "description": "Description",
+    "portrait": "Portrait",
+    "image": "Image",
+    "invalidRequestDataGiven": "Demande incomplète",
+    "Thisfieldmaynotbeblank": "Ce champ ne peut être vide.",
+    "Ensurethisfieldhasatleast6characters": "Ce champ doit avoir au moins 6 caractères.",
     "ClickOrDropToAddAPortrait": "Vous pouvez cliquer ou dropper une image pour associer un portrait à ce lieu d'échange.",
     "ClickOrDropToAddAnImage": "Vous pouvez cliquer ou dropper une image pour associer une image de fond à ce lieu d'échange.",
     "CreationConfirmed": "Lieu d'échange créé",
     "New": "Nouveau lieu d'échange",
     "Update": "Mise à jour",
-    "Delete": "Supprimer le lieu d'échange"
+    "Delete": "Supprimer le lieu d'échange",
+    "NoWorkplace": "Aucun lieu d'échange.",
+    "CreateOne": "Créer un lieu d'échange!",
+    "LookingForAWorkplace": "Chargement des lieux d'échange..."
   },
   "data": {
     "Label": "Nom",

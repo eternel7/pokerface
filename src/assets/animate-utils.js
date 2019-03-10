@@ -1,3 +1,7 @@
+'use strict'
+/**
+ * Created by eternel7 on 10/03/2019.
+ */
 const Animate = (function () {
   function Animate () {
   }

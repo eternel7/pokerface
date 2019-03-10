@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 
 class DataSerializer(serializers.ModelSerializer):
-    label = serializers.CharField(min_length=6, max_length=255)
+    label = serializers.CharField(min_length=3, max_length=255)
     description = serializers.CharField(max_length=4000, required=False)
     raw_data = serializers.FileField(max_length=None, allow_empty_file=False, use_url=True)
     created_at = serializers.ReadOnlyField(source='data.created_at')
@@ -19,7 +19,7 @@ class DataSerializer(serializers.ModelSerializer):
 
 
 class RoomSerializer(serializers.ModelSerializer):
-    label = serializers.CharField(min_length=6, max_length=255)
+    label = serializers.CharField(min_length=3, max_length=255)
     description = serializers.CharField(max_length=4000, required=False)
     portrait = serializers.CharField(required=False)
     image = serializers.CharField(required=False)

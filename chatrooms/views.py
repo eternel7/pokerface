@@ -24,15 +24,14 @@ def chatrooms_get(request, format='json'):
 def chatroom_post(request, format='json'):
     user = get_user_from_token(get_authorization_header(request))
     if user:
-        print(request.data)
         serializer = RoomSerializer(data=request.data)
         if serializer.is_valid(raise_exception=False):
             room = serializer.save()
             if room:
                 rooms = RoomSerializer(Room.objects.all(), many=True)
                 return JsonResponse({"chatrooms": rooms.data}, status=status.HTTP_200_OK)
-            return JsonResponse({"message": "chatrooms.couldNotCreatedTheRoom"}, status=status.HTTP_201_CREATED)
-        return JsonResponse({"message": "chatrooms.invalidRequestDataGiven", "errors": serializer.errors},
+            return JsonResponse({"message": "room.couldNotCreatedTheRoom"}, status=status.HTTP_201_CREATED)
+        return JsonResponse({"message": "room.invalidRequestDataGiven", "errors": serializer.errors},
                             status=status.HTTP_200_OK)
     return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)
 

@@ -1,9 +1,5 @@
 <template>
   <div v-if="chatroom" id="chatboxview">
-    <div id="profile"
-         v-bind:style="'background-image: url('+chatroom.image+')'">
-      <div id="user">{{chatroom.label}}</div>
-    </div>
     <div id="chat-messages" ref="chatmessages">
       <div is="MsgItem" v-for="msg in chats" :key="chats.indexOf(msg)"
            v-bind:user="user"
@@ -238,7 +234,7 @@
 <style scoped>
   #chatboxview {
     position: relative;
-    height: 100%;
+    height: calc(92vh - 49px);
     left: 50%;
     -webkit-transform: translateX(-50%); /* Chrome 4+, Op 15+, Saf 3.1, iOS Saf 3.2+ */
     -moz-transform: translateX(-50%); /* Fx 3.5-15 */
@@ -252,34 +248,9 @@
     max-width: 700px;
   }
 
-  #profile {
-    position: relative;
-    padding: 0;
-    margin: 0;
-    height: 10%;
-    overflow: hidden;
-    text-align: center;
-    background-color: #e4e4e4;
-    background-size: cover;
-    background-repeat: no-repeat;
-    color: #fff;
-  }
-
-  #user {
-    position: absolute;
-    bottom: 0;
-    vertical-align: middle;
-    width: 100%;
-    height: 50%;
-    min-height: 6vh;
-    line-height: 6vh;
-    background-color: rgba(88, 88, 88, 0.54);
-    font-weight: 600;
-    font-size: 3vh;
-  }
-
   #chat-messages {
-    height: 70%;
+    position: relative;
+    height: 80%;
     overflow-y: scroll;
     overflow-x: hidden;
     padding-right: 20px;
@@ -287,6 +258,7 @@
   }
 
   #sendmessage {
+    position: relative;
     height: 20%;
     position: relative;
     bottom: 0;
@@ -346,13 +318,6 @@
     }
 
     .mdl-button--fab > i {
-      font-size: 20px;
-    }
-
-    #user {
-      height: 9vh;
-      min-height: 9vh;
-      line-height: 9vh;
       font-size: 20px;
     }
   }

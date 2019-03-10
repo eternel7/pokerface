@@ -6,12 +6,13 @@
       <div class="mdl-dialog__content">
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label"
              v-bind:class="{'is-dirty' : (label) ? true : false}">
-          <input class="mdl-textfield__input" type="text" id="label" v-model.trim="label"/>
+          <input class="mdl-textfield__input" type="text" id="label" v-model.trim="label"
+                 required="required" minlength="3"/>
           <label class="mdl-textfield__label" for="label">{{$t('room.Label')}}</label>
         </div>
         <div class="mdl-textfield mdl-js-textfield" v-bind:class="{'is-dirty' : (description) ? true : false}">
           <textarea class="mdl-textfield__input" type="text" rows="3" id="description"
-                    v-model.trim="description"></textarea>
+                    required="required" v-model.trim="description"></textarea>
           <label class="mdl-textfield__label" for="description">{{$t('room.Description')}}</label>
         </div>
         <div class="link" v-on:click="askForAnImage($event, 'filePortraitInput')"
@@ -36,10 +37,10 @@
         <button type="button" tabindex="10" id="OkDialog"
                 class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white"
                 @click="tryRoomCreationOrUpdate">
-          Ok
+          {{$t('button.Ok')}}
         </button>
         <button type="button" tabindex="20" id="CancelDialog" class="mdl-button close" v-on:click="hideRoomForm(true)">
-          Cancel
+          {{$t('button.Cancel')}}
         </button>
       </div>
     </dialog>
@@ -67,11 +68,11 @@
         <button type="button" tabindex="10" id="Ok-deleteDialog"
                 class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white"
                 @click="tryRoomDeletion(id)">
-          Ok
+          {{$t('button.Ok')}}
         </button>
         <button type="button" tabindex="20" id="Cancel-deleteDialog" class="mdl-button close"
                 v-on:click="hideDeleteRoomForm(true)">
-          Cancel
+          {{$t('button.Cancel')}}
         </button>
       </div>
     </dialog>
@@ -90,15 +91,15 @@
         </transition-group>
       </ul>
       <div v-else-if="$root.loading===false">
-        <h4 class="solo">No workplace.</h4>
+        <h4 class="solo">{{$t('room.NoWorkplace')}}</h4>
         <p>
           <button tabindex="0" type="button"
                   class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white"
-                  @click="displayRoomForm">Create one!
+                  @click="displayRoomForm">{{$t('room.CreateOne')}}
           </button>
         </p>
       </div>
-      <h4 class="solo" v-else>Looking for a workplace...</h4>
+      <h4 class="solo" v-else>{{$t('room.LookingForAWorkplace')}}</h4>
     </transition>
     <button tabindex="30" type="button"
             class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--fab mdl-button--colored"
@@ -113,6 +114,7 @@
   import ImageTools from '@/assets/image-tools.js'
   import FileDrop from '@/assets/file-drop.js'
   import DialogUtils from '@/assets/dialog-utils.js'
+  import ErrorMngt from '@/assets/errors-utils.js'
   import ChatroomItem from '@/components/sub-components/Chatroom-item'
   import ErrorMessages from '@/components/sub-components/ErrorMessages'
   import {authMixin} from '@/auth/authMixin.js'
@@ -277,7 +279,6 @@
           portrait: vm.portrait,
           image: vm.image
         }
-        vm.hideRoomForm(true)
         vm.$root.loading = true
         if (typeof vm.id === 'number') {
           room['id'] = vm.id
@@ -288,9 +289,10 @@
               if (response.data.chatrooms) {
                 vm.$root.chatrooms = response.data.chatrooms
                 vm.$root.showSnackbar(vm.$i18n.t('room.UpdateConfirmed'))
+                vm.hideRoomForm(true)
               } else {
                 vm.errors = []
-                vm.errors.push({message: response.data.message})
+                ErrorMngt.add(vm.errors, response.data, vm, 'room')
               }
             })
             .catch(function (error) {
@@ -312,9 +314,10 @@
               if (response.data.chatrooms) {
                 vm.$root.chatrooms = response.data.chatrooms
                 vm.$root.showSnackbar(vm.$i18n.t('room.CreationConfirmed'))
+                vm.hideRoomForm(true)
               } else {
                 vm.errors = []
-                vm.errors.push({message: response.data.message})
+                ErrorMngt.add(vm.errors, response.data, vm, 'room')
               }
             })
             .catch(function (error) {
@@ -332,7 +335,6 @@
       },
       tryRoomDeletion: function (index) {
         let vm = this
-        console.log('tryRoomDeletion', index)
         vm.hideDeleteRoomForm(true)
         vm.$root.loading = true
         if (typeof vm.id === 'number') {

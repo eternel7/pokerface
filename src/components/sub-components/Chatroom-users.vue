@@ -1,60 +1,29 @@
 <template>
   <div v-if="chatroom" id="chatboxview">
-    <div id="profile"
-         v-bind:style="'background-image: url('+chatroom.image+')'">
-      <div id="close" v-on:click="backHome">
-        <i class="material-icons">close</i>
-      </div>
-      <ul v-if="users" id="connected" ref="connectedUsers" v-bind:class="{ collapse: pgNum<0 || users.length<1}">
-        <li v-for="u in connectedUsers" :key="u.username"
-            v-if="u.portrait">
-          <img class="mdl-list__item-icon" v-bind:alt="u.username"
-               v-bind:src="u.portrait"/>
-        </li>
-        <li class="paginate-tool" v-if="users.length>0">
-          <i v-if="pgNum > -1" class="material-icons left link" @click="pgNum--">chevron_left</i>
-          <i @click="pgNum = (pgNum===0) ?  -1 : 0 " class="material-icons link  mdl-badge mdl-badge--overlap"
-             v-bind:data-badge="users.length">supervised_user_circle</i>
-          <i v-if="pgNum < (users.length/pgSize - 1)" class="material-icons right link"
-             @click="pgNum++">chevron_right</i>
-        </li>
-      </ul>
-      <div id="user">{{chatroom.label}}</div>
-    </div>
-    <div id="chat-messages" ref="chatmessages">
-      <div is="MsgItem" v-for="msg in chats" :key="chats.indexOf(msg)"
-           v-bind:user="user"
-           v-bind:chatroom="chatroom"
-           v-bind:msg="msg"
-           v-bind:questions="questions">
-      </div>
-    </div>
-    <div id="sendmessage">
-      <textarea type="text" ref="message" placeholder="Send message..."
-                @keyup.ctrl.enter="sendMessage"></textarea>
-      <div id="send">
-        <button id="sendButton" @click="sendMessage"
-                class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
-          <i class="material-icons">send</i>
-        </button>
-      </div>
-    </div>
+    <ul v-if="users" id="connected" ref="connectedUsers" v-bind:class="{ collapse: pgNum<0 || users.length<1}">
+      <li v-for="u in connectedUsers" :key="u.username"
+          v-if="u.portrait">
+        <img class="mdl-list__item-icon" v-bind:alt="u.username"
+             v-bind:src="u.portrait"/>
+      </li>
+      <li class="paginate-tool" v-if="users.length>0">
+        <i v-if="pgNum > -1" class="material-icons left link" @click="pgNum--">chevron_left</i>
+        <i @click="pgNum = (pgNum===0) ?  -1 : 0 " class="material-icons link  mdl-badge mdl-badge--overlap"
+           v-bind:data-badge="users.length">supervised_user_circle</i>
+        <i v-if="pgNum < (users.length/pgSize - 1)" class="material-icons right link"
+           @click="pgNum++">chevron_right</i>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
-  import PageBase from '@/components/pages/Page'
-  import MsgItem from '@/components/sub-components/Msg-item'
   import {authMixin} from '@/auth/authMixin.js'
-  import ReconnectingWebSocket from 'reconnecting-websocket'
   import axios from 'axios'
-  import Animate from '@/assets/animate-utils.js'
 
   export default {
     name: 'chatroomUsers',
-    extends: PageBase,
     mixins: [authMixin],
-    components: {MsgItem},
     data () {
       return {
         sessionStarted: false,
@@ -69,12 +38,6 @@
         chatSocket: undefined
       }
     },
-    mounted: function () {
-      let vm = this
-      setInterval(function () {
-        vm.$data.now = Date.now()
-      }, 1000)
-    },
     computed: {
       chatroom: function () {
         let vm = this
@@ -88,13 +51,6 @@
       connectedUsers: function () {
         let vm = this
         return vm.users.slice(vm.pgNum * vm.pgSize, (vm.pgNum + 1) * vm.pgSize)
-      },
-      questions: function () {
-        let vm = this
-        if (vm.$root.questions instanceof Object) {
-          return (vm.$root.questions[vm.$route.params.id]) ? vm.$root.questions[vm.$route.params.id] : []
-        }
-        return []
       }
     },
     created () {
@@ -102,27 +58,21 @@
         this.$router.push({name: 'Home'})
       } else {
         let vm = this
-        vm.tryGetChatroomQuestion()
-        vm.startChatSession()
-      }
-    },
-    beforeDestroy: function () {
-      if (this.chatSocket) {
-        this.chatSocket.close()
+        vm.tryGetChatroomUsers()
       }
     },
     methods: {
-      tryGetChatroomQuestion (evt) {
+      tryGetChatroomUsers (evt) {
         let vm = this
         vm.errors = []
         vm.$root.loading = true
         let roomId = vm.$route.params.id
-        axios.get('/api/chatroomquestions/' + roomId, vm.authHeader())
+        axios.get('/api/chatroomusers/' + roomId, vm.authHeader())
           .then(function (response) {
             vm.$root.loading = false
             // handle success
-            if (response.data.questions) {
-              vm.$set(vm.$root.questions, roomId, response.data.questions)
+            if (response.data.users) {
+              vm.$set(vm.users, roomId, response.data.users)
             } else {
               vm.errors = []
               vm.errors.push({message: response.data.message})
@@ -139,120 +89,6 @@
             // always executed
             vm.$root.loading = false
           })
-      },
-      backHome: function () {
-        this.$router.push({name: 'Home'})
-      },
-      addChat: function (msg, user) {
-        let vm = this
-        if (msg && !user) {
-          vm.chats.push({
-            identifier: vm.nextId++,
-            origin: 0,
-            message: msg,
-            date: new Date()
-          })
-        } else if (msg) {
-          vm.chats.push({
-            identifier: vm.nextId++,
-            origin: user,
-            message: msg,
-            date: new Date(),
-            question: false
-          })
-        }
-        vm.$nextTick(vm.scrollDown())
-      },
-      addUserToRoom: function (username, allConnected) {
-        console.log('connection of', username, allConnected)
-        this.users = allConnected
-      },
-      removeUserFromRoom: function (username, allConnected) {
-        console.log('disconnection of', username, allConnected)
-        this.users = allConnected
-      },
-      manageMessage: function (msg) {
-        let vm = this
-        let msgJson = JSON.parse(msg.data)
-        if (msgJson.text || msgJson.username === 0) {
-          // Bot message
-          vm.addChat(msgJson.text || msgJson.message)
-        } else {
-          if (msgJson.msg_type === 4) {
-            vm.addUserToRoom(msgJson.username, msgJson.all_users)
-          }
-          if (msgJson.msg_type === 5) {
-            vm.removeUserFromRoom(msgJson.username, msgJson.all_users)
-          }
-          if (msgJson.username !== vm.user.username) {
-            if (msgJson.msg_type === 0) {
-              vm.addChat(msgJson.message, {
-                username: msgJson.username,
-                portrait: msgJson.portrait
-              })
-            }
-          }
-        }
-      },
-      startChatSession () {
-        let vm = this
-        if (vm.$route.params.id) {
-          vm.sessionStarted = true
-          let wsScheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
-          vm.chatSocket = new ReconnectingWebSocket(wsScheme + '://' + window.location.host + '/ws/chat/' + vm.$route.params.id + '/')
-          vm.chatSocket.onmessage = function (message) {
-            vm.manageMessage(message)
-          }
-        }
-      },
-      scrollDown: function () {
-        let vm = this
-        vm.$nextTick(function () {
-          let chat = vm.$refs['chatmessages']
-          let bubblesBottoms = [].slice.call(document.querySelectorAll('.left > .time'))
-          if (bubblesBottoms) {
-            let timeDIVHeight = 20
-            let nextY = bubblesBottoms.reduce(function (max, val) {
-              let pos = Math.ceil(val.offsetTop)
-              return (max > pos) ? max : pos
-            }, 0)
-            nextY = nextY - chat.offsetTop - chat.offsetHeight + timeDIVHeight
-            if (nextY > 0) {
-              Animate.scrollToPos(chat, nextY, 600)
-            }
-          }
-        })
-      },
-      sendMessage: function (evt) {
-        let vm = this
-        let msg = vm.$refs['message']
-        if (msg.value && msg.value.length > 0) {
-          let txt = msg.value
-          txt = txt.trim()
-          vm.chats.push({
-            identifier: vm.nextId++,
-            origin: 1,
-            command: 'send',
-            message: txt,
-            date: new Date(),
-            question: false
-          })
-          vm.$nextTick(vm.tryGetResponse({
-            origin: 1,
-            command: 'send',
-            message: txt,
-            date: new Date()
-          }))
-          msg.value = ''
-          msg.focus()
-        }
-      },
-      tryGetResponse (msg) {
-        let vm = this
-        vm.errors = []
-        if (vm.chatSocket) {
-          vm.chatSocket.send(JSON.stringify(msg))
-        }
       }
     }
   }

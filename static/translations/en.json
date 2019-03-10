@@ -25,6 +25,10 @@
     "en": "English",
     "Choice": "Language"
   },
+  "button": {
+    "Cancel": "Cancel",
+    "Ok": "Ok"
+  },
   "user": {
     "TabUser": "User",
     "TabMore": "More",
@@ -154,12 +158,22 @@
     "Description": "Description",
     "Portrait": "Portrait",
     "Image": "Image",
+    "label": "Name",
+    "description": "Description",
+    "portrait": "Portrait",
+    "image": "Image",
+    "invalidRequestDataGiven": "Incomplete data given",
+    "Thisfieldmaynotbeblank": "This field can't be empty.",
+    "Ensurethisfieldhasatleast6characters": "Ensure this field has at least 6 characters.",
     "ClickOrDropToAddAPortrait": "You can click or drop an image to update this workplace portrait.",
     "ClickOrDropToAddAnImage": "You can click or drop an image to update this workplace background image.",
     "CreationConfirmed": "Workplace created",
     "New": "New workplace",
     "Update": "Update workplace",
-    "Delete": "Delete workplace"
+    "Delete": "Delete workplace",
+    "NoWorkplace": "No workplace.",
+    "CreateOne": "Create one!",
+    "LookingForAWorkplace": "Loading workplaces..."
   },
   "data": {
     "Label": "Name",
