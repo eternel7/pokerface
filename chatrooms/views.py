@@ -4,8 +4,8 @@ from rest_framework import status
 from accounts.models import get_user_from_token
 from rest_framework.authentication import get_authorization_header
 from django.http import JsonResponse
-from chatrooms.models import Room, Post
-from chatrooms.serializers import RoomSerializer, DataSerializer, PostSerializer
+from chatrooms.models import Room, Post, UserInRoom
+from chatrooms.serializers import RoomSerializer, DataSerializer, PostSerializer, UserInRoomReadSerializer
 
 
 # Create your views here.
@@ -231,5 +231,17 @@ def chat_updateAnswer(request, format='json'):
             questions = stored_questions(room_id)
             return JsonResponse({"question": question, "answer": answer, "questions": questions.data},
                                 status=status.HTTP_200_OK)
+        return JsonResponse({"message": "chatroom.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
+    return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@csrf_exempt
+def chatroom_users(request, room_id, format='json'):
+    user = get_user_from_token(get_authorization_header(request))
+    if user:
+        if room_id:
+            users_in_room = UserInRoomReadSerializer(UserInRoom.objects.filter(room=room_id), many=True)
+            return JsonResponse({"users": users_in_room.data}, status=status.HTTP_200_OK)
         return JsonResponse({"message": "chatroom.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
     return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)

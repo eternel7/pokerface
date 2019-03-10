@@ -3,6 +3,14 @@ from chatrooms.models import Room, Data, Post, UserInRoom
 from django.contrib.auth.models import User
 
 
+class UserSerializer(serializers.ModelSerializer):
+    avatar_image = serializers.CharField(source='userinfo.avatarImage', required=False)
+    
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'id', 'avatar_image', 'last_name', 'first_name')
+
+
 class DataSerializer(serializers.ModelSerializer):
     label = serializers.CharField(min_length=3, max_length=255)
     description = serializers.CharField(max_length=4000, required=False)
@@ -72,8 +80,8 @@ class UserInRoomSerializer(serializers.ModelSerializer):
                                               allow_empty=False,
                                               read_only=False,
                                               queryset=User.objects.all())
-    created_at = serializers.ReadOnlyField(source='userInRoom.created_at')
-    updated_at = serializers.ReadOnlyField(source='userInRoom.updated_at')
+    created_at = serializers.ReadOnlyField()
+    updated_at = serializers.ReadOnlyField()
     room = serializers.PrimaryKeyRelatedField(required=True,
                                               read_only=False,
                                               queryset=Room.objects.all())
@@ -81,3 +89,14 @@ class UserInRoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserInRoom
         fields = ('id', 'user', 'room', 'created_at', 'updated_at')
+
+
+class UserInRoomReadSerializer(serializers.ModelSerializer):
+    user_obj = UserSerializer(allow_null=False, read_only=True, source='user')
+    created_at = serializers.ReadOnlyField()
+    updated_at = serializers.ReadOnlyField()
+    room = serializers.PrimaryKeyRelatedField(read_only=True)
+    
+    class Meta:
+        model = UserInRoom
+        fields = ('id', 'user_obj', 'room', 'created_at', 'updated_at')
