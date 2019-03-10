@@ -1,11 +1,16 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
+from django.utils import timezone
 from django.contrib.auth.models import User
+from chatrooms.models import UserInRoom
+from chatrooms.serializers import UserInRoomSerializer
+from channels.db import database_sync_to_async
 import asyncio
 from .exceptions import ClientError
 from .utils import get_room_or_error
 import nltk
 import string
+
 # import gensim.downloader as gensim
 
 # download the model and return as object ready for use
@@ -105,26 +110,41 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 pass
     
     # Command helper methods called by receive_json
-    
-    async def add_user_to_room(self, room_id, username):
-        avatar_image = await self.getuser_avatar(username)
-        user_info = {
-            "username": username,
-            "portrait": avatar_image
+    @database_sync_to_async
+    def add_or_update_user_in_room_db(self, room_id, username):
+        user_pk = User.objects.filter(username=username).first().pk
+        room_pk = int(room_id)
+        user_in_room = {
+            "user": user_pk,
+            "room": room_pk
         }
-        if room_id not in self.rooms_users:
-            self.rooms_users[room_id] = [user_info]
-        elif user_info in self.rooms_users[room_id]:
-            self.rooms_users[room_id].remove(user_info)
-            self.rooms_users[room_id].append(user_info)
+        present = UserInRoom.objects.filter(user=user_pk, room=room_pk)
+        if present.count() == 0:
+            serializer = UserInRoomSerializer(data=user_in_room)
+            if serializer.is_valid(raise_exception=False):
+                data = serializer.save()
+                if data:
+                    return data
+            print(serializer.errors)
+            return False
         else:
-            self.rooms_users[room_id].append(user_info)
-        return self.rooms_users[room_id]
+            now = timezone.now()
+            present = present.first()
+            present.updated_at = now
+            present.save()
+            if present:
+                return present
+            return False
     
-    async def remove_user_from_room(self, room_id, username):
-        if room_id in self.rooms_users:
-            return [u for u in self.rooms_users[room_id] if u['username'] != username]
-        return []
+    @database_sync_to_async
+    def remove_user_from_room_db(self, room_id, username):
+        user_pk = User.objects.filter(username=username).first().pk
+        room_pk = int(room_id)
+        data = UserInRoom.objects.filter(user=user_pk, room=room_pk)
+        if data:
+            data.delete()
+            return True
+        return False
     
     async def join_room(self, room_id):
         """
@@ -152,6 +172,8 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         
         # Store that we're in the room
         self.rooms.add(room_id)
+        await asyncio.ensure_future(self.add_or_update_user_in_room_db(room_id, self.scope["user"].username))
+        
         # Add them to the group so they get room messages
         await asyncio.ensure_future(self.channel_layer.group_add(
             room.group_name,
@@ -182,6 +204,8 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             ))
         # Remove that we're in the room
         self.rooms.discard(room_id)
+        await asyncio.ensure_future(self.remove_user_from_room_db(room_id, self.scope["user"].username))
+        
         # Remove them from the group so they no longer get room messages
         await self.channel_layer.group_discard(
             room.group_name,
@@ -197,6 +221,10 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             raise ClientError("ROOM_ACCESS_DENIED")
         # Get the room and send to the group about it
         room = await get_room_or_error(room_id, self.scope["user"])
+        
+        # Update last update in room for user
+        await asyncio.ensure_future(self.add_or_update_user_in_room_db(room_id, self.scope["user"].username))
+        
         await self.channel_layer.group_send(
             room.group_name,
             {
@@ -214,8 +242,6 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         """
         Called when someone has joined our chat.
         """
-        # Add user to room
-        all_users = await self.add_user_to_room(event["room_id"], event["username"])
         
         # Send a message down to the client
         await self.send_json(
@@ -223,7 +249,6 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "msg_type": settings.MSG_TYPE_ENTER,
                 "room": event["room_id"],
                 "username": event["username"],
-                "all_users": all_users,
             },
         )
     
@@ -231,8 +256,6 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         """
         Called when someone has left our chat.
         """
-        # remove user to room
-        all_users = await self.remove_user_from_room(event["room_id"], event["username"])
         
         # Send a message down to the client
         await self.send_json(
@@ -240,7 +263,6 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "msg_type": settings.MSG_TYPE_LEAVE,
                 "room": event["room_id"],
                 "username": event["username"],
-                "all_users": all_users,
             },
         )
     

@@ -79,5 +79,5 @@ class UserInRoomSerializer(serializers.ModelSerializer):
                                               queryset=Room.objects.all())
     
     class Meta:
-        model = Post
+        model = UserInRoom
         fields = ('id', 'user', 'room', 'created_at', 'updated_at')

@@ -104,7 +104,7 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return "<Post: {}-{}-{}<>".format(self.owner.__str__(), self.room.__str__(),
+        return "<Post: {} - {} - {} >".format(self.owner.__str__(), self.room.__str__(),
                                           (self.body[:8] + '..') if len(self.body) > 10 else self.body)
 
 
@@ -117,3 +117,6 @@ class UserInRoom(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return "<UserInRoom {}: {} - {} >".format(self.pk, self.user.__str__(), self.room.__str__())
