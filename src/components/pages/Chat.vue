@@ -4,7 +4,7 @@
       <div id="chatroomprofile"
            v-bind:style="'background-image: url('+chatroom.image+')'">
         <div id="bot">{{chatroom.label}}</div>
-        <div id="close" v-on:click="backHome">
+        <div id="close" v-on:click="backHome()">
           <i class="material-icons">close</i>
         </div>
       </div>
@@ -39,7 +39,7 @@
         </div>
       </div>
     </div>
-    <h4 class="solo" v-else v-click="backHome()">
+    <h4 class="solo" v-else v-on:click="backHome()">
       {{$t('ConnectionNeeded')}}
     </h4>
   </div>
@@ -220,8 +220,8 @@
   #close {
     position: absolute;
     color: white;
-    top: 11px;
-    right: 14px;
+    top: 1vh;
+    right: 1vh;
     width: 24px;
     height: 24px;
     cursor: pointer;

@@ -40,7 +40,9 @@
         sessionStarted: false,
         displaySearch: true,
         displayBack: true,
-        displayHeader: false
+        displayHeader: false,
+        scrolling: false,
+        lastScrollTop: 0
       }
     },
     computed: {
@@ -149,23 +151,30 @@
       },
       scrollDown: function (time, forced) {
         let vm = this
-        let chat = document.getElementById('chat-messages')
-        if (chat && (chat.offsetHeight - 30 <= chat.scrollTop || forced)) {
-          vm.$nextTick(function () {
-            let bubblesBottoms = [].slice.call(document.querySelectorAll('.left > .time'))
-            if (bubblesBottoms && chat) {
-              let timeDIVHeight = 20
-              let nextY = bubblesBottoms.reduce(function (max, val) {
-                let pos = Math.ceil(val.offsetTop)
-                return (max > pos) ? max : pos
-              }, 0)
-              nextY = nextY - chat.offsetTop - chat.offsetHeight + timeDIVHeight
-              if (nextY > 0) {
-                time = time || 600
-                Animate.scrollToPos(chat, nextY, time)
-              }
-            }
-          })
+        if (vm.scrolling === false) {
+          let chat = document.getElementById('chat-messages')
+          if (chat && (vm.lastScrollTop - 5 <= chat.scrollTop || forced)) {
+            vm.scrolling = true
+            vm.$nextTick(function () {
+              setTimeout(function () {
+                let bubblesBottoms = [].slice.call(document.querySelectorAll('.left > .time'))
+                if (bubblesBottoms && chat) {
+                  let timeDIVHeight = 20
+                  let nextY = bubblesBottoms.reduce(function (max, val) {
+                    let pos = Math.ceil(val.offsetTop)
+                    return (max > pos) ? max : pos
+                  }, 0)
+                  nextY = nextY - chat.offsetTop - chat.offsetHeight + timeDIVHeight
+                  if (nextY > 0) {
+                    time = time || 600
+                    Animate.scrollToPos(chat, nextY, time)
+                    vm.lastScrollTop = nextY
+                  }
+                }
+                vm.scrolling = false
+              }, 500)
+            })
+          }
         }
       },
       sendMessage: function (evt) {
@@ -235,7 +244,6 @@
   #sendmessage {
     position: relative;
     height: 20%;
-    position: relative;
     bottom: 0;
   }
 

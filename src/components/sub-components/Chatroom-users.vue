@@ -1,38 +1,25 @@
 <template>
   <div v-if="chatroom" id="chatroomusersview">
     <ul v-if="users_in_room" id="connected">
-      <li v-for="u in users_in_room" :key="u.user_obj.username">
-        <div>
-          <span class="image-cropper"><img class="mdl-list__item-icon" v-bind:alt="u.user_obj.username"
-                                           v-bind:src="u.user_obj.avatar_image"/></span>
-          {{u.user_obj.username}} - Last action :
-          {{u.updated_at | formatDate}}
-        </div>
-
+      <li is="ConnectedUserInRoom" v-for="u in users_in_room" :key="u.user_obj.username" v-bind:userInRoom="u">
       </li>
     </ul>
   </div>
 </template>
 
 <script>
+  import ConnectedUserInRoom from '@/components/user-components/Connected-user-in-room'
   import {authMixin} from '@/auth/authMixin.js'
   import axios from 'axios'
 
   export default {
     name: 'chatroomUsers',
     mixins: [authMixin],
+    components: {ConnectedUserInRoom},
     props: ['chatroom'],
     data () {
       return {
         users_in_room: []
-      }
-    },
-    filters: {
-      formatDate: function (value) {
-        if (value) {
-          let d = new Date(value)
-          return d.toLocaleDateString() + ' ' + d.toLocaleTimeString()
-        }
       }
     },
     created () {
@@ -95,12 +82,17 @@
   }
 
   #connected {
-    margin-top: 2px;
-    font-size: 12px;
+    margin-top: 1%;
     line-height: 14px;
-    width: auto;
-    display: table;
-    padding-left: 1vw;
+    width: 99%;
+    padding-left: 1%;
+    position: relative;
+    height: 93%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding-bottom: 5px;
+    -ms-overflow-style: none;
+    overflow: -moz-scrollbars-none;
   }
 
   #connected > li {
@@ -110,18 +102,5 @@
     margin-bottom: 2px;
     text-align: left;
     vertical-align: middle;
-  }
-
-  .image-cropper {
-    padding: 5px;
-    line-height: 5vh;
-    background-color: rgba(88, 88, 88, 0.34);
-  }
-
-  #connected > li img {
-    border-radius: 50%;
-    border: solid 2px #fff;
-    width: 5vh;
-    height: 5vh;
   }
 </style>

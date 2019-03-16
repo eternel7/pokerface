@@ -311,7 +311,7 @@
     float: left;
     background: #dbe3f9;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 400;
     padding: 8px 8px;
     border-radius: 5px 5px 5px 0px;
     color: #365dad;
