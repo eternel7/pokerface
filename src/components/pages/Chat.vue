@@ -19,10 +19,14 @@
           </div>
         </div>
         <div class="mdl-tabs__panel is-active" id="0" v-if="tabActive==='0'">
-          <ChatBox></ChatBox>
+          <ChatBox v-bind:chatroom="chatroom"
+                   v-bind:chatSocket="chatSocket"
+                   v-bind:chats="chats"
+                   v-bind:user="user"></ChatBox>
         </div>
         <div class="mdl-tabs__panel is-active" id="1" v-if="tabActive==='1'">
-          <ChatroomUsers></ChatroomUsers>
+          <ChatroomUsers v-bind:chatroom="chatroom"
+                         v-bind:user="user"></ChatroomUsers>
         </div>
         <div class="mdl-tabs__panel is-active" id="2" v-if="tabActive==='2'">
           <div>Hello world!</div>
@@ -42,6 +46,7 @@
 </template>
 
 <script>
+  import ReconnectingWebSocket from 'reconnecting-websocket'
   import ChatBox from '@/components/sub-components/Chat-box'
   import ChatroomUsers from '@/components/sub-components/Chatroom-users'
   import {authMixin} from '@/auth/authMixin.js'
@@ -80,9 +85,11 @@
           }
         ],
         sessionStarted: false,
+        chats: [],
         displaySearch: true,
         displayBack: true,
         displayHeader: false,
+        chatSocket: undefined,
         tabActive: '0',
         message: '',
         errors: [],
@@ -96,6 +103,22 @@
         return vm.$root.chatrooms.filter(function (row) {
           return row.id === vm.$route.params.id
         })[0]
+      },
+      user: function () {
+        return this.$root.user
+      }
+    },
+    created () {
+      if (!this.chatroom || this.chatroom.length < 1) {
+        this.$router.push({name: 'Home'})
+      } else {
+        let vm = this
+        vm.startReconnectingWebSocket()
+      }
+    },
+    beforeDestroy: function () {
+      if (this.chatSocket) {
+        this.chatSocket.close()
       }
     },
     methods: {
@@ -107,6 +130,14 @@
           this.backHome()
         }
         this.tabActive = tabId
+      },
+      startReconnectingWebSocket () {
+        let vm = this
+        if (vm.$route.params.id) {
+          vm.sessionStarted = true
+          let wsScheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
+          vm.chatSocket = new ReconnectingWebSocket(wsScheme + '://' + window.location.host + '/ws/chat/' + vm.$route.params.id + '/')
+        }
       }
     }
   }

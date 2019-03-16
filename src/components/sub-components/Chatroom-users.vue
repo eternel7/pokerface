@@ -21,6 +21,7 @@
   export default {
     name: 'chatroomUsers',
     mixins: [authMixin],
+    props: ['chatroom'],
     data () {
       return {
         users_in_room: []
@@ -32,17 +33,6 @@
           let d = new Date(value)
           return d.toLocaleDateString() + ' ' + d.toLocaleTimeString()
         }
-      }
-    },
-    computed: {
-      chatroom: function () {
-        let vm = this
-        return vm.$root.chatrooms.filter(function (row) {
-          return row.id === vm.$route.params.id
-        })[0]
-      },
-      user: function () {
-        return this.$root.user
       }
     },
     created () {

@@ -22,10 +22,10 @@
 </template>
 
 <script>
+  import ReconnectingWebSocket from 'reconnecting-websocket'
   import PageBase from '@/components/pages/Page'
   import MsgItem from '@/components/sub-components/Msg-item'
   import {authMixin} from '@/auth/authMixin.js'
-  import ReconnectingWebSocket from 'reconnecting-websocket'
   import axios from 'axios'
   import Animate from '@/assets/animate-utils.js'
 
@@ -34,34 +34,16 @@
     extends: PageBase,
     mixins: [authMixin],
     components: {MsgItem},
+    props: ['chatroom', 'chats', 'user', 'chatSocket'],
     data () {
       return {
         sessionStarted: false,
         displaySearch: true,
         displayBack: true,
-        displayHeader: false,
-        chats: [],
-        nextId: 1,
-        users: [],
-        pgNum: 0,
-        pgSize: 3,
-        chatSocket: undefined
+        displayHeader: false
       }
     },
     computed: {
-      chatroom: function () {
-        let vm = this
-        return vm.$root.chatrooms.filter(function (row) {
-          return row.id === vm.$route.params.id
-        })[0]
-      },
-      user: function () {
-        return this.$root.user
-      },
-      connectedUsers: function () {
-        let vm = this
-        return vm.users.slice(vm.pgNum * vm.pgSize, (vm.pgNum + 1) * vm.pgSize)
-      },
       questions: function () {
         let vm = this
         if (vm.$root.questions instanceof Object) {
@@ -71,20 +53,35 @@
       }
     },
     created () {
-      if (!this.chatroom || this.chatroom.length < 1) {
-        this.$router.push({name: 'Home'})
+      let vm = this
+      if (!vm.chatroom || vm.chatroom.length < 1) {
+        vm.$router.push({name: 'Home'})
       } else {
-        let vm = this
+        vm.addManageMessages(vm)
         vm.tryGetChatroomQuestion()
-        vm.startChatSession()
-      }
-    },
-    beforeDestroy: function () {
-      if (this.chatSocket) {
-        this.chatSocket.close()
+        vm.scrollToLastPosition()
       }
     },
     methods: {
+      scrollToLastPosition () {
+        let vm = this
+        setTimeout(function () {
+          vm.$nextTick(vm.scrollDown(-1, true))
+        }, 100)
+      },
+      addManageMessages: function (vm) {
+        let isOnmessageAFunction = (!!(vm.chatSocket.onmessage && vm.chatSocket.onmessage.constructor && vm.chatSocket.onmessage.call && vm.chatSocket.onmessage.apply))
+        if (vm.chatSocket instanceof ReconnectingWebSocket &&
+          !isOnmessageAFunction) {
+          vm.chatSocket.onmessage = function (message) {
+            vm.manageMessage(message)
+          }
+        } else {
+          setTimeout(function () {
+            vm.addManageMessages(vm)
+          }, 1000)
+        }
+      },
       tryGetChatroomQuestion (evt) {
         let vm = this
         vm.errors = []
@@ -133,14 +130,6 @@
         }
         vm.$nextTick(vm.scrollDown())
       },
-      addUserToRoom: function (username, allConnected) {
-        console.log('connection of', username, allConnected)
-        this.users = allConnected
-      },
-      removeUserFromRoom: function (username, allConnected) {
-        console.log('disconnection of', username, allConnected)
-        this.users = allConnected
-      },
       manageMessage: function (msg) {
         let vm = this
         let msgJson = JSON.parse(msg.data)
@@ -148,12 +137,6 @@
           // Bot message
           vm.addChat(msgJson.text || msgJson.message)
         } else {
-          if (msgJson.msg_type === 4) {
-            vm.addUserToRoom(msgJson.username, msgJson.all_users)
-          }
-          if (msgJson.msg_type === 5) {
-            vm.removeUserFromRoom(msgJson.username, msgJson.all_users)
-          }
           if (msgJson.username !== vm.user.username) {
             if (msgJson.msg_type === 0) {
               vm.addChat(msgJson.message, {
@@ -164,34 +147,26 @@
           }
         }
       },
-      startChatSession () {
+      scrollDown: function (time, forced) {
         let vm = this
-        if (vm.$route.params.id) {
-          vm.sessionStarted = true
-          let wsScheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
-          vm.chatSocket = new ReconnectingWebSocket(wsScheme + '://' + window.location.host + '/ws/chat/' + vm.$route.params.id + '/')
-          vm.chatSocket.onmessage = function (message) {
-            vm.manageMessage(message)
-          }
-        }
-      },
-      scrollDown: function () {
-        let vm = this
-        vm.$nextTick(function () {
-          let chat = vm.$refs['chatmessages']
-          let bubblesBottoms = [].slice.call(document.querySelectorAll('.left > .time'))
-          if (bubblesBottoms) {
-            let timeDIVHeight = 20
-            let nextY = bubblesBottoms.reduce(function (max, val) {
-              let pos = Math.ceil(val.offsetTop)
-              return (max > pos) ? max : pos
-            }, 0)
-            nextY = nextY - chat.offsetTop - chat.offsetHeight + timeDIVHeight
-            if (nextY > 0) {
-              Animate.scrollToPos(chat, nextY, 600)
+        let chat = document.getElementById('chat-messages')
+        if (chat && (chat.offsetHeight - 30 <= chat.scrollTop || forced)) {
+          vm.$nextTick(function () {
+            let bubblesBottoms = [].slice.call(document.querySelectorAll('.left > .time'))
+            if (bubblesBottoms && chat) {
+              let timeDIVHeight = 20
+              let nextY = bubblesBottoms.reduce(function (max, val) {
+                let pos = Math.ceil(val.offsetTop)
+                return (max > pos) ? max : pos
+              }, 0)
+              nextY = nextY - chat.offsetTop - chat.offsetHeight + timeDIVHeight
+              if (nextY > 0) {
+                time = time || 600
+                Animate.scrollToPos(chat, nextY, time)
+              }
             }
-          }
-        })
+          })
+        }
       },
       sendMessage: function (evt) {
         let vm = this

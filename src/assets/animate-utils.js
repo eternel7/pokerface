@@ -18,18 +18,22 @@ const Animate = (function () {
   }
 
   Animate.scrollToPos = function (scrollableElt, to, duration) {
-    let start = scrollableElt.scrollTop
-    let change = to - start
-    let currentTime = 0
-    let increment = 20
-    let animateScroll = function () {
-      currentTime += increment
-      scrollableElt.scrollTop = Math.easeInOutQuad(currentTime, start, change, duration)
-      if (currentTime < duration) {
-        setTimeout(animateScroll, increment)
+    if (duration <= 0) {
+      scrollableElt.scrollTop = to
+    } else {
+      let start = scrollableElt.scrollTop
+      let change = to - start
+      let currentTime = 0
+      let increment = 20
+      let animateScroll = function () {
+        currentTime += increment
+        scrollableElt.scrollTop = Math.easeInOutQuad(currentTime, start, change, duration)
+        if (currentTime < duration) {
+          setTimeout(animateScroll, increment)
+        }
       }
+      animateScroll()
     }
-    animateScroll()
   }
   return Animate
 }())
