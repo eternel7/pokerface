@@ -34,7 +34,7 @@
     extends: PageBase,
     mixins: [authMixin],
     components: {MsgItem},
-    props: ['chatroom', 'chats', 'user', 'chatSocket'],
+    props: ['chatroom', 'chats', 'user', 'chatSocket', 'nextId'],
     data () {
       return {
         sessionStarted: false,
@@ -116,14 +116,14 @@
         let vm = this
         if (msg && !user) {
           vm.chats.push({
-            identifier: vm.nextId++,
+            identifier: vm.nextId,
             origin: 0,
             message: msg,
             date: new Date()
           })
         } else if (msg) {
           vm.chats.push({
-            identifier: vm.nextId++,
+            identifier: vm.nextId,
             origin: user,
             message: msg,
             date: new Date(),
@@ -131,6 +131,22 @@
           })
         }
         vm.$nextTick(vm.scrollDown())
+      },
+      updateChat: function (savedMsg) {
+        let vm = this
+        // update a message send by user
+        let ind = vm.chats.findIndex(function (c) {
+          return (c.message === savedMsg.message &&
+            c.post_id === undefined &&
+            c.origin === 1)
+        })
+        if (ind) {
+          let msgToUpdate = vm.chats[ind]
+          if (msgToUpdate) {
+            msgToUpdate.post_id = savedMsg.post_id
+            vm.chats.splice(ind, 1, msgToUpdate)
+          }
+        }
       },
       manageMessage: function (msg) {
         let vm = this
@@ -146,6 +162,9 @@
                 portrait: msgJson.portrait
               })
             }
+          } else {
+            // update a message send by user
+            vm.updateChat(msgJson)
           }
         }
       },
@@ -184,7 +203,7 @@
           let txt = msg.value
           txt = txt.trim()
           vm.chats.push({
-            identifier: vm.nextId++,
+            identifier: vm.nextId,
             origin: 1,
             command: 'send',
             message: txt,

@@ -22,7 +22,8 @@
           <ChatBox v-bind:chatroom="chatroom"
                    v-bind:chatSocket="chatSocket"
                    v-bind:chats="chats"
-                   v-bind:user="user"></ChatBox>
+                   v-bind:user="user"
+                   v-bind:nextId="nextId"></ChatBox>
         </div>
         <div class="mdl-tabs__panel is-active" id="1" v-if="tabActive==='1'">
           <ChatroomUsers v-bind:chatroom="chatroom"
@@ -106,6 +107,9 @@
       },
       user: function () {
         return this.$root.user
+      },
+      nextId: function () {
+        return this.chats.length + 1
       }
     },
     created () {

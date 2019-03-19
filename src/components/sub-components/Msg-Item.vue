@@ -14,7 +14,7 @@
                              'is-it-a-question-blink': couldBeAQuestion(msg)}"
              v-bind:data-badge="badge_icon">
         </div>
-        <ul v-if="!msg.origin.portrait" class="mdl-menu mdl-js-menu mdl-js-ripple-effect"
+        <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect"
             v-bind:class="{ 'mdl-menu--bottom-right': msg.origin===1, 'mdl-menu--bottom-left': msg.origin!==1}"
             :for="'badge_menu'+msg.identifier" :data-mdl-for="'badge_menu'+msg.identifier">
           <li v-for="action in badge_menu_actions" v-on:click="doAction(action.js, msg, action)"
@@ -126,8 +126,9 @@
             .then(function (response) {
               // handle success
               vm.$root.loading = false
+              console.log('UpdateQuestion', response.data)
               if (response.data.post) {
-                vm.$set(msg, 'post_id', response.data.post.post_id)
+                vm.$set(msg, 'post_id', response.data.post.id)
                 if (msg.question) {
                   vm.$root.showSnackbar(vm.$i18n.t('post.savedAsQuestion'))
                 } else {

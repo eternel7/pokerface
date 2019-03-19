@@ -2,8 +2,9 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.models import User
-from chatrooms.models import UserInRoom
-from chatrooms.serializers import UserInRoomSerializer
+from chatrooms.models import Post, UserInRoom
+from chatrooms.serializers import PostSerializer, UserInRoomSerializer
+from chatrooms.views import create_or_update_post
 from channels.db import database_sync_to_async
 import asyncio
 from .exceptions import ClientError
@@ -109,10 +110,35 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             except ClientError:
                 pass
     
-    # Command helper methods called by receive_json
+    # Command helper methods
+    @classmethod
+    def getuser(cls, username):
+        user = User.objects.filter(username=username)
+        if user.count() == 1:
+            user = user.first()
+            return user
+        return None
+    
+    @classmethod
+    def getuser_pk(cls, username):
+        user = cls.getuser(username)
+        if user:
+            return user.pk
+        return None
+    
+    @staticmethod
+    async def getuser_avatar(username):
+        # Get corresponding user avatar image
+        user = ChatConsumer.getuser(username)
+        default_image = "/static/img/icons/apple-touch-icon-76x76.png"
+        if user:
+            avatar_image = user.userinfo.avatarImage if user.userinfo and user.userinfo.avatarImage != "" else default_image
+            return avatar_image
+        return default_image
+    
     @database_sync_to_async
     def add_or_update_user_in_room_db(self, room_id, username):
-        user_pk = User.objects.filter(username=username).first().pk
+        user_pk = ChatConsumer.getuser_pk(username)
         room_pk = int(room_id)
         user_in_room = {
             "user": user_pk,
@@ -138,13 +164,30 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     
     @database_sync_to_async
     def remove_user_from_room_db(self, room_id, username):
-        user_pk = User.objects.filter(username=username).first().pk
+        user_pk = ChatConsumer.getuser_pk(username)
         room_pk = int(room_id)
         data = UserInRoom.objects.filter(user=user_pk, room=room_pk)
         if data:
             data.delete()
             return True
         return False
+    
+    @database_sync_to_async
+    def add_or_update_post_in_room_db(self, room_id, username, message, type_num=1, post_id=None):
+        user = ChatConsumer.getuser(username)
+        data = {
+            "message": message,
+            "type": int(type_num),
+            "room": int(room_id)
+        }
+        if post_id:
+            data.post_id = post_id
+        
+        post = create_or_update_post(user, data)
+        
+        if post.pk:
+            return post.pk
+        return post
     
     async def join_room(self, room_id):
         """
@@ -270,6 +313,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         """
         Called when someone has messaged our chat.
         """
+        post_id = await self.add_or_update_post_in_room_db(event["room_id"], event["username"], event["message"])
         avatar_image = await self.getuser_avatar(event["username"])
         # Send a message down to the client
         await asyncio.ensure_future(self.send_json(
@@ -279,6 +323,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "username": event["username"],
                 "portrait": avatar_image,
                 "message": event["message"],
+                "post_id": post_id
             },
         ))
         await asyncio.ensure_future(self.chat_bot_parse(event))
@@ -316,15 +361,3 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             await self.bot_message("I am sorry! I don't understand you", event)
         else:
             await self.bot_message(sent_tokens[idx], event)
-    
-    @staticmethod
-    async def getuser_avatar(username):
-        # Get corresponding user avatar image
-        user = User.objects.filter(username=username)
-        default_image = "/static/img/icons/apple-touch-icon-76x76.png"
-        if user.count() == 1:
-            user = user.first()
-            avatar_image = user.userinfo.avatarImage if user.userinfo and user.userinfo.avatarImage != "" else \
-                default_image
-            return avatar_image
-        return default_image

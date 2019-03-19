@@ -8,6 +8,43 @@ from chatrooms.models import Room, Post, UserInRoom
 from chatrooms.serializers import RoomSerializer, DataSerializer, PostSerializer, UserInRoomReadSerializer
 
 
+def create_or_update_post(user, post_dict):
+    post_data = dict(post_dict)
+    if 'post_id' in post_data:
+        # update of existing post
+        # no update for some fields
+        if 'room' in post_data:
+            del post_data['room']
+        if 'owner' in post_data:
+            del post_data['owner']
+        
+        post = Post.objects.filter(id=post_data['post_id'])
+        if post.count() == 1:
+            post = post.first()
+            post.body = post_data['message']
+            post.last_editor = user
+            for key in post_data.keys():
+                try:
+                    setattr(post, key, post_data[key])
+                except AttributeError:
+                    print('No attribute ' + key + ' on Post')
+            post.save()
+            return post
+    else:
+        data = {
+            "body": post_data['message'],
+            "owner": user.pk,
+            "room": post_data['room']
+        }
+        serializer = PostSerializer(data=data)
+        if serializer.is_valid(raise_exception=False):
+            post = serializer.save()
+            if post:
+                return post
+        return serializer.errors
+    return False
+
+
 # Create your views here.
 @api_view(['GET'])
 @csrf_exempt
@@ -118,44 +155,15 @@ def stored_questions(room_id):
 def chat_question(request, format='json'):
     user = get_user_from_token(get_authorization_header(request))
     if user:
-        if 'post_id' in request.data:
-            # update of existing post
-            post_id = request.data['post_id']
-            post = Post.objects.filter(id=post_id)
-            if post.count() == 1:
-                post = post.first()
-                post.body = request.data['message']
-                post.last_editor = user
-                post.type = 1 if request.data['question'] else 2
-                post.answer = request.data['answer'] if 'answer' in request.data else None
-                post.save()
-                data = {"post_id": post.pk,
-                        "message": post.body,
-                        "date": post.created_at,
-                        "type": post.type}
-                
-                questions = stored_questions(request.data['room'])
-                return JsonResponse({"post": data, "questions": questions.data}, status=status.HTTP_200_OK)
-        else:
-            data = {
-                "body": request.data['message'],
-                "owner": user.pk,
-                "room": request.data['room'],
-                "type": 1
-            }
-            serializer = PostSerializer(data=data)
-            if serializer.is_valid(raise_exception=False):
-                data = serializer.save()
-                if data:
-                    post = {"post_id": data.pk,
-                            "message": data.body,
-                            "date": data.created_at,
-                            "type": data.type}
-                    questions = stored_questions(request.data['room'])
-                    return JsonResponse({"post": post, "questions": questions.data}, status=status.HTTP_200_OK)
-                return JsonResponse({"message": "chatrooms.couldNotAddDataToTheRoom"}, status=status.HTTP_201_CREATED)
-            return JsonResponse({"message": "chatrooms.invalidRequestDataGiven", "errors": serializer.errors},
+        request.data['type'] = 1 if request.data['question'] else 2
+        del request.data['question']
+        post = create_or_update_post(user, request.data)
+        if post.pk:
+            questions = stored_questions(request.data['room'])
+            return JsonResponse({"post": PostSerializer(post).data, "questions": questions.data},
                                 status=status.HTTP_200_OK)
+        return JsonResponse({"message": "chatrooms.invalidRequestDataGiven", "errors": post.errors},
+                            status=status.HTTP_200_OK)
     return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)
 
 
@@ -216,7 +224,7 @@ def chat_updateAnswer(request, format='json'):
             if answer:
                 question.answer = answer
                 question.save()
-
+            
             answer = {
                 "id": answer.pk,
                 "message": answer.body,
