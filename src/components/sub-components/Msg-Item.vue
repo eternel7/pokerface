@@ -2,9 +2,9 @@
   <div id="message" class="messages" v-bind:class="{ 'right': msg.origin===1, 'left': msg.origin!==1}">
     <div class="img-and-bubble">
       <img v-if="msg.origin===1" alt="Me" v-bind:src="user.avatar_image"/>
-      <img v-else-if="msg.origin===0" alt="Me" v-bind:src="chatroom.portrait"/>
+      <img v-else-if="msg.origin===0" alt="Room" v-bind:src="chatroom.portrait"/>
       <img v-else-if="msg.origin.portrait" v-bind:alt="msg.origin.username" v-bind:src="msg.origin.portrait"/>
-      <div :id="'badge_menu'+msg.identifier"
+      <div :id="'badge_menu'+unique_id"
            v-bind:class="{ 'mdl-menu--bottom-right': msg.origin===1, 'mdl-menu--bottom-left': msg.origin!==1}">
         <div class="bubble">
           {{msg.message}}
@@ -16,10 +16,10 @@
         </div>
         <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect"
             v-bind:class="{ 'mdl-menu--bottom-right': msg.origin===1, 'mdl-menu--bottom-left': msg.origin!==1}"
-            :for="'badge_menu'+msg.identifier" :data-mdl-for="'badge_menu'+msg.identifier">
+            :for="'badge_menu'+unique_id" :data-mdl-for="'badge_menu'+unique_id">
           <li v-for="action in badge_menu_actions" v-on:click="doAction(action.js, msg, action)"
               class="mdl-menu__item" v-bind:class="{ 'mdl-menu__item--full-bleed-divider': action.separatorAfter}">
-            <span v-if="action.post" :title="action.post.body">{{$t('badge_menu.action.' + action.labelId)}} {{action.post.id}}</span>
+            <span v-if="action.post" :title="action.post.body">{{$t('badge_menu.action.' + action.labelId)}} {{action.post.post_id}}</span>
             <span v-else>{{$t('badge_menu.action.' + action.labelId)}}</span>
           </li>
         </ul>
@@ -38,10 +38,23 @@
 
   require('material-design-lite')
 
+  function hashCode (str) {
+    let hash = 0
+    let i
+    let chr
+    if (str.length === 0) return hash
+    for (i = 0; i < str.length; i++) {
+      chr = str.charCodeAt(i)
+      hash = ((hash << 5) - hash) + chr
+      hash |= 0 // Convert to 32bit integer
+    }
+    return hash
+  }
+
   export default {
     name: 'msg-item',
     mixins: [authMixin],
-    props: ['msg', 'user', 'chatroom', 'questions'],
+    props: ['msg', 'user', 'chatroom', 'questions', 'chats'],
     data: function () {
       return {update_version: 0}
     },
@@ -55,6 +68,9 @@
           }
           return '⋮'
         }
+      },
+      unique_id: function () {
+        return (this.msg.post_id) ? this.msg.post_id : 'loc_' + hashCode(this.msg.message) + hashCode(this.msg.date.getTime().toString())
       },
       type: function () {
         if (this.msg.question) {
@@ -77,12 +93,11 @@
           'js': 'changeQuestion',
           'labelId': 'isAQuestion',
           'separatorAfter': true
-        }
-        ]
-        if (vm.questions instanceof Array && vm.questions.length > 0) {
+        }]
+        if (vm.chats instanceof Array && vm.chats.length > 0) {
           let qEntries = []
-          for (const q of vm.questions) {
-            if (q.answer_to === null) {
+          for (const q of vm.chats) {
+            if (q.answer_to === undefined && q.question === true) {
               qEntries.push({
                 'js': 'AnswerTo',
                 'labelId': 'AnswerTo',
@@ -113,7 +128,6 @@
         if (actionName === 'changeQuestion') {
           vm.updateQuestion(msg, action)
         } else if (actionName === 'AnswerTo') {
-          console.log(actionName, msg, action.post)
           vm.setAnswer(msg, action.post)
         }
       },
@@ -166,8 +180,8 @@
           .then(function (response) {
             // handle success
             vm.$root.loading = false
+            console.log(response.data)
             if (response.data.question && response.data.answer) {
-              vm.$set(answer, 'id', response.data.answer.id)
               vm.$set(answer, 'answer_to', response.data.answer.answer_to)
               vm.$set(answer, 'type', response.data.answer.type)
               if (response.data.question.answer) {

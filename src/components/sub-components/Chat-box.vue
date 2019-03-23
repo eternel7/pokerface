@@ -5,41 +5,36 @@
            v-bind:user="user"
            v-bind:chatroom="chatroom"
            v-bind:msg="msg"
+           v-bind:chats="chats"
            v-bind:questions="questions">
       </div>
     </div>
     <div id="sendmessage">
       <textarea type="text" ref="message" placeholder="Send message..."
                 @keyup.ctrl.enter="sendMessage"></textarea>
-      <span id="send" @click="sendMessage">
-        <button id="sendButton" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored">
+      <div id="send" @click="sendMessage">
+        <button id="sendButton"
+                class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored">
           <i class="material-icons">send</i>
         </button>
-      </span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
   import ReconnectingWebSocket from 'reconnecting-websocket'
-  import PageBase from '@/components/pages/Page'
   import MsgItem from '@/components/sub-components/Msg-item'
   import {authMixin} from '@/auth/authMixin.js'
-  import axios from 'axios'
   import Animate from '@/assets/animate-utils.js'
 
   export default {
     name: 'chatBox',
-    extends: PageBase,
     mixins: [authMixin],
     components: {MsgItem},
     props: ['chatroom', 'chats', 'user', 'chatSocket', 'nextId'],
     data () {
       return {
-        sessionStarted: false,
-        displaySearch: true,
-        displayBack: true,
-        displayHeader: false,
         scrolling: false,
         lastScrollTop: 0
       }
@@ -59,7 +54,6 @@
         vm.$router.push({name: 'Home'})
       } else {
         vm.addManageMessages(vm)
-        vm.tryGetChatroomQuestion()
         vm.scrollToLastPosition()
       }
     },
@@ -82,34 +76,6 @@
             vm.addManageMessages(vm)
           }, 1000)
         }
-      },
-      tryGetChatroomQuestion (evt) {
-        let vm = this
-        vm.errors = []
-        vm.$root.loading = true
-        let roomId = vm.$route.params.id
-        axios.get('/api/chatroomquestions/' + roomId, vm.authHeader())
-          .then(function (response) {
-            vm.$root.loading = false
-            // handle success
-            if (response.data.questions) {
-              vm.$set(vm.$root.questions, roomId, response.data.questions)
-            } else {
-              vm.errors = []
-              vm.errors.push({message: response.data.message})
-            }
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error)
-            vm.$root.loading = false
-            vm.errors = []
-            vm.errors.push(error)
-          })
-          .then(function () {
-            // always executed
-            vm.$root.loading = false
-          })
       },
       addChat: function (msg, user, id) {
         let vm = this
@@ -263,22 +229,21 @@
 
   #sendmessage {
     position: relative;
-    padding: 5px;
     height: 20%;
     bottom: 0;
-    width: calc(100% - 10px);
+    width: 100%;
     display: table;
   }
 
   #sendmessage textarea {
     background: #fff;
     position: relative;
-    padding: 0;
-    margin: 0;
-    width: 100%;
+    margin: 5px;
+    width: calc(100% - 10px);
     height: 90%;
     display: table-cell;
     border: none;
+    padding: 0;
     font-size: 13px;
     font-family: "Roboto", "Open Sans", sans-serif;
     font-weight: 400;
@@ -291,16 +256,14 @@
 
   #send {
     position: relative;
-    padding: 0;
-    margin: 0;
     cursor: pointer;
-    width: 20%;
+    margin: 5px;
     height: 100%;
     display: table-cell;
   }
 
   #send button {
-    bottom: 45%;
+    bottom: 50%;
     -webkit-transition: all 500ms ease-out;
     -moz-transition: all 500ms ease-out;
     -ms-transition: all 500ms ease-out;

@@ -58,7 +58,8 @@
     "Delete": "Suppression",
     "ConfirmDeletionQuestion": "Êtes vous sûr de vouloir supprimer votre profil?",
     "ConfirmedDeletion": "You have deleted the user profile for {email}",
-    "BeforeDeleteMessage": "Vous pouvez supprimer votre profil en cliquant sur le bouton suivant. Cette action est irréverssible."
+    "BeforeDeleteMessage": "Vous pouvez supprimer votre profil en cliquant sur le bouton suivant. Cette action est irréverssible.",
+    "lastAction": "Dernière action"
   },
   "SignUp": {
     "ConfirmPassword": "Confirmer le mot de passe",

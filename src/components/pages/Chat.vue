@@ -30,7 +30,8 @@
                          v-bind:user="user"></ChatroomUsers>
         </div>
         <div class="mdl-tabs__panel is-active" id="2" v-if="tabActive==='2'">
-          <div>Hello world!</div>
+          <ChatroomQuestions v-bind:chatroom="chatroom"
+                             v-bind:user="user"></ChatroomQuestions>
         </div>
         <div class="mdl-tabs__panel is-active" id="3" v-if="tabActive==='3'">
           <div>Hello world!</div>
@@ -48,14 +49,18 @@
 
 <script>
   import ReconnectingWebSocket from 'reconnecting-websocket'
+  import PageBase from '@/components/pages/Page'
   import ChatBox from '@/components/sub-components/Chat-box'
   import ChatroomUsers from '@/components/sub-components/Chatroom-users'
+  import ChatroomQuestions from '@/components/sub-components/Chatroom-questions'
+  import axios from 'axios'
   import {authMixin} from '@/auth/authMixin.js'
 
   export default {
     name: 'chat',
+    extends: PageBase,
     mixins: [authMixin],
-    components: {ChatBox, ChatroomUsers},
+    components: {ChatBox, ChatroomUsers, ChatroomQuestions},
     data () {
       return {
         tabs: [
@@ -87,8 +92,8 @@
         ],
         sessionStarted: false,
         chats: [],
-        displaySearch: true,
-        displayBack: true,
+        displaySearch: false,
+        displayBack: false,
         displayHeader: false,
         chatSocket: undefined,
         tabActive: '0',
@@ -118,6 +123,7 @@
       } else {
         let vm = this
         vm.startReconnectingWebSocket()
+        vm.tryGetChatroomQuestion()
       }
     },
     beforeDestroy: function () {
@@ -142,6 +148,34 @@
           let wsScheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
           vm.chatSocket = new ReconnectingWebSocket(wsScheme + '://' + window.location.host + '/ws/chat/' + vm.$route.params.id + '/')
         }
+      },
+      tryGetChatroomQuestion (evt) {
+        let vm = this
+        vm.errors = []
+        vm.$root.loading = true
+        let roomId = vm.$route.params.id
+        axios.get('/api/chatroomquestions/' + roomId, vm.authHeader())
+          .then(function (response) {
+            vm.$root.loading = false
+            // handle success
+            if (response.data.questions) {
+              vm.$set(vm.$root.questions, roomId, response.data.questions)
+            } else {
+              vm.errors = []
+              vm.errors.push({message: response.data.message})
+            }
+          })
+          .catch(function (error) {
+            // handle error
+            console.log(error)
+            vm.$root.loading = false
+            vm.errors = []
+            vm.errors.push(error)
+          })
+          .then(function () {
+            // always executed
+            vm.$root.loading = false
+          })
       }
     }
   }

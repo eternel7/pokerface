@@ -41,8 +41,6 @@
             vm.$root.loading = false
             // handle success
             if (response.data.users) {
-              console.log(response.data.users)
-              // vm.users = response.data.users
               vm.$set(vm, 'users_in_room', response.data.users)
             } else {
               vm.errors = []
