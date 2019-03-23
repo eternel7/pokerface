@@ -32,7 +32,7 @@
     name: 'chatBox',
     mixins: [authMixin],
     components: {MsgItem},
-    props: ['chatroom', 'chats', 'user', 'chatSocket', 'nextId'],
+    props: ['chatroom', 'chats', 'user', 'chatSocket'],
     data () {
       return {
         scrolling: false,
@@ -81,14 +81,12 @@
         let vm = this
         if (msg && !user) {
           vm.chats.push({
-            identifier: vm.nextId,
             origin: 0,
             message: msg,
             date: new Date()
           })
         } else if (msg) {
           vm.chats.push({
-            identifier: vm.nextId,
             origin: user,
             message: msg,
             date: new Date(),
@@ -170,7 +168,6 @@
           let txt = msg.value
           txt = txt.trim()
           vm.chats.push({
-            identifier: vm.nextId,
             origin: 1,
             command: 'send',
             message: txt,
