@@ -268,6 +268,9 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         # Update last update in room for user
         await asyncio.ensure_future(self.add_or_update_user_in_room_db(room_id, self.scope["user"].username))
         
+        # Store post in DB to set it post_id
+        post_id = await self.add_or_update_post_in_room_db(room_id, self.scope["user"].username, message)
+
         await self.channel_layer.group_send(
             room.group_name,
             {
@@ -275,6 +278,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "room_id": room_id,
                 "username": self.scope["user"].username,
                 "message": message,
+                "post_id": post_id
             }
         )
     
@@ -313,7 +317,6 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         """
         Called when someone has messaged our chat.
         """
-        post_id = await self.add_or_update_post_in_room_db(event["room_id"], event["username"], event["message"])
         avatar_image = await self.getuser_avatar(event["username"])
         # Send a message down to the client
         await asyncio.ensure_future(self.send_json(
@@ -323,7 +326,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "username": event["username"],
                 "portrait": avatar_image,
                 "message": event["message"],
-                "post_id": post_id
+                "post_id": event["post_id"]
             },
         ))
         await asyncio.ensure_future(self.chat_bot_parse(event))

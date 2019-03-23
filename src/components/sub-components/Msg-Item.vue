@@ -126,15 +126,12 @@
             .then(function (response) {
               // handle success
               vm.$root.loading = false
-              console.log('UpdateQuestion', response.data)
               if (response.data.post) {
-                vm.$set(msg, 'post_id', response.data.post.id)
                 if (msg.question) {
                   vm.$root.showSnackbar(vm.$i18n.t('post.savedAsQuestion'))
                 } else {
                   vm.$root.showSnackbar(vm.$i18n.t('post.notAQuestionAnymore'))
                 }
-                console.log(response.data.questions)
                 if (response.data.questions && vm.$root.questions instanceof Object) {
                   vm.$set(vm.$root.questions, vm.$route.params.id, response.data.questions)
                 }

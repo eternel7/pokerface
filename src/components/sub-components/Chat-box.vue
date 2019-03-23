@@ -112,7 +112,7 @@
             vm.$root.loading = false
           })
       },
-      addChat: function (msg, user) {
+      addChat: function (msg, user, id) {
         let vm = this
         if (msg && !user) {
           vm.chats.push({
@@ -127,7 +127,8 @@
             origin: user,
             message: msg,
             date: new Date(),
-            question: false
+            question: false,
+            post_id: id
           })
         }
         vm.$nextTick(vm.scrollDown())
@@ -151,6 +152,7 @@
       manageMessage: function (msg) {
         let vm = this
         let msgJson = JSON.parse(msg.data)
+        console.log(msgJson)
         if (msgJson.text || msgJson.username === 0) {
           // Bot message
           vm.addChat(msgJson.text || msgJson.message)
@@ -160,7 +162,7 @@
               vm.addChat(msgJson.message, {
                 username: msgJson.username,
                 portrait: msgJson.portrait
-              })
+              }, msgJson.post_id)
             }
           } else {
             // update a message send by user
