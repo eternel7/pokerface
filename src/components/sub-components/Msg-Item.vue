@@ -162,12 +162,10 @@
           answer: answer,
           room: vm.$route.params.id
         }
-        console.log(QandA)
         axios.post('/api/chatroomsetanswer/', QandA, vm.authHeader())
           .then(function (response) {
             // handle success
             vm.$root.loading = false
-            console.log(response.data)
             if (response.data.question && response.data.answer) {
               vm.$set(answer, 'id', response.data.answer.id)
               vm.$set(answer, 'answer_to', response.data.answer.answer_to)

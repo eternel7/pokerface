@@ -11,12 +11,11 @@
     <div id="sendmessage">
       <textarea type="text" ref="message" placeholder="Send message..."
                 @keyup.ctrl.enter="sendMessage"></textarea>
-      <div id="send">
-        <button id="sendButton" @click="sendMessage"
-                class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+      <span id="send" @click="sendMessage">
+        <button id="sendButton" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored">
           <i class="material-icons">send</i>
         </button>
-      </div>
+      </span>
     </div>
   </div>
 </template>
@@ -264,20 +263,22 @@
 
   #sendmessage {
     position: relative;
+    padding: 5px;
     height: 20%;
     bottom: 0;
+    width: calc(100% - 10px);
+    display: table;
   }
 
   #sendmessage textarea {
     background: #fff;
-    position: absolute;
-    top: 5%;
-    left: 2vh;
-    margin: 0;
-    width: 80%;
-    height: 90%;
-    border: none;
+    position: relative;
     padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 90%;
+    display: table-cell;
+    border: none;
     font-size: 13px;
     font-family: "Roboto", "Open Sans", sans-serif;
     font-weight: 400;
@@ -289,45 +290,17 @@
   }
 
   #send {
-    position: absolute;
-    bottom: 0;
-    right: 0;
+    position: relative;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
     width: 20%;
     height: 100%;
-  }
-
-  .mdl-button--fab {
-    max-width: 56px;
-    max-height: 56px;
-    width: 8vh;
-    height: 8vh;
-    min-width: 8vh;
-    min-height: 8vh;
-    position: fixed;
-    bottom: calc(8vh - 12px);
-    right: 3vw;
-  }
-
-  @media screen and (min-height: 640px) {
-    .mdl-button--fab {
-      min-width: 56px;
-      min-height: 56px;
-    }
-  }
-
-  @media screen and (max-height: 640px) {
-    .mdl-button--fab {
-      bottom: 24px;
-      right: 2vw;
-    }
-
-    .mdl-button--fab > i {
-      font-size: 20px;
-    }
+    display: table-cell;
   }
 
   #send button {
-    cursor: pointer;
+    bottom: 45%;
     -webkit-transition: all 500ms ease-out;
     -moz-transition: all 500ms ease-out;
     -ms-transition: all 500ms ease-out;
@@ -347,7 +320,4 @@
     transform: rotate(-45deg);
   }
 
-  #send:hover button > i {
-    transform: translateY(-50%) translateX(-40%);
-  }
 </style>
