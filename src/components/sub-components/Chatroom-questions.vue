@@ -1,6 +1,6 @@
 <template>
   <div v-if="chatroom" id="chatroomview">
-    <ul v-if="questions" id="questions" ref="questions" class="mdl-list"
+    <ul v-if="questions" id="questions" ref="questions" class="mdl-list list"
         v-bind:class="{'is-active' : (selectedQuestion!==undefined)}">
       <li is="QuestionItem" v-for="question in questions" :key="questions.indexOf(question)"
           v-bind:user="user"
@@ -86,12 +86,12 @@
     max-width: 700px;
   }
 
-  #questions {
+  .list {
     margin: 0;
     width: 99%;
     padding-left: 1%;
     position: relative;
-    height: 97%;
+    height: calc(100% - 15px);
     overflow-y: scroll;
     overflow-x: hidden;
     padding-bottom: 5px;
@@ -99,14 +99,15 @@
     overflow: -moz-scrollbars-none;
   }
 
-  #questions.is-active {
-    height: 80%;
-  }
-
-  #questions > li {
+  .list > li {
     text-align: left;
     vertical-align: middle;
-    padding: 0;
+  }
+
+  @media screen and (max-height: 640px) {
+    .list > li {
+      padding: 0;
+    }
   }
 
   #sendmessage {

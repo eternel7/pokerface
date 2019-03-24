@@ -167,7 +167,7 @@
   span.img {
     background-size: cover;
     background-position: center center;
-    margin-bottom: 100%
+    margin-bottom: 100%;
   }
 
   .question {

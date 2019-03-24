@@ -1,10 +1,19 @@
 <template>
   <div id="message" class="messages" v-bind:class="{ 'right': msg.origin===1, 'left': msg.origin!==1}">
     <div class="img-and-bubble">
-      <img v-if="msg.origin===1" alt="Me" v-bind:src="user.avatar_image"/>
-      <img v-else-if="msg.origin===0" alt="Room" v-bind:src="chatroom.portrait"/>
-      <img v-else-if="msg.origin.portrait" v-bind:alt="msg.origin.username" v-bind:src="msg.origin.portrait"/>
-      <div :id="'badge_menu'+unique_id"
+      <span v-if="msg.origin===1"
+            class="mdl-list__item-avatar img"
+            v-bind:style="'background-image: url('+user.avatar_image+')'">
+      </span>
+      <span v-else-if="msg.origin===0" alt="Room"
+            class="mdl-list__item-avatar img"
+            v-bind:style="'background-image: url('+chatroom.portrait+')'">
+      </span>
+      <span v-if="msg.origin.portrait" v-bind:title="msg.origin.username"
+            class="mdl-list__item-avatar img"
+            v-bind:style="'background-image: url('+msg.origin.portrait+')'">
+      </span>
+     <div :id="'badge_menu'+unique_id"
            v-bind:class="{ 'mdl-menu--bottom-right': msg.origin===1, 'mdl-menu--bottom-left': msg.origin!==1}">
         <div class="bubble">
           {{msg.message}}
@@ -302,17 +311,17 @@
     position: relative;
   }
 
-  #message img {
+  #message .img {
     position: absolute;
     bottom: 0;
-    left: -38px;
-    border-radius: 50%;
-    width: 30px;
+    left: -45px;
     margin-top: 12px;
+    background-size: cover;
+    background-position: center center;
   }
 
-  #message.right img {
-    right: -38px;
+  #message.right .img {
+    right: -45px;
     left: auto;
   }
 
