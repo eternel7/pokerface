@@ -13,7 +13,7 @@
             class="mdl-list__item-avatar img"
             v-bind:style="'background-image: url('+msg.origin.portrait+')'">
       </span>
-     <div :id="'badge_menu'+unique_id"
+      <div :id="'badge_menu'+unique_id"
            v-bind:class="{ 'mdl-menu--bottom-right': msg.origin===1, 'mdl-menu--bottom-left': msg.origin!==1}">
         <div class="bubble">
           {{msg.message}}
@@ -35,14 +35,15 @@
       </div>
     </div>
     <div v-if="!msg.origin.portrait" class="time">
-      {{msg.date.toLocaleTimeString()}}
+      {{msg.date | niceDate}}
     </div>
-    <div v-else class="time">{{msg.date.toLocaleTimeString() + ' - ' + msg.origin.username}}</div>
+    <div v-else class="time">{{msg.date | niceDate}} - {{msg.origin.username}}</div>
   </div>
 </template>
 
 <script>
   import {authMixin} from '@/auth/authMixin.js'
+  import {momentMixin} from '@/assets/momentMixin.js'
   import axios from 'axios'
 
   require('material-design-lite')
@@ -62,7 +63,7 @@
 
   export default {
     name: 'msg-item',
-    mixins: [authMixin],
+    mixins: [authMixin, momentMixin],
     props: ['msg', 'user', 'chatroom', 'questions', 'chats'],
     data: function () {
       return {update_version: 0}

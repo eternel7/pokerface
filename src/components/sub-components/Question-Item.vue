@@ -7,9 +7,13 @@
       <p class="what block-with-text" :title="question.body" v-html="question.body">
       </p>
       <span class="mdl-list__item-text-body when">
-        <span v-if='question.last_editor' :title="question.updated_at">{{$t('post.updated')}} {{update_date}}</span>
-        <span v-else :title="question.created_at">{{$t('post.created')}} {{creation_date}}</span>
-        <span class="last_editor">{{(question.last_editor) ? question.last_editor.username : question.owner.username}}</span>
+        <span v-if='question.last_editor' :title="question.updated_at">
+          {{$t('post.updated')}} {{update_date | niceDate}}
+        </span>
+        <span v-else :title="question.created_at">
+          {{$t('post.created')}} {{creation_date | niceDate}}
+        </span>
+        <span class="last_editor"> - {{(question.last_editor) ? question.last_editor.username : question.owner.username}}</span>
       </span>
     </span>
     <span class="mdl-list__item-secondary-content answers">
@@ -25,6 +29,7 @@
 
 <script>
   import {authMixin} from '@/auth/authMixin.js'
+  import {momentMixin} from '@/assets/momentMixin.js'
   import axios from 'axios'
   import moment from 'moment'
 
@@ -32,7 +37,7 @@
 
   export default {
     name: 'question-item',
-    mixins: [authMixin],
+    mixins: [authMixin, momentMixin],
     props: ['user', 'chatroom', 'question'],
     data: function () {
       return {update_version: 0}
@@ -54,10 +59,10 @@
         return 'message'
       },
       creation_date: function () {
-        return moment(new Date(this.question.created_at)).fromNow()
+        return new Date(this.question.created_at)
       },
       update_date: function () {
-        return moment(new Date(this.question.updated_at)).fromNow()
+        return new Date(this.question.updated_at)
       }
     },
     methods: {

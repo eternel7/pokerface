@@ -5,17 +5,20 @@
       </span>
       <span :title="niceUserLabel" v-html="niceUserLabel">
       </span>
-      <span class="mdl-list__item-text-body" :title="userInRoom.updated_at">{{$t('user.lastAction')}} {{userInRoom.updated_at | formatDate}}
+      <span class="mdl-list__item-text-body" :title="userInRoom.updated_at">
+        {{$t('user.lastAction')}} - {{userInRoom.updated_at | formatTime}}
       </span>
     </span>
   </li>
 </template>
 
 <script>
+  import {momentMixin} from '@/assets/momentMixin.js'
   require('material-design-lite')
 
   export default {
     name: 'connectedUserInRoom',
+    mixins: [momentMixin],
     props: ['userInRoom'],
     computed: {
       niceUserLabel: function () {
@@ -23,14 +26,6 @@
           return this.userInRoom.user_obj.first_name + ' ' + this.userInRoom.user_obj.last_name
         } else {
           return this.userInRoom.user_obj.username
-        }
-      }
-    },
-    filters: {
-      formatDate: function (value) {
-        if (value) {
-          let d = new Date(value)
-          return d.toLocaleDateString() + ' ' + d.toLocaleTimeString()
         }
       }
     }
