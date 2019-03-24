@@ -1,5 +1,5 @@
 <template>
-  <div v-if="chatroom" id="chatboxview">
+  <div v-if="chatroom" id="chatroomview">
     <ul v-if="questions" id="questions" ref="questions" class="mdl-list"
         v-bind:class="{'is-active' : (selectedQuestion!==undefined)}">
       <li is="QuestionItem" v-for="question in questions" :key="questions.indexOf(question)"
@@ -76,29 +76,22 @@
 
 
 <style scoped>
-  #chatboxview {
+  #chatroomview {
     position: relative;
-    height: calc(92vh - 49px);
-    left: 50%;
-    -webkit-transform: translateX(-50%); /* Chrome 4+, Op 15+, Saf 3.1, iOS Saf 3.2+ */
-    -moz-transform: translateX(-50%); /* Fx 3.5-15 */
-    -ms-transform: translateX(-50%); /* IE 9 */
-    -o-transform: translateX(-50%); /* Op 10.5-12 */
-    transform: translateX(-50%); /* Fx 16+, IE 10+ */
     margin-left: auto;
     margin-right: auto;
     background: #fff;
+    height: 92%;
     width: 100%;
     max-width: 700px;
   }
 
   #questions {
-    margin-top: 0;
-    line-height: 14px;
+    margin: 0;
     width: 99%;
     padding-left: 1%;
     position: relative;
-    height: calc(98% - 5px);
+    height: 97%;
     overflow-y: scroll;
     overflow-x: hidden;
     padding-bottom: 5px;
@@ -111,12 +104,9 @@
   }
 
   #questions > li {
-    width: auto;
-    list-style-type: none;
-    padding: 2px;
-    margin-bottom: 2px;
     text-align: left;
     vertical-align: middle;
+    padding: 0;
   }
 
   #sendmessage {

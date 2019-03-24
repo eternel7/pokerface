@@ -1,6 +1,6 @@
 <template>
-  <div v-if="chatroom" id="chatroomusersview">
-    <ul v-if="users_in_room" id="connected">
+  <div v-if="chatroom" id="chatroomview">
+    <ul v-if="users_in_room" id="connected" class="mdl-list">
       <li is="ConnectedUserInRoom" v-for="u in users_in_room" :key="u.user_obj.username" v-bind:userInRoom="u">
       </li>
     </ul>
@@ -67,25 +67,22 @@
 
 
 <style scoped>
-  #chatroomusersview {
+  #chatroomview {
     position: relative;
-    top: 0;
-    bottom: 0;
     margin-left: auto;
     margin-right: auto;
     background: #fff;
-    height: 100%;
+    height: 92%;
     width: 100%;
     max-width: 700px;
   }
 
   #connected {
-    margin-top: 1%;
-    line-height: 14px;
+    margin: 0;
     width: 99%;
     padding-left: 1%;
     position: relative;
-    height: 93%;
+    height: 97%;
     overflow-y: scroll;
     overflow-x: hidden;
     padding-bottom: 5px;
@@ -94,11 +91,8 @@
   }
 
   #connected > li {
-    width: auto;
-    list-style-type: none;
-    padding: 2px;
-    margin-bottom: 2px;
     text-align: left;
     vertical-align: middle;
+    padding: 0;
   }
 </style>

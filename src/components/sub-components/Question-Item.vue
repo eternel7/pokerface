@@ -4,8 +4,8 @@
       <span class="mdl-list__item-avatar img who" :title="question.owner.username"
             v-bind:style="'background-image: url('+question.owner.avatar_image+')'">
       </span>
-      <span class="what" :title="question.body" v-html="smallMsg">
-      </span>
+      <p class="what block-with-text" :title="question.body" v-html="question.body">
+      </p>
       <span class="mdl-list__item-text-body when">
         <span v-if='question.last_editor' :title="question.updated_at">{{$t('post.updated')}} {{update_date}}</span>
         <span v-else :title="question.created_at">{{$t('post.created')}} {{creation_date}}</span>
@@ -15,8 +15,8 @@
     <span class="mdl-list__item-secondary-content answers">
       <span :title="$t('post.proposed_answers')">
         <table>
-          <tr><td class="answers-count title">{{question.answers_count}}</td></tr>
-          <tr><td class="answers-count count">{{$t('post.answers')}}</td></tr>
+          <tr><td class="answers-count count">{{question.answers_count}}</td></tr>
+          <tr><td class="answers-count title">{{$t('post.answers')}}</td></tr>
         </table>
       </span>
   </span>
@@ -58,9 +58,6 @@
       },
       update_date: function () {
         return moment(new Date(this.question.updated_at)).fromNow()
-      },
-      smallMsg: function () {
-        return (this.question.body.length > 100) ? this.question.body.substring(0, 100) + '...' : this.question.body
       }
     },
     methods: {
@@ -178,15 +175,72 @@
   }
 
   .what {
-    font-size: small;
+    font-size: medium;
+  }
+
+  /* styles for '...' */
+  .block-with-text {
+    /* hide text if it more than N lines  */
+    overflow: hidden;
+    /* for set '...' in absolute position */
+    position: relative;
+    /* use this value to count block height */
+    line-height: 1.2em;
+    /* max-height = line-height (1.2) * lines max number (2) */
+    max-height: 2.4em;
+    /* fix problem when last visible word doesn't adjoin right side  */
+    text-align: justify;
+    /* place for '...' */
+    margin-right: -1em;
+    padding-right: 1em;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  /* create the ... */
+  .block-with-text:before {
+    /* points in the end */
+    content: '...';
+    /* absolute position */
+    position: absolute;
+    /* set position to right bottom corner of block */
+    right: 0;
+    bottom: 0;
+  }
+
+  /* hide ... if we have text, which is less than or equal to max lines */
+  .block-with-text:after {
+    /* points in the end */
+    content: '';
+    /* absolute position */
+    position: absolute;
+    /* set position to right bottom corner of text */
+    right: 0;
+    /* set width and height */
+    width: 1em;
+    height: 1em;
+    margin-top: 0.2em;
+    /* bg color = bg color under block */
+    background: white;
   }
 
   .when {
-    font-size: x-small;
+    font-size: 12px;
+    line-height: 14px;
+    margin: 0;
+    padding: 0;
   }
 
   .answers-count {
     text-align: center;
-    font-size: small;
   }
+
+  .answers-count.title {
+    font-size: 12px;
+  }
+
+  .answers-count.count {
+    font-size: 14px;
+  }
+
 </style>
