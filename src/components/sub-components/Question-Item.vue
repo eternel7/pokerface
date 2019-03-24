@@ -1,22 +1,22 @@
 <template>
   <li class="question mdl-list__item mdl-list__item--three-line">
     <span class="mdl-list__item-primary-content">
-      <span class="mdl-list__item-avatar img" :title="question.owner.username"
+      <span class="mdl-list__item-avatar img who" :title="question.owner.username"
             v-bind:style="'background-image: url('+question.owner.avatar_image+')'">
       </span>
-      <span :title="question.body" v-html="smallMsg">
+      <span class="what" :title="question.body" v-html="smallMsg">
       </span>
-      <span class="mdl-list__item-text-body">
-        <span :title="question.created_at">{{$t('post.created')}} {{creation_date}}</span>
-        <span v-if='question.last_editor' :title="question.updated_at"> - {{$t('post.updated')}} {{update_date}}</span>
-        <span class="last_editor">({{(question.last_editor) ? question.last_editor.username : question.owner.username}})</span>
+      <span class="mdl-list__item-text-body when">
+        <span v-if='question.last_editor' :title="question.updated_at">{{$t('post.updated')}} {{update_date}}</span>
+        <span v-else :title="question.created_at">{{$t('post.created')}} {{creation_date}}</span>
+        <span class="last_editor">{{(question.last_editor) ? question.last_editor.username : question.owner.username}}</span>
       </span>
     </span>
-    <span class="mdl-list__item-secondary-content">
+    <span class="mdl-list__item-secondary-content answers">
       <span :title="$t('post.proposed_answers')">
         <table>
-          <tr><td class="answers">{{question.answers_count}}</td></tr>
-          <tr><td class="answers">{{$t('post.answers')}}</td></tr>
+          <tr><td class="answers-count title">{{question.answers_count}}</td></tr>
+          <tr><td class="answers-count count">{{$t('post.answers')}}</td></tr>
         </table>
       </span>
   </span>
@@ -177,11 +177,16 @@
     border-bottom: solid 1px #e4e4e4;
   }
 
-  .last_editor {
-    font-size: smaller;
+  .what {
+    font-size: small;
   }
 
-  .answers {
+  .when {
+    font-size: x-small;
+  }
+
+  .answers-count {
     text-align: center;
+    font-size: small;
   }
 </style>
