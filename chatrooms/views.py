@@ -6,6 +6,7 @@ from rest_framework.authentication import get_authorization_header
 from django.http import JsonResponse
 from chatrooms.models import Room, Post, UserInRoom
 from chatrooms.serializers import RoomSerializer, DataSerializer, PostSerializer, UserInRoomReadSerializer
+from chatrooms.serializers import QuestionSerializer
 
 
 def create_or_update_post(user, post_dict):
@@ -147,7 +148,7 @@ def chatroom_delete(request, room_id):
 
 
 def stored_questions(room_id):
-    return PostSerializer(Post.objects.filter(room=room_id, type=1), many=True)
+    return QuestionSerializer(Post.objects.filter(room=room_id, type=1), many=True)
 
 
 @api_view(['POST'])

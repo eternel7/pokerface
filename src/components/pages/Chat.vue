@@ -52,7 +52,7 @@
   import ChatBox from '@/components/sub-components/Chat-box'
   import ChatroomUsers from '@/components/sub-components/Chatroom-users'
   import ChatroomQuestions from '@/components/sub-components/Chatroom-questions'
-  import axios from 'axios'
+  import DataUtils from '@/assets/data-utils.js'
   import {authMixin} from '@/auth/authMixin.js'
 
   export default {
@@ -145,33 +145,8 @@
           vm.chatSocket = new ReconnectingWebSocket(wsScheme + '://' + window.location.host + '/ws/chat/' + vm.$route.params.id + '/')
         }
       },
-      tryGetChatroomQuestion (evt) {
-        let vm = this
-        vm.errors = []
-        vm.$root.loading = true
-        let roomId = vm.$route.params.id
-        axios.get('/api/chatroomquestions/' + roomId, vm.authHeader())
-          .then(function (response) {
-            vm.$root.loading = false
-            // handle success
-            if (response.data.questions) {
-              vm.$set(vm.$root.questions, roomId, response.data.questions)
-            } else {
-              vm.errors = []
-              vm.errors.push({message: response.data.message})
-            }
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error)
-            vm.$root.loading = false
-            vm.errors = []
-            vm.errors.push(error)
-          })
-          .then(function () {
-            // always executed
-            vm.$root.loading = false
-          })
+      tryGetChatroomQuestion () {
+        DataUtils.refreshQuestions(this, true)
       }
     }
   }

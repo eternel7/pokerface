@@ -29,6 +29,7 @@
     "Cancel": "Cancel",
     "Ok": "Ok"
   },
+  "ConnectionNeeded": "Connection needed",
   "user": {
     "TabUser": "User",
     "TabMore": "More",
@@ -200,6 +201,10 @@
   },
   "post":{
     "savedAsQuestion": "Post saved as question",
-    "notAQuestionAnymore": "Post is not a question anymore"
+    "notAQuestionAnymore": "Post is not a question anymore",
+    "proposed_answers": "proposed answers",
+    "answers": "answers",
+    "created": "created",
+    "updated": "updated"
   }
 }

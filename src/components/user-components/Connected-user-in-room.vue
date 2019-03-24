@@ -1,14 +1,13 @@
 <template>
   <li class="user-in-a-room mdl-list__item mdl-list__item--three-line">
-
-    <div class="mdl-list__item-primary-content">
-      <span class="img" v-bind:style="'background-image: url('+userInRoom.user_obj.avatar_image+')'">
+    <span class="mdl-list__item-primary-content">
+      <span class="mdl-list__item-avatar img" v-bind:style="'background-image: url('+userInRoom.user_obj.avatar_image+')'">
       </span>
-      <span :alt="niceUserLabel" v-html="niceUserLabel">
+      <span :title="niceUserLabel" v-html="niceUserLabel">
       </span>
-      <span class="mdl-list__item-text-body">{{$t('user.lastAction')}} {{userInRoom.updated_at | formatDate}}
+      <span class="mdl-list__item-text-body" :title="userInRoom.updated_at">{{$t('user.lastAction')}} {{userInRoom.updated_at | formatDate}}
       </span>
-    </div>
+    </span>
   </li>
 </template>
 
@@ -40,13 +39,8 @@
 
 <style scoped>
   span.img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 16px;
     background-size: cover;
     background-position: center center;
-    float: left;
   }
 
   .user-in-a-room {

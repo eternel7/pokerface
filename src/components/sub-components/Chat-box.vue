@@ -14,7 +14,7 @@
                 @keyup.ctrl.enter="sendMessage"></textarea>
       <div id="send" @click="sendMessage">
         <button id="sendButton"
-                class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored">
+                class="mdl-button mdl-button--colored">
           <i class="material-icons">send</i>
         </button>
       </div>
@@ -256,10 +256,12 @@
     cursor: pointer;
     margin: 5px;
     height: 100%;
+    padding: 0;
     display: table-cell;
   }
 
   #send button {
+    background-color: rgba(0, 0, 0, 0);
     bottom: 50%;
     -webkit-transition: all 500ms ease-out;
     -moz-transition: all 500ms ease-out;
@@ -268,16 +270,9 @@
     transition: all 500ms ease-out;
   }
 
-  #send button > i {
-    -webkit-transition: all 500ms ease-out;
-    -moz-transition: all 500ms ease-out;
-    -ms-transition: all 500ms ease-out;
-    -o-transition: all 500ms ease-out;
-    transition: all 500ms ease-out;
-  }
-
   #send:hover button {
-    transform: rotate(-45deg);
+    background-color: rgba(0, 0, 0, 0);
+    color: rgb(255, 64, 129);
   }
 
 </style>

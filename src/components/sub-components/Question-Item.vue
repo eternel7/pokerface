@@ -1,116 +1,66 @@
 <template>
-  <div id="message" class="messages" v-bind:class="{ 'right': msg.origin===1, 'left': msg.origin!==1}">
-    <div class="img-and-bubble">
-      <img v-if="msg.origin===1" alt="Me" v-bind:src="user.avatar_image"/>
-      <img v-else-if="msg.origin===0" alt="Room" v-bind:src="chatroom.portrait"/>
-      <img v-else-if="msg.origin.portrait" v-bind:alt="msg.origin.username" v-bind:src="msg.origin.portrait"/>
-      <div :id="'badge_menu'+unique_id"
-           v-bind:class="{ 'mdl-menu--bottom-right': msg.origin===1, 'mdl-menu--bottom-left': msg.origin!==1}">
-        <div class="bubble">
-          {{msg.message}}
-        </div>
-        <div v-if="msg.origin===1" class="link mdl-badge mdl-badge--overlap"
-             v-bind:class="{ 'is-it-a-question': !msg.question,
-                             'is-it-a-question-blink': couldBeAQuestion(msg)}"
-             v-bind:data-badge="badge_icon">
-        </div>
-        <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect"
-            v-bind:class="{ 'mdl-menu--bottom-right': msg.origin===1, 'mdl-menu--bottom-left': msg.origin!==1}"
-            :for="'badge_menu'+unique_id" :data-mdl-for="'badge_menu'+unique_id">
-          <li v-for="action in badge_menu_actions" v-on:click="doAction(action.js, msg, action)"
-              class="mdl-menu__item" v-bind:class="{ 'mdl-menu__item--full-bleed-divider': action.separatorAfter}">
-            <span v-if="action.post" :title="action.post.body">{{$t('badge_menu.action.' + action.labelId)}} {{action.post.post_id}}</span>
-            <span v-else>{{$t('badge_menu.action.' + action.labelId)}}</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div v-if="!msg.origin.portrait" class="time">
-      {{msg.date.toLocaleTimeString()}}
-    </div>
-    <div v-else class="time">{{msg.date.toLocaleTimeString() + ' - ' + msg.origin.username}}</div>
-  </div>
+  <li class="question mdl-list__item mdl-list__item--three-line">
+    <span class="mdl-list__item-primary-content">
+      <span class="mdl-list__item-avatar img" :title="question.owner.username"
+            v-bind:style="'background-image: url('+question.owner.avatar_image+')'">
+      </span>
+      <span :title="question.body" v-html="smallMsg">
+      </span>
+      <span class="mdl-list__item-text-body">
+        <span :title="question.created_at">{{$t('post.created')}} {{creation_date}}</span>
+        <span v-if='question.last_editor' :title="question.updated_at"> - {{$t('post.updated')}} {{update_date}}</span>
+        <span class="last_editor">({{(question.last_editor) ? question.last_editor.username : question.owner.username}})</span>
+      </span>
+    </span>
+    <span class="mdl-list__item-secondary-content">
+      <span :title="$t('post.proposed_answers')">
+        <table>
+          <tr><td class="answers">{{question.answers_count}}</td></tr>
+          <tr><td class="answers">{{$t('post.answers')}}</td></tr>
+        </table>
+      </span>
+  </span>
+  </li>
 </template>
 
 <script>
   import {authMixin} from '@/auth/authMixin.js'
   import axios from 'axios'
+  import moment from 'moment'
 
   require('material-design-lite')
 
-  function hashCode (str) {
-    let hash = 0
-    let i
-    let chr
-    if (str.length === 0) return hash
-    for (i = 0; i < str.length; i++) {
-      chr = str.charCodeAt(i)
-      hash = ((hash << 5) - hash) + chr
-      hash |= 0 // Convert to 32bit integer
-    }
-    return hash
-  }
-
   export default {
-    name: 'msg-item',
+    name: 'question-item',
     mixins: [authMixin],
-    props: ['msg', 'user', 'chatroom', 'questions', 'chats'],
+    props: ['user', 'chatroom', 'question'],
     data: function () {
       return {update_version: 0}
     },
+    created () {
+      moment.locale(this.$i18n.locale)
+    },
     computed: {
-      badge_icon: function () {
-        if (this.msg.question) {
-          return this.msg.post_id || '...'
-        } else {
-          if (this.msg.message.endsWith('?')) {
-            return '?'
-          }
-          return '⋮'
-        }
-      },
-      unique_id: function () {
-        return (this.msg.post_id) ? this.msg.post_id : 'loc_' + hashCode(this.msg.message) + hashCode(this.msg.date.getTime().toString())
-      },
       type: function () {
-        if (this.msg.question) {
+        if (this.question.type === 1) {
           return 'question'
         }
-        if (this.msg.answer) {
+        if (this.question.answer) {
           return 'answered_question'
         }
-        if (this.msg.question) {
+        if (this.question.question) {
           return 'answer'
         }
         return 'message'
       },
-      badge_menu_actions: function () {
-        let vm = this
-        let entries = [{
-          'js': 'editMsg',
-          'labelId': 'editMsg'
-        }, {
-          'js': 'changeQuestion',
-          'labelId': 'isAQuestion',
-          'separatorAfter': true
-        }]
-        if (vm.chats instanceof Array && vm.chats.length > 0) {
-          let qEntries = []
-          for (const q of vm.chats) {
-            if (q.answer_to === undefined && q.question === true) {
-              qEntries.push({
-                'js': 'AnswerTo',
-                'labelId': 'AnswerTo',
-                'post': q
-              })
-            }
-          }
-          qEntries.sort((a, b) => (a.post.id > b.post.id) ? 1 : (b.post.id > a.post.id) ? -1 : 0)
-          for (let action in qEntries) {
-            entries.push(qEntries[action])
-          }
-        }
-        return entries
+      creation_date: function () {
+        return moment(new Date(this.question.created_at)).fromNow()
+      },
+      update_date: function () {
+        return moment(new Date(this.question.updated_at)).fromNow()
+      },
+      smallMsg: function () {
+        return (this.question.body.length > 100) ? this.question.body.substring(0, 100) + '...' : this.question.body
       }
     },
     methods: {
@@ -119,9 +69,6 @@
         componentHandler.upgradeDom()
         // eslint-disable-next-line
         componentHandler.upgradeAllRegistered()
-      },
-      couldBeAQuestion: function (msg) {
-        return !!(!msg.question && msg.message.endsWith('?'))
       },
       doAction: function (actionName, msg, action) {
         let vm = this
@@ -220,164 +167,21 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .is-it-a-question:after {
-    color: #ffffff;
-    background-color: #4CAF50;
+  span.img {
+    background-size: cover;
+    background-position: center center;
+    margin-bottom: 100%
   }
 
-  .is-it-a-question-blink:after {
-    color: #ffffff;
-    background-color: #4CAF50;
-    animation: colorRotate 5s infinite;
-    -moz-animation: colorRotate 5s infinite; /* Firefox */
-    -webkit-animation: colorRotate 5s infinite; /* Safari and Chrome */
+  .question {
+    border-bottom: solid 1px #e4e4e4;
   }
 
-  @-moz-keyframes colorRotate /* Firefox */
-  {
-    0% {
-      background: #4CAF50;
-      filter: hue-rotate(0deg);
-    }
-    50% {
-      background: rgb(255, 64, 129);
-      filter: hue-rotate(360deg);
-    }
-    100% {
-      background: #4CAF50;
-      filter: hue-rotate(0deg);
-    }
+  .last_editor {
+    font-size: smaller;
   }
 
-  @-webkit-keyframes colorRotate /* Safari and Chrome */
-  {
-    0% {
-      background: #4CAF50;
-      -webkit-filter: hue-rotate(0deg);
-    }
-    50% {
-      background: rgb(255, 64, 129);
-      -webkit-filter: hue-rotate(360deg);
-    }
-    100% {
-      background: #4CAF50;
-      -webkit-filter: hue-rotate(0deg);
-    }
-  }
-
-  @keyframes colorRotate /* Safari and Chrome */
-  {
-    0% {
-      background: #4CAF50;
-      -webkit-filter: hue-rotate(0deg);
-    }
-    50% {
-      background: rgb(255, 64, 129);
-      -webkit-filter: hue-rotate(360deg);
-    }
-    100% {
-      background: #4CAF50;
-      -webkit-filter: hue-rotate(0deg);
-    }
-  }
-
-  #message {
-    display: flex;
-    flex-direction: column;
-    padding: 0 0 5px 58px;
-    clear: both;
-    text-align: left;
-    max-width: 60%;
-    margin-top: 1vh;
-  }
-
-  #message.right {
-    float: right;
-    padding: 0 58px 5px 0;
-    margin-right: -19px;
-    margin-left: 19px;
-  }
-
-  #message div.img-and-bubble {
-    position: relative;
-  }
-
-  #message img {
-    position: absolute;
-    bottom: 0;
-    left: -38px;
-    border-radius: 50%;
-    width: 30px;
-    margin-top: 12px;
-  }
-
-  #message.right img {
-    right: -38px;
-    left: auto;
-  }
-
-  #message .bubble {
-    position: relative;
-    float: left;
-    background: #dbe3f9;
-    font-size: 13px;
-    font-weight: 400;
-    padding: 8px 8px;
-    border-radius: 5px 5px 5px 0px;
-    color: #365dad;
-    width: max-content;
-    word-break: break-word;
-    max-width: 100%; /* do not oversize message width*/
-  }
-
-  #message.right .bubble {
-    float: right;
-    border-radius: 5px 5px 0px 5px;
-  }
-
-  #message .bubble:after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    width: 0;
-    height: 0;
-    border: 7px solid transparent;
-    border-bottom: 0;
-    margin-top: -7px;
-
-  }
-
-  #message.left .bubble:after {
-    left: 0;
-    border-right-color: #dbe3f9;
-    border-left: 0;
-    margin-left: -7px;
-  }
-
-  #message.right .bubble:after {
-    right: 0;
-    border-left-color: #dbe3f9;
-    border-right: 0;
-    margin-right: -7px;
-  }
-
-  #message > .time {
-    clear: both;
-    color: #8eace8;
-    font-size: 0.8em;
-    position: relative;
-    bottom: 0;
-    margin-bottom: 0.5em;
-    width: max-content;
-  }
-
-  #message.left > .time {
-    margin-left: 0;
-    margin-right: auto;
-  }
-
-  #message.right > .time {
-    margin-left: auto;
-    margin-right: 0;
+  .answers {
+    text-align: center;
   }
 </style>

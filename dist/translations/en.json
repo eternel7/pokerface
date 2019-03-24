@@ -29,6 +29,7 @@
     "Cancel": "Cancel",
     "Ok": "Ok"
   },
+  "ConnectionNeeded": "Connection needed",
   "user": {
     "TabUser": "User",
     "TabMore": "More",
@@ -59,7 +60,8 @@
     "Delete": "Delete",
     "ConfirmDeletionQuestion": "Are you sure you want to delete your profile?",
     "ConfirmedDeletion": "You have deleted the user profile for {email}",
-    "BeforeDeleteMessage": "You can delete your profile by clicking the following button. This action is irreversible."
+    "BeforeDeleteMessage": "You can delete your profile by clicking the following button. This action is irreversible.",
+    "lastAction": "Last action"
   },
   "SignUp": {
     "ConfirmPassword": "Confirm password",
@@ -199,6 +201,10 @@
   },
   "post":{
     "savedAsQuestion": "Post saved as question",
-    "notAQuestionAnymore": "Post is not a question anymore"
+    "notAQuestionAnymore": "Post is not a question anymore",
+    "proposed_answers": "proposed answers",
+    "answers": "answers",
+    "created": "created",
+    "updated": "updated"
   }
 }

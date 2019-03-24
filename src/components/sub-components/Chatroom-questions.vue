@@ -1,30 +1,44 @@
 <template>
   <div v-if="chatroom" id="chatboxview">
-    <div id="chatroom-questions" ref="chatromquestions"
-         v-bind:class="{'is-active' : (selectedQuestion!==undefined)}">
-
-    </div>
-    <div v-if="selectedQuestion" id="sendmessage">
+    <ul v-if="questions" id="questions" ref="questions" class="mdl-list"
+        v-bind:class="{'is-active' : (selectedQuestion!==undefined)}">
+      <li is="QuestionItem" v-for="question in questions" :key="questions.indexOf(question)"
+          v-bind:user="user"
+          v-bind:chatroom="chatroom"
+          v-bind:question="question">
+      </li>
+    </ul>
+    <div v-if="selectedQuestion" class="selected-question">
+      <questionForm></questionForm>
+      <div id="sendmessage">
       <textarea type="text" ref="message" placeholder="Send message..."
                 @keyup.ctrl.enter="sendMessage"></textarea>
-      <span id="send" @click="sendMessage">
+        <span id="send" @click="sendMessage">
         <button id="sendButton" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored">
           <i class="material-icons">send</i>
         </button>
       </span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-  import MsgItem from '@/components/sub-components/Msg-item'
+  import QuestionItem from '@/components/sub-components/Question-item'
   import {authMixin} from '@/auth/authMixin.js'
+  import DataUtils from '@/assets/data-utils.js'
+
+  function sortQuestion (q1, q2) {
+    let d1 = new Date(q1.updated_at)
+    let d2 = new Date(q2.updated_at)
+    return (d1 < d2) ? 1 : -1
+  }
 
   export default {
     name: 'chatQuestions',
     mixins: [authMixin],
-    components: {MsgItem},
-    props: ['chatroom', 'chats', 'user', 'chatSocket', 'nextId'],
+    components: {QuestionItem},
+    props: ['chatroom', 'user'],
     data () {
       return {
         selectedQuestion: undefined,
@@ -36,7 +50,8 @@
       questions: function () {
         let vm = this
         if (vm.$root.questions instanceof Object) {
-          return (vm.$root.questions[vm.$route.params.id]) ? vm.$root.questions[vm.$route.params.id] : []
+          let unsorted = (vm.$root.questions[vm.$route.params.id]) ? vm.$root.questions[vm.$route.params.id] : []
+          return unsorted.sort(sortQuestion)
         }
         return []
       }
@@ -45,9 +60,14 @@
       let vm = this
       if (!vm.chatroom || vm.chatroom.length < 1) {
         vm.$router.push({name: 'Home'})
+      } else {
+        vm.tryGetChatroomQuestion()
       }
     },
     methods: {
+      tryGetChatroomQuestion: function () {
+        DataUtils.refreshQuestions(this, true)
+      }
     }
   }
 </script>
@@ -72,18 +92,31 @@
     max-width: 700px;
   }
 
-  #chatroom-questions {
+  #questions {
+    margin-top: 0;
+    line-height: 14px;
+    width: 99%;
+    padding-left: 1%;
     position: relative;
-    height: 100%;
-    background-color: #959595;
+    height: calc(98% - 5px);
     overflow-y: scroll;
     overflow-x: hidden;
-    padding-right: 20px;
-    border-bottom: solid 1px #e4e4e4;
+    padding-bottom: 5px;
+    -ms-overflow-style: none;
+    overflow: -moz-scrollbars-none;
   }
 
-  #chatroom-questions.is-active {
+  #questions.is-active {
     height: 80%;
+  }
+
+  #questions > li {
+    width: auto;
+    list-style-type: none;
+    padding: 2px;
+    margin-bottom: 2px;
+    text-align: left;
+    vertical-align: middle;
   }
 
   #sendmessage {

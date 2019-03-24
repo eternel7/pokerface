@@ -53,8 +53,6 @@ class PostSerializer(serializers.ModelSerializer):
                                                      allow_empty=True,
                                                      read_only=False,
                                                      queryset=User.objects.all())
-    created_at = serializers.ReadOnlyField(source='post.created_at')
-    updated_at = serializers.ReadOnlyField(source='post.updated_at')
     answer = serializers.PrimaryKeyRelatedField(required=False,
                                                 allow_null=True,
                                                 allow_empty=True,
@@ -72,6 +70,35 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ('id', 'body', 'owner', 'answer', 'answer_to', 'last_editor', 'room',
+                  'created_at', 'updated_at')
+
+
+class QuestionSerializer(serializers.ModelSerializer):
+    body = serializers.CharField(required=True)
+    owner = UserSerializer(allow_null=False, read_only=True)
+    last_editor = UserSerializer(allow_null=False, read_only=True)
+    answer = serializers.PrimaryKeyRelatedField(required=False,
+                                                allow_null=True,
+                                                allow_empty=True,
+                                                read_only=False,
+                                                queryset=Post.objects.all())
+    answer_to = serializers.PrimaryKeyRelatedField(required=False,
+                                                   allow_null=True,
+                                                   allow_empty=True,
+                                                   read_only=False,
+                                                   queryset=Post.objects.all())
+    room = serializers.PrimaryKeyRelatedField(required=True,
+                                              read_only=False,
+                                              queryset=Room.objects.all())
+    answers_count = serializers.SerializerMethodField()
+
+    @staticmethod
+    def get_answers_count(obj):
+        return Post.objects.filter(answer_to=obj.pk).count()
+    
+    class Meta:
+        model = Post
+        fields = ('id', 'body', 'owner', 'answer', 'answer_to', 'last_editor', 'room', 'answers_count',
                   'created_at', 'updated_at')
 
 
