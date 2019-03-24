@@ -10,7 +10,7 @@
       </div>
     </div>
     <div id="sendmessage">
-      <textarea type="text" ref="message" placeholder="Send message..."
+      <textarea type="text" ref="message" required placeholder="Send message..."
                 @keyup.ctrl.enter="sendMessage"></textarea>
       <div id="send" @click="sendMessage">
         <button id="sendButton"
@@ -115,7 +115,6 @@
       manageMessage: function (msg) {
         let vm = this
         let msgJson = JSON.parse(msg.data)
-        console.log(msgJson)
         if (msgJson.text || msgJson.username === 0) {
           // Bot message
           vm.addChat(msgJson.text || msgJson.message)
@@ -248,7 +247,7 @@
   }
 
   #sendmessage textarea:focus {
-    outline: 0;
+    outline: none;
   }
 
   #send {
@@ -275,4 +274,8 @@
     color: rgb(255, 64, 129);
   }
 
+  #sendmessage textarea:not(:invalid) ~ #send button {
+    background-color: rgba(0, 0, 0, 0);
+    color: rgb(255, 64, 129);
+  }
 </style>

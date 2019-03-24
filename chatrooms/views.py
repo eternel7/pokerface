@@ -1,6 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework import status
+from datetime import datetime, timedelta
 from accounts.models import get_user_from_token
 from rest_framework.authentication import get_authorization_header
 from django.http import JsonResponse
@@ -250,7 +251,9 @@ def chatroom_users(request, room_id, format='json'):
     user = get_user_from_token(get_authorization_header(request))
     if user:
         if room_id:
-            users_in_room = UserInRoomReadSerializer(UserInRoom.objects.filter(room=room_id), many=True)
+            time_threshold = datetime.now() - timedelta(hours=2)
+            users_in_room = UserInRoomReadSerializer(
+                UserInRoom.objects.filter(room=room_id, updated_at__gt=time_threshold), many=True)
             return JsonResponse({"users": users_in_room.data}, status=status.HTTP_200_OK)
         return JsonResponse({"message": "chatroom.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
     return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)

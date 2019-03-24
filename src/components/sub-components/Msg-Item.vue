@@ -18,9 +18,7 @@
         <div class="bubble">
           {{msg.message}}
         </div>
-        <div v-if="msg.origin===1" class="link mdl-badge mdl-badge--overlap"
-             v-bind:class="{ 'is-it-a-question': !msg.question,
-                             'is-it-a-question-blink': couldBeAQuestion(msg)}"
+        <div v-if="msg.origin===1" class="link mdl-badge mdl-badge--overlap badge-menu"
              v-bind:data-badge="badge_icon">
         </div>
         <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect"
@@ -230,65 +228,10 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .is-it-a-question:after {
-    color: #ffffff;
-    background-color: #4CAF50;
-  }
-
-  .is-it-a-question-blink:after {
-    color: #ffffff;
-    background-color: #4CAF50;
-    animation: colorRotate 5s infinite;
-    -moz-animation: colorRotate 5s infinite; /* Firefox */
-    -webkit-animation: colorRotate 5s infinite; /* Safari and Chrome */
-  }
-
-  @-moz-keyframes colorRotate /* Firefox */
-  {
-    0% {
-      background: #4CAF50;
-      filter: hue-rotate(0deg);
-    }
-    50% {
-      background: rgb(255, 64, 129);
-      filter: hue-rotate(360deg);
-    }
-    100% {
-      background: #4CAF50;
-      filter: hue-rotate(0deg);
-    }
-  }
-
-  @-webkit-keyframes colorRotate /* Safari and Chrome */
-  {
-    0% {
-      background: #4CAF50;
-      -webkit-filter: hue-rotate(0deg);
-    }
-    50% {
-      background: rgb(255, 64, 129);
-      -webkit-filter: hue-rotate(360deg);
-    }
-    100% {
-      background: #4CAF50;
-      -webkit-filter: hue-rotate(0deg);
-    }
-  }
-
-  @keyframes colorRotate /* Safari and Chrome */
-  {
-    0% {
-      background: #4CAF50;
-      -webkit-filter: hue-rotate(0deg);
-    }
-    50% {
-      background: rgb(255, 64, 129);
-      -webkit-filter: hue-rotate(360deg);
-    }
-    100% {
-      background: #4CAF50;
-      -webkit-filter: hue-rotate(0deg);
-    }
+  .badge-menu:after {
+    bottom: 0;
+    color: #365dad;
+    background-color: #dbe3f9;
   }
 
   #message {
@@ -354,7 +297,6 @@
     border: 7px solid transparent;
     border-bottom: 0;
     margin-top: -7px;
-
   }
 
   #message.left .bubble:after {
