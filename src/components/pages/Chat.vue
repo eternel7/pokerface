@@ -4,8 +4,8 @@
       <div id="chatroomprofile"
            v-bind:style="'background-image: url('+chatroom.image+')'">
         <div id="bot">{{chatroom.label}}</div>
-        <div id="close" v-on:click="backHome()">
-          <i class="material-icons">close</i>
+        <div id="close" v-on:click="backHome()" class="unselectable">
+          <i class="material-icons unselectable">close</i>
         </div>
       </div>
       <div id="chatroomtabs" class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect is-upgraded">
@@ -156,7 +156,14 @@
 
 
 <style scoped>
-
+  .unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
   h4.solo {
     color: #eeeeee;
   }
