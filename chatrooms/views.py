@@ -187,8 +187,8 @@ def chat_updateAnswer(request, format='json'):
     user = get_user_from_token(get_authorization_header(request))
     if user:
         question = request.data['question']
-        if question and 'id' in question:
-            q = Post.objects.filter(id=question['id'])
+        if question and 'post_id' in question:
+            q = Post.objects.filter(id=question['post_id'])
             if q.count() == 1:
                 question = q.first()
         else:
@@ -196,9 +196,10 @@ def chat_updateAnswer(request, format='json'):
         
         room_id = question.room.pk
         answer = request.data['answer']
+        print("answer", answer)
         if answer:
-            if 'id' in answer:
-                a = Post.objects.filter(id=answer['id'])
+            if 'post_id' in answer:
+                a = Post.objects.filter(id=answer['post_id'])
                 if a.count() == 1:
                     answer = a.first()
                     answer.last_editor = user
@@ -219,10 +220,8 @@ def chat_updateAnswer(request, format='json'):
                 print("data back", data)
                 if serializer.is_valid(raise_exception=True):
                     answer = serializer.save()
-                    print("data saved", answer)
             
             # save link question to answer
-            print("answer back", answer)
             if answer:
                 question.answer = answer
                 question.save()
