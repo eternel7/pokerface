@@ -11,7 +11,7 @@
     <div v-if="selectedQuestion" class="selected-question">
       <questionForm></questionForm>
       <div id="sendmessage">
-      <textarea type="text" ref="message" placeholder="Send message..."
+      <textarea type="text" ref="message" placeholder="Answer or ask for more information..."
                 @keyup.ctrl.enter="sendMessage"></textarea>
         <span id="send" @click="sendMessage">
         <button id="sendButton" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored">
@@ -120,6 +120,7 @@
   }
 
   #sendmessage textarea {
+    resize: none;
     background: #fff;
     position: relative;
     padding: 0;

@@ -232,6 +232,7 @@
   }
 
   #sendmessage textarea {
+    resize: none;
     background: #fff;
     position: relative;
     margin: 5px;
