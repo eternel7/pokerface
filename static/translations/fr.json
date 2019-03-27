@@ -203,6 +203,8 @@
   "post": {
     "savedAsQuestion": "Sauvegardé en tant que question",
     "notAQuestionAnymore": "N'est plus une question",
+    "questionAnswered": "Réponse prise en compte",
+    "answerRejected": "Réponse retirée",
     "proposed_answers": "proposition(s) de réponse(s)",
     "answers": "réponse(s)",
     "created": "créé",

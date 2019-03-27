@@ -2,8 +2,8 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.models import User
-from chatrooms.models import Post, UserInRoom
-from chatrooms.serializers import PostSerializer, UserInRoomSerializer
+from chatrooms.models import UserInRoom
+from chatrooms.serializers import UserInRoomSerializer
 from chatrooms.views import create_or_update_post
 from channels.db import database_sync_to_async
 import asyncio
@@ -330,7 +330,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             },
         ))
         await asyncio.ensure_future(self.chat_bot_parse(event))
-    
+
     async def bot_message(self, message, event):
         await asyncio.ensure_future(self.send_json(
             {
@@ -338,6 +338,16 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "room": event["room_id"],
                 "username": 0,
                 "message": message,
+            },
+        ))
+        
+    async def chat_bot_message(self, event):
+        await asyncio.ensure_future(self.send_json(
+            {
+                "msg_type": settings.MSG_TYPE_MESSAGE,
+                "room": event["room_id"],
+                "username": 0,
+                "message": event["message"],
             },
         ))
     

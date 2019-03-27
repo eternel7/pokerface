@@ -24,10 +24,14 @@
         <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect"
             v-bind:class="{ 'mdl-menu--bottom-right': msg.origin===1, 'mdl-menu--bottom-left': msg.origin!==1}"
             :for="'badge_menu'+unique_id" :data-mdl-for="'badge_menu'+unique_id">
-          <li v-for="action in badge_menu_actions" v-on:click="doAction(action.js, msg, action)"
-              class="mdl-menu__item" v-bind:class="{ 'mdl-menu__item--full-bleed-divider': action.separatorAfter}">
-            <span v-if="action.post" :title="action.post.body">{{$t('badge_menu.action.' + action.labelId)}} {{action.post.post_id}}</span>
-            <span v-else>{{$t('badge_menu.action.' + action.labelId)}}</span>
+          <li v-for="action in badge_menu_actions" v-on:click="doAction(action.js, msg, action)" v-if="!action.post"
+              class="mdl-menu__item" v-bind:class="{'mdl-menu__item--full-bleed-divider': action.separatorAfter}">
+            <span>{{$t('badge_menu.action.' + action.labelId)}}</span>
+          </li>
+          <li v-if="!msg.question && action.post" v-for="action in badge_menu_actions" v-on:click="doAction(action.js, msg, action)"
+              class="mdl-menu__item" v-bind:class="{'mdl-menu__item--full-bleed-divider': action.separatorAfter,
+              'selected-answer' : action.post.post_id===msg.answer_to}">
+            <span :title="action.post.body">{{$t('badge_menu.action.' + action.labelId)}} {{action.post.post_id}}</span>
           </li>
         </ul>
       </div>
@@ -105,7 +109,7 @@
         if (vm.chats instanceof Array && vm.chats.length > 0) {
           let qEntries = []
           for (const q of vm.chats) {
-            if (q.answer_to === undefined && q.question === true) {
+            if (q.question === true) {
               qEntries.push({
                 'js': 'AnswerTo',
                 'labelId': 'AnswerTo',
@@ -188,11 +192,11 @@
           .then(function (response) {
             // handle success
             vm.$root.loading = false
-            console.log(response.data)
-            if (response.data.question && response.data.answer) {
+            if (response.data.answer) {
               vm.$set(answer, 'answer_to', response.data.answer.answer_to)
               vm.$set(answer, 'type', response.data.answer.type)
-              if (response.data.question.answer) {
+              vm.$set(answer, 'post_id', response.data.answer.post_id)
+              if (response.data.answer.answer_to) {
                 vm.$root.showSnackbar(vm.$i18n.t('post.questionAnswered'))
               } else {
                 vm.$root.showSnackbar(vm.$i18n.t('post.answerRejected'))
@@ -232,6 +236,14 @@
     bottom: 0;
     color: #365dad;
     background-color: #dbe3f9;
+  }
+
+  .selected-answer {
+    background-color: #69f0ae;
+  }
+
+  .selected-answer:hover {
+    background-color: #2bbd7e;
   }
 
   #message {

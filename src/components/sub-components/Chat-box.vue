@@ -115,6 +115,7 @@
       manageMessage: function (msg) {
         let vm = this
         let msgJson = JSON.parse(msg.data)
+        console.log(msgJson)
         if (msgJson.text || msgJson.username === 0) {
           // Bot message
           vm.addChat(msgJson.text || msgJson.message)

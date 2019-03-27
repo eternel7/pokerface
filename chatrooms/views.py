@@ -8,6 +8,9 @@ from django.http import JsonResponse
 from chatrooms.models import Room, Post, UserInRoom
 from chatrooms.serializers import RoomSerializer, DataSerializer, PostSerializer, UserInRoomReadSerializer
 from chatrooms.serializers import QuestionSerializer
+from channels.layers import get_channel_layer
+from .exceptions import ClientError
+from asgiref.sync import async_to_sync
 
 
 def create_or_update_post(user, post_dict):
@@ -196,15 +199,18 @@ def chat_updateAnswer(request, format='json'):
         
         room_id = question.room.pk
         answer = request.data['answer']
-        print("answer", answer)
         if answer:
             if 'post_id' in answer:
                 a = Post.objects.filter(id=answer['post_id'])
                 if a.count() == 1:
                     answer = a.first()
+                    if answer.answer_to is None or answer.answer_to != question:
+                        answer.type = 2
+                        answer.answer_to = question
+                    else:
+                        answer.type = 0
+                        answer.answer_to = None
                     answer.last_editor = user
-                    answer.type = 2
-                    answer.answer_to = question
                     answer.room = question.room
                     answer.save()
             else:
@@ -217,28 +223,37 @@ def chat_updateAnswer(request, format='json'):
                     "answer_to": question.id
                 }
                 serializer = PostSerializer(data=data)
-                print("data back", data)
                 if serializer.is_valid(raise_exception=True):
                     answer = serializer.save()
             
-            # save link question to answer
-            if answer:
-                question.answer = answer
-                question.save()
-            
-            answer = {
-                "id": answer.pk,
+            json_answer = {
+                "post_id": answer.pk,
                 "message": answer.body,
                 "date": answer.created_at,
-                "type": 2,
-                "answer_to": answer.answer_to.pk
+                "type": answer.type,
+                "answer_to": answer.answer_to.pk if answer.answer_to else None
             }
-            question = {
-                "id": question.pk,
-                "answer": question.answer.pk
-            }
+            
             questions = stored_questions(room_id)
-            return JsonResponse({"question": question, "answer": answer, "questions": questions.data},
+            channel_layer = get_channel_layer()
+            try:
+                room = Room.objects.get(pk=room_id)
+            except Room.DoesNotExist:
+                raise ClientError("ROOM_INVALID")
+            if answer.answer_to:
+                msg = "{} propose une réponse à {}".format(user.username, question.pk)
+            else:
+                msg = "{} retire sa réponse à {}".format(user.username, question.pk)
+            print(room.group_name, msg)
+            async_to_sync(channel_layer.group_send)(
+                room.group_name,
+                {
+                    "type": "chat.bot.message",
+                    "room_id": room_id,
+                    "message": msg
+                }
+            )
+            return JsonResponse({"answer": json_answer, "questions": questions.data},
                                 status=status.HTTP_200_OK)
         return JsonResponse({"message": "chatroom.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
     return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)

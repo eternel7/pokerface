@@ -202,6 +202,8 @@
   "post":{
     "savedAsQuestion": "Post saved as question",
     "notAQuestionAnymore": "Post is not a question anymore",
+    "questionAnswered": "Answer saved",
+    "answerRejected": "Answer removed",
     "proposed_answers": "proposed answers",
     "answers": "answers",
     "created": "created",
