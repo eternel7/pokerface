@@ -176,7 +176,8 @@
     "Delete": "Supprimer le lieu d'échange",
     "NoWorkplace": "Aucun lieu d'échange.",
     "CreateOne": "Créer un lieu d'échange!",
-    "LookingForAWorkplace": "Chargement des lieux d'échange..."
+    "LookingForAWorkplace": "Chargement des lieux d'échange...",
+    "WelcomeInTheRoom": "Bonjour {user}. Je suis {room_label}, votre hôte dans ce lieu d'échange. Que recherchez-vous?"
   },
   "data": {
     "Label": "Nom",
@@ -208,6 +209,8 @@
     "proposed_answers": "proposition(s) de réponse(s)",
     "answers": "réponse(s)",
     "created": "créé",
-    "updated": "mise à jour"
+    "updated": "mise à jour",
+    "user_propose_answer_to": "{user} propose une réponse à {question}",
+    "user_remove_answer_to": "{user} retire sa réponse à {question}"
   }
 }

@@ -80,6 +80,11 @@
       addChat: function (msg, user, id) {
         let vm = this
         if (msg && !user) {
+          if (msg instanceof Object) {
+            let info = Object.assign({}, msg)
+            delete info.msg
+            msg = vm.$t(msg.msg, info)
+          }
           vm.chats.push({
             origin: 0,
             message: msg,
@@ -249,6 +254,7 @@
   }
 
   #sendmessage textarea:focus {
+    outline: 0;
     outline: none;
   }
 

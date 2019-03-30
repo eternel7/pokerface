@@ -241,16 +241,30 @@ def chat_updateAnswer(request, format='json'):
             except Room.DoesNotExist:
                 raise ClientError("ROOM_INVALID")
             if answer.answer_to:
-                msg = "{} propose une réponse à {}".format(user.username, question.pk)
+                msg = {
+                    "msg": "post.user_propose_answer_to",
+                    "user": user.username,
+                    "question": question.pk}
             else:
-                msg = "{} retire sa réponse à {}".format(user.username, question.pk)
-            print(room.group_name, msg)
+                msg = {
+                    "msg": "post.user_remove_answer_to",
+                    "user": user.username,
+                    "question": question.pk}
             async_to_sync(channel_layer.group_send)(
                 room.group_name,
                 {
                     "type": "chat.bot.message",
                     "room_id": room_id,
                     "message": msg
+                }
+            )
+            async_to_sync(channel_layer.group_send)(
+                room.group_name,
+                {
+                    "type": "send.data",
+                    "room_id": room_id,
+                    "class": "post",
+                    "data": questions.data
                 }
             )
             return JsonResponse({"answer": json_answer, "questions": questions.data},

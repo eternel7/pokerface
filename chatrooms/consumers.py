@@ -199,10 +199,11 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         # Send a join message if it's turned on
         if settings.NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
             # send message for connecting user
-            await asyncio.ensure_future(self.send_json(
-                {"text": "Welcome " + self.scope["user"].username + ". I'm " + room.label +
-                         ", your host in this room. What are you searching for?"})
-            )
+            await asyncio.ensure_future(self.bot_message({
+                "msg": "room.WelcomeInTheRoom",
+                "user": self.scope["user"].username,
+                "room_label": room.label
+            }, {"room_id": room_id}))
             # send message for connected users
             await asyncio.ensure_future(self.channel_layer.group_send(
                 room.group_name,
@@ -270,7 +271,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         
         # Store post in DB to set it post_id
         post_id = await self.add_or_update_post_in_room_db(room_id, self.scope["user"].username, message)
-
+        
         await self.channel_layer.group_send(
             room.group_name,
             {
@@ -330,7 +331,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             },
         ))
         await asyncio.ensure_future(self.chat_bot_parse(event))
-
+    
     async def bot_message(self, message, event):
         await asyncio.ensure_future(self.send_json(
             {
@@ -340,7 +341,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "message": message,
             },
         ))
-        
+    
     async def chat_bot_message(self, event):
         await asyncio.ensure_future(self.send_json(
             {
@@ -348,6 +349,17 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "room": event["room_id"],
                 "username": 0,
                 "message": event["message"],
+            },
+        ))
+    
+    async def send_data(self, event):
+        await asyncio.ensure_future(self.send_json(
+            {
+                "msg_type": settings.MSG_TYPE_DATA,
+                "room": event["room_id"],
+                "username": 0,
+                "class": event["class"],
+                "data": event["data"],
             },
         ))
     

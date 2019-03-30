@@ -175,7 +175,8 @@
     "Delete": "Delete workplace",
     "NoWorkplace": "No workplace.",
     "CreateOne": "Create one!",
-    "LookingForAWorkplace": "Loading workplaces..."
+    "LookingForAWorkplace": "Loading workplaces...",
+    "WelcomeInTheRoom": "Welcome {user}. I'm {room_label}, your host in this room. What are you searching for?"
   },
   "data": {
     "Label": "Name",
@@ -207,6 +208,8 @@
     "proposed_answers": "proposed answers",
     "answers": "answers",
     "created": "created",
-    "updated": "updated"
+    "updated": "updated",
+    "user_propose_answer_to": "{user} propose an answer to {question}",
+    "user_remove_answer_to": "{user} remove his answer to {question}"
   }
 }
