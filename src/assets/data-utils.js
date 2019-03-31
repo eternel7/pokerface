@@ -11,7 +11,6 @@ const DataUtils = (function () {
   }// eslint-disable-next-line
   
   DataUtils.refreshQuestions = function (vm, silent) {
-    console.log('refreshQuestions', silent)
     vm.errors = []
     if (!silent) {
       vm.$root.loading = true
@@ -23,6 +22,7 @@ const DataUtils = (function () {
           vm.$root.loading = false
         }
         // handle success
+        console.log(response.data.questions)
         if (response.data.questions) {
           vm.$set(vm.$root.questions, roomId, response.data.questions)
         } else {

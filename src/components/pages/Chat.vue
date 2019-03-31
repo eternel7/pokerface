@@ -3,9 +3,18 @@
     <div v-if="chatroom" id="chatroomview">
       <div id="chatroomprofile"
            v-bind:style="'background-image: url('+chatroom.image+')'">
+        <div id="close" v-on:click="backHome()" class="link-hover">
+          <i class="material-icons unselectable link-hover chat-header-button">arrow_back_ios</i>
+        </div>
         <div id="bot">{{chatroom.label}}</div>
-        <div id="close" v-on:click="backHome()" class="unselectable">
-          <i class="material-icons unselectable">close</i>
+        <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable" id="search-expandable">
+          <label class="mdl-button mdl-js-button mdl-button--icon link-hover" for="Search">
+            <i class="material-icons unselectable link-hover chat-header-button">search</i>
+          </label>
+          <div class="mdl-textfield__expandable-holder">
+            <input class="mdl-textfield__input" type="text" id="Search" v-model="search">
+            <label class="mdl-textfield__label" for="Search">Search</label>
+          </div>
         </div>
       </div>
       <div id="chatroomtabs" class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect is-upgraded">
@@ -22,15 +31,18 @@
           <ChatBox v-bind:chatroom="chatroom"
                    v-bind:chatSocket="chatSocket"
                    v-bind:chats="chats"
-                   v-bind:user="user"></ChatBox>
+                   v-bind:user="user"
+                   v-bind:search="search"></ChatBox>
         </div>
         <div class="mdl-tabs__panel is-active" id="1" v-if="tabActive==='1'">
           <ChatroomUsers v-bind:chatroom="chatroom"
-                         v-bind:user="user"></ChatroomUsers>
+                         v-bind:user="user"
+                         v-bind:search="search"></ChatroomUsers>
         </div>
         <div class="mdl-tabs__panel is-active" id="2" v-if="tabActive==='2'">
           <ChatroomQuestions v-bind:chatroom="chatroom"
-                             v-bind:user="user"></ChatroomQuestions>
+                             v-bind:user="user"
+                             v-bind:search="search"></ChatroomQuestions>
         </div>
         <div class="mdl-tabs__panel is-active" id="3" v-if="tabActive==='3'">
           <div>Hello world!</div>
@@ -99,7 +111,8 @@
         message: '',
         errors: [],
         updateNeeded: 'noNeed',
-        loaded: false
+        loaded: false,
+        search: ''
       }
     },
     computed: {
@@ -156,14 +169,7 @@
 
 
 <style scoped>
-  .unselectable {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-  }
+
   h4.solo {
     color: #eeeeee;
   }
@@ -233,28 +239,44 @@
     display: none;
   }
 
+  #search-expandable {
+    position: absolute;
+    color: white;
+    top: -10px;
+    right: 10px;
+    height: 24px;
+    cursor: pointer;
+    z-index: 2;
+    max-width: 40%;
+  }
+
+  .chat-header-button {
+    background-color: rgba(88, 88, 88, 0.54);
+  }
+
+  .link-hover:hover {
+    color: rgb(255, 64, 129);
+  }
+
   #close {
     position: absolute;
     color: white;
-    top: 1vh;
-    right: 1vh;
+    top: 9px;
+    left: 14px;
     width: 24px;
     height: 24px;
     cursor: pointer;
     z-index: 2;
-  }
-
-  #close:hover > i {
-    color: rgb(255, 64, 129);
-  }
-
-  #close > i:hover {
-    color: rgb(255, 64, 129);
+    line-height: 24px;
   }
 
   #close > i {
+    padding: 1px 0 1px 9px;
+    /*
     -webkit-animation: myrotate 3s forwards; /* Safari 4.0 - 8.0 */
+    /*
     animation: myrotate 3s forwards;
+    */
   }
 
   /* Safari 4.0 - 8.0 */

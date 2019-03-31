@@ -1,6 +1,6 @@
 <template>
   <div v-if="chatroom" id="chatroomview">
-    <ul v-if="users_in_room" id="connected" class="mdl-list list">
+    <ul v-if="sortedUsersInRoom" id="connected" class="mdl-list list">
       <li is="ConnectedUserInRoom" v-for="u in users_in_room" :key="u.user_obj.username" v-bind:userInRoom="u">
       </li>
     </ul>
@@ -11,6 +11,7 @@
   import ConnectedUserInRoom from '@/components/user-components/Connected-user-in-room'
   import {authMixin} from '@/auth/authMixin.js'
   import axios from 'axios'
+  import SortUtils from '@/assets/sort-utils.js'
 
   export default {
     name: 'chatroomUsers',
@@ -20,6 +21,16 @@
     data () {
       return {
         users_in_room: []
+      }
+    },
+    computed: {
+      sortedUsersInRoom: function () {
+        let now = new Date()
+        let hourAgo = new Date(now.getTime() - (1000 * 60 * 60))
+        return this.users_in_room.filter(function (row) {
+          let lastAction = new Date(row.updated_at)
+          return lastAction > hourAgo
+        }).sort(SortUtils.onUpdated_at)
       }
     },
     created () {
@@ -72,20 +83,19 @@
     margin-left: auto;
     margin-right: auto;
     background: #fff;
-    height: 92%;
+    height: calc(92vh - 50px);
     width: 100%;
     max-width: 700px;
   }
 
   .list {
-    margin: 0;
-    width: 99%;
-    padding-left: 1%;
     position: relative;
-    height: calc(100% - 15px);
+    height: 100%;
+    margin: 0;
+    width: 98%;
+    padding: 0 1% 0 1%;
     overflow-y: scroll;
     overflow-x: hidden;
-    padding-bottom: 5px;
     -ms-overflow-style: none;
     overflow: -moz-scrollbars-none;
   }

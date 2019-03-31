@@ -4,7 +4,7 @@
       <span class="mdl-list__item-avatar img who" :title="question.owner.username"
             v-bind:style="'background-image: url('+question.owner.avatar_image+')'">
       </span>
-      <p class="what block-with-text" :title="question.body" v-html="question.body">
+      <p class="what block-with-text" :title="bodyH" v-html="bodyH">
       </p>
       <span class="mdl-list__item-text-body when">
         <span v-if='question.last_editor' :title="question.updated_at">
@@ -28,6 +28,7 @@
 </template>
 
 <script>
+  import Search from '@/assets/search-utils.js'
   import {authMixin} from '@/auth/authMixin.js'
   import {momentMixin} from '@/assets/momentMixin.js'
   import axios from 'axios'
@@ -38,7 +39,7 @@
   export default {
     name: 'question-item',
     mixins: [authMixin, momentMixin],
-    props: ['user', 'chatroom', 'question'],
+    props: ['user', 'chatroom', 'question', 'search'],
     data: function () {
       return {update_version: 0}
     },
@@ -63,6 +64,9 @@
       },
       update_date: function () {
         return new Date(this.question.updated_at)
+      },
+      bodyH: function () {
+        return Search.highlight(this.question.body, this.search)
       }
     },
     methods: {

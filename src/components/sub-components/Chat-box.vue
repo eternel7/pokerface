@@ -80,7 +80,7 @@
       addChat: function (msg, user, id) {
         let vm = this
         if (msg && !user) {
-          if (msg instanceof Object) {
+          if (msg instanceof Object && vm) {
             let info = Object.assign({}, msg)
             delete info.msg
             msg = vm.$t(msg.msg, info)
@@ -242,10 +242,11 @@
     background: #fff;
     position: relative;
     margin: 5px;
-    width: calc(100% - 10px);
+    width: 100%;
     height: 90%;
     display: table-cell;
-    border: none;
+    border: 0 solid #e0e0e0;
+    border-right-width: 1px;
     padding: 0;
     font-size: 13px;
     font-family: "Roboto", "Open Sans", sans-serif;

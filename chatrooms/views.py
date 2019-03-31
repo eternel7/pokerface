@@ -279,9 +279,7 @@ def chatroom_users(request, room_id, format='json'):
     user = get_user_from_token(get_authorization_header(request))
     if user:
         if room_id:
-            time_threshold = datetime.now() - timedelta(hours=2)
-            users_in_room = UserInRoomReadSerializer(
-                UserInRoom.objects.filter(room=room_id, updated_at__gt=time_threshold), many=True)
+            users_in_room = UserInRoomReadSerializer(UserInRoom.objects.filter(room=room_id), many=True)
             return JsonResponse({"users": users_in_room.data}, status=status.HTTP_200_OK)
         return JsonResponse({"message": "chatroom.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
     return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)

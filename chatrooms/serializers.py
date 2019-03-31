@@ -107,8 +107,6 @@ class UserInRoomSerializer(serializers.ModelSerializer):
                                               allow_empty=False,
                                               read_only=False,
                                               queryset=User.objects.all())
-    created_at = serializers.ReadOnlyField()
-    updated_at = serializers.ReadOnlyField()
     room = serializers.PrimaryKeyRelatedField(required=True,
                                               read_only=False,
                                               queryset=Room.objects.all())
@@ -120,8 +118,6 @@ class UserInRoomSerializer(serializers.ModelSerializer):
 
 class UserInRoomReadSerializer(serializers.ModelSerializer):
     user_obj = UserSerializer(allow_null=False, read_only=True, source='user')
-    created_at = serializers.ReadOnlyField()
-    updated_at = serializers.ReadOnlyField()
     room = serializers.PrimaryKeyRelatedField(read_only=True)
     
     class Meta:
