@@ -25,7 +25,7 @@
             <i class="material-icons link close" @click="close()">
               close
             </i>
-            <div class="text" itemprop="text" :title="question.body" v-html="question.body"></div>
+            <div class="text" itemprop="text" :title="textBody" v-html="question.body"></div>
           </div>
           <div v-if='question.last_editor' class="last-editor text">
               <span :title="question.updated_at">
@@ -34,18 +34,6 @@
             <span> - {{question.last_editor.username}}</span>
           </div>
           <div class="post-footer text">
-            <div class="post-menu">
-                <span title="short permalink to this question"
-                      class="link-post link" itemprop="url" id="link-post">share</span>
-              <span class="lsep">&nbsp;-&nbsp;</span>
-              <span class="edit-post link"
-                    title="revise and improve this post">edit</span>
-              <span class="lsep">&nbsp;-&nbsp;</span>
-              <span class="comments-link link"
-                    title="Use comments to ask for more information or suggest improvements. Avoid answering questions in comments.">
-                  add a comment
-                </span>
-            </div>
             <div class="post-signature owner text">
               <div class="user-info">
                 <div :title="question.created_at" class="user-action-time">
@@ -60,6 +48,18 @@
                   </span>
               </div>
             </div>
+            <div class="post-menu">
+                <span title="short permalink to this question"
+                      class="link-post link" itemprop="url" id="link-post">share</span>
+              <span class="lsep">&nbsp;-&nbsp;</span>
+              <span class="edit-post link"
+                    title="revise and improve this post">edit</span>
+              <span class="lsep">&nbsp;-&nbsp;</span>
+              <span class="comments-link link"
+                    title="Use comments to ask for more information or suggest improvements. Avoid answering questions in comments.">
+                  add a comment
+                </span>
+            </div>
           </div>
         </div>
       </div>
@@ -70,6 +70,7 @@
 <script>
   import {authMixin} from '@/auth/authMixin.js'
   import {momentMixin} from '@/assets/momentMixin.js'
+  import StringUtils from '@/assets/string-utils.js'
   import moment from 'moment'
 
   export default {
@@ -88,6 +89,9 @@
       },
       userRelUrl: function () {
         return '/users/' + this.question.owner.id + '/' + this.question.owner.username
+      },
+      textBody: function () {
+        return StringUtils.htmlToText(this.question.body)
       }
     },
     methods: {
@@ -142,8 +146,10 @@
   .post-text {
     background-color: #eceff1;
     text-align: left;
-    padding: 10px;
-    margin: 0 0 10px 0;
+    padding: 5px;
+    margin: 0 0 5px 0;
+    word-break: break-word;
+    overflow-x: scroll;
   }
 
   .post-text > div {
@@ -167,12 +173,9 @@
   }
 
   .post-menu {
-    position: absolute;
+    float: left;
     display: inline-block;
-    left: 0;
     height: 100%;
-    top: 50%;
-    transform: translateY(50%);
   }
 
   .post-signature {
@@ -252,6 +255,7 @@
     body:not(.no-grid-post-layout) .post-layout--left, body:not(.no-grid-post-layout) .post-layout--left.votecell {
       width: auto;
       padding-right: 15px;
+      padding-left: 10px;
     }
 
     body:not(.no-grid-post-layout) .post-layout--right {

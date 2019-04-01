@@ -36,8 +36,8 @@ const DataUtils = (function () {
         // always executed
         vm.$root.loading = false
       })
-  }
-  
+  }// eslint-disable-next-line
+
   DataUtils.refreshQuestions = function (vm, silent) {
     vm.errors = []
     let roomId = vm.$route.params.id
@@ -49,7 +49,7 @@ const DataUtils = (function () {
         vm.errors.push({message: response.data.message})
       }
     })
-  }
+  }// eslint-disable-next-line
 
   DataUtils.refreshUsers = function (vm, silent) {
     vm.errors = []
@@ -62,7 +62,7 @@ const DataUtils = (function () {
         vm.errors.push({message: response.data.message})
       }
     })
-  }
+  }// eslint-disable-next-line
   return DataUtils
 }())
 

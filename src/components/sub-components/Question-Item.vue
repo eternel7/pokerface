@@ -33,6 +33,7 @@
   import {momentMixin} from '@/assets/momentMixin.js'
   import axios from 'axios'
   import moment from 'moment'
+  import StringUtils from '@/assets/string-utils.js'
 
   require('material-design-lite')
 
@@ -66,7 +67,7 @@
         return new Date(this.question.updated_at)
       },
       bodyH: function () {
-        return Search.highlight(this.question.body, this.search)
+        return Search.highlight(StringUtils.htmlToText(this.question.body), this.search)
       }
     },
     methods: {
