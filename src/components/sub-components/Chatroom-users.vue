@@ -10,7 +10,7 @@
 <script>
   import ConnectedUserInRoom from '@/components/user-components/Connected-user-in-room'
   import {authMixin} from '@/auth/authMixin.js'
-  import axios from 'axios'
+  import DataUtils from '@/assets/data-utils.js'
   import SortUtils from '@/assets/sort-utils.js'
 
   export default {
@@ -43,32 +43,7 @@
     },
     methods: {
       tryGetChatroomUsers (evt) {
-        let vm = this
-        vm.errors = []
-        vm.$root.loading = true
-        let roomId = vm.$route.params.id
-        axios.get('/api/chatroomusers/' + roomId, vm.authHeader())
-          .then(function (response) {
-            vm.$root.loading = false
-            // handle success
-            if (response.data.users) {
-              vm.$set(vm, 'users_in_room', response.data.users)
-            } else {
-              vm.errors = []
-              vm.errors.push({message: response.data.message})
-            }
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error)
-            vm.$root.loading = false
-            vm.errors = []
-            vm.errors.push(error)
-          })
-          .then(function () {
-            // always executed
-            vm.$root.loading = false
-          })
+        DataUtils.refreshUsers(this, true)
       }
     }
   }
