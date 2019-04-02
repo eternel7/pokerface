@@ -65,13 +65,11 @@
         }, 100)
       },
       addManageMessages: function (vm) {
-        let isOnmessageAFunction = (!!(vm.chatSocket.onmessage && vm.chatSocket.onmessage.constructor && vm.chatSocket.onmessage.call && vm.chatSocket.onmessage.apply))
-        if (vm.chatSocket instanceof ReconnectingWebSocket &&
-          !isOnmessageAFunction) {
+        if (vm.chatSocket instanceof ReconnectingWebSocket && !vm.chatSocket.onmessage) {
           vm.chatSocket.onmessage = function (message) {
             vm.manageMessage(message)
           }
-        } else {
+        } else if (!(vm.chatSocket instanceof ReconnectingWebSocket)) {
           setTimeout(function () {
             vm.addManageMessages(vm)
           }, 1000)
@@ -120,7 +118,6 @@
       manageMessage: function (msg) {
         let vm = this
         let msgJson = JSON.parse(msg.data)
-        console.log(msgJson)
         if (msgJson.text || msgJson.username === 0) {
           // Bot message
           vm.addChat(msgJson.text || msgJson.message)

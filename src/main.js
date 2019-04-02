@@ -59,7 +59,12 @@ function rootDefault () {
     actionHandler: false,
     actionText: false,
     chatrooms: [],
-    questions: {},
+    store: {
+      'chatSocket': {},
+      'chats': {},
+      'questions': {},
+      'user_in_room': []
+    },
     errors: [],
     searchAvailable: false,
     backAvailable: false,

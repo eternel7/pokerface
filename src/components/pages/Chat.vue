@@ -3,7 +3,7 @@
     <div v-if="chatroom" id="chatroomview">
       <div id="chatroomprofile"
            v-bind:style="'background-image: url('+chatroom.image+')'">
-        <div id="close" v-on:click="backHome()" class="link-hover">
+        <div id="close" v-on:click="backHome()" class="link-hover unselectable">
           <i class="material-icons unselectable link-hover chat-header-button">arrow_back_ios</i>
         </div>
         <div id="bot">{{chatroom.label}}</div>
@@ -102,11 +102,9 @@
           }
         ],
         sessionStarted: false,
-        chats: [],
         displaySearch: false,
         displayBack: false,
         displayHeader: false,
-        chatSocket: undefined,
         tabActive: '0',
         message: '',
         errors: [],
@@ -124,6 +122,25 @@
       },
       user: function () {
         return this.$root.user
+      },
+      chats: function () {
+        if (!this.$root.store.chats[this.$route.params.id]) {
+          this.$set(this.$root.store.chats, this.$route.params.id, [])
+        }
+        return this.$root.store.chats[this.$route.params.id]
+      },
+      chatSocket: {
+        get () {
+          let vm = this
+          if (!vm.$root.store.chatSocket[vm.$route.params.id]) {
+            vm.$set(vm.$root.store.chatSocket, vm.$route.params.id, undefined)
+          }
+          return this.$root.store.chatSocket[vm.$route.params.id]
+        },
+        set (value) {
+          let vm = this
+          vm.$set(vm.$root.store.chatSocket, vm.$route.params.id, value)
+        }
       }
     },
     created () {
@@ -136,7 +153,7 @@
       }
     },
     beforeDestroy: function () {
-      if (this.chatSocket) {
+      if (this.chatSocket instanceof ReconnectingWebSocket) {
         this.chatSocket.close()
       }
     },
@@ -152,7 +169,7 @@
       },
       startReconnectingWebSocket () {
         let vm = this
-        if (vm.$route.params.id) {
+        if (vm.$route.params.id && (!(vm.chatSocket instanceof ReconnectingWebSocket))) {
           vm.sessionStarted = true
           let wsScheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
           vm.chatSocket = new ReconnectingWebSocket(wsScheme + '://' + window.location.host + '/ws/chat/' + vm.$route.params.id + '/')

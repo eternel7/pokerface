@@ -1,7 +1,7 @@
 <template>
   <div v-if="chatroom" id="chatroomview">
     <ul v-if="sortedUsersInRoom" id="connected" class="mdl-list list">
-      <li is="ConnectedUserInRoom" v-for="u in users_in_room" :key="u.user_obj.username" v-bind:userInRoom="u">
+      <li is="ConnectedUserInRoom" v-for="u in sortedUsersInRoom" :key="u.user_obj.username" v-bind:userInRoom="u">
       </li>
     </ul>
   </div>
@@ -18,19 +18,18 @@
     mixins: [authMixin],
     components: {ConnectedUserInRoom},
     props: ['chatroom'],
-    data () {
-      return {
-        users_in_room: []
-      }
-    },
     computed: {
       sortedUsersInRoom: function () {
-        let now = new Date()
-        let hourAgo = new Date(now.getTime() - (1000 * 60 * 60))
-        return this.users_in_room.filter(function (row) {
-          let lastAction = new Date(row.updated_at)
-          return lastAction > hourAgo
-        }).sort(SortUtils.onUpdated_at)
+        if (this.$root.store.users_in_room) {
+          let now = new Date()
+          let hourAgo = new Date(now.getTime() - (1000 * 60 * 60))
+          return this.$root.store.users_in_room.filter(function (row) {
+            let lastAction = new Date(row.updated_at)
+            return lastAction > hourAgo
+          }).sort(SortUtils.onUpdated_at)
+        } else {
+          return []
+        }
       }
     },
     created () {

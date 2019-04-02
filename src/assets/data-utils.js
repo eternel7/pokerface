@@ -43,7 +43,7 @@ const DataUtils = (function () {
     let roomId = vm.$route.params.id
     DataUtils.manageGetRequest('/api/chatroomquestions/' + roomId, vm, silent, function (response) {
       if (response.data.questions) {
-        vm.$set(vm.$root.questions, roomId, response.data.questions)
+        vm.$set(vm.$root.store.questions, roomId, response.data.questions)
       } else {
         vm.errors = []
         vm.errors.push({message: response.data.message})
@@ -56,7 +56,7 @@ const DataUtils = (function () {
     let roomId = vm.$route.params.id
     DataUtils.manageGetRequest('/api/chatroomusers/' + roomId, vm, silent, function (response) {
       if (response.data.users) {
-        vm.$set(vm, 'users_in_room', response.data.users)
+        vm.$set(vm.$root.store, 'users_in_room', response.data.users)
       } else {
         vm.errors = []
         vm.errors.push({message: response.data.message})

@@ -57,8 +57,8 @@
     computed: {
       questions: function () {
         let vm = this
-        if (vm.$root.questions instanceof Object) {
-          let unsorted = Object.assign([], (vm.$root.questions[vm.$route.params.id]) ? vm.$root.questions[vm.$route.params.id] : [])
+        if (vm.$root.store.questions instanceof Object) {
+          let unsorted = Object.assign([], (vm.$root.store.questions[vm.$route.params.id]) ? vm.$root.store.questions[vm.$route.params.id] : [])
           let searchInKeys = ['body']
           if (typeof vm.search === 'string' && vm.search !== '') {
             return unsorted.filter(function (row) {
