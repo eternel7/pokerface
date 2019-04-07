@@ -14,9 +14,10 @@
     <div v-else class="selected-question">
       <QuestionAndAnswers
               v-bind:question="selectedQuestion"
+              v-bind:search="search"
               v-on:close="unselectQuestion()"></QuestionAndAnswers>
       <div id="sendmessage">
-      <textarea type="text" ref="message" required placeholder="Answer or ask for more information..."
+      <textarea type="text" ref="message" required placeholder="Propose an answer"
                 @keyup.ctrl.enter="sendMessage"></textarea>
         <span id="send" @click="sendMessage">
         <button id="sendButton" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored">

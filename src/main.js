@@ -78,9 +78,9 @@ new Vue({
   el: '#app',
   router,
   template: '<App ref="App" v-bind:message="message" ' +
-    'v-bind:searchAvailable="searchAvailable"' +
-    'v-bind:backAvailable="backAvailable"' +
-    'v-bind:headerAvailable="headerAvailable"' +
+    'v-bind:searchAvailable="searchAvailable" ' +
+    'v-bind:backAvailable="backAvailable" ' +
+    'v-bind:headerAvailable="headerAvailable" ' +
     'v-bind:errors="errors"/>',
   components: {App},
   data () {

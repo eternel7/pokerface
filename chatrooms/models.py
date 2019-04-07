@@ -102,6 +102,7 @@ class Post(models.Model):
                                     related_name='user_last_edit')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    vote_count = 0
     
     def __str__(self):
         return "<Post: {} - {} - {} >".format(self.owner.__str__(), self.room.__str__(),

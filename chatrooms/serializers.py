@@ -73,6 +73,25 @@ class PostSerializer(serializers.ModelSerializer):
                   'created_at', 'updated_at')
 
 
+class AnswerSerializer(serializers.ModelSerializer):
+    body = serializers.CharField(required=True)
+    owner = UserSerializer(allow_null=False, read_only=True)
+    last_editor = UserSerializer(allow_null=False, read_only=True)
+    answer_to = serializers.PrimaryKeyRelatedField(required=False,
+                                                   allow_null=True,
+                                                   allow_empty=True,
+                                                   read_only=False,
+                                                   queryset=Post.objects.all())
+    room = serializers.PrimaryKeyRelatedField(required=True,
+                                              read_only=False,
+                                              queryset=Room.objects.all())
+    
+    class Meta:
+        model = Post
+        fields = ('id', 'body', 'owner', 'answer_to', 'last_editor', 'room', 'vote_count',
+                  'created_at', 'updated_at')
+
+
 class QuestionSerializer(serializers.ModelSerializer):
     body = serializers.CharField(required=True)
     owner = UserSerializer(allow_null=False, read_only=True)
@@ -90,16 +109,19 @@ class QuestionSerializer(serializers.ModelSerializer):
     room = serializers.PrimaryKeyRelatedField(required=True,
                                               read_only=False,
                                               queryset=Room.objects.all())
-    answers_count = serializers.SerializerMethodField()
-
+    answers = serializers.SerializerMethodField()
+    
     @staticmethod
-    def get_answers_count(obj):
-        return Post.objects.filter(answer_to=obj.pk).count()
+    def get_answers(obj):
+        list_answers = Post.objects.filter(answer_to=obj.pk)
+        if list_answers.count() > 0:
+            return AnswerSerializer(list_answers, many=True).data
+        return []
     
     class Meta:
         model = Post
-        fields = ('id', 'body', 'owner', 'answer', 'answer_to', 'last_editor', 'room', 'answers_count',
-                  'created_at', 'updated_at')
+        fields = ('id', 'body', 'owner', 'answer', 'answer_to', 'last_editor', 'room', 'vote_count',
+                  'answers', 'created_at', 'updated_at')
 
 
 class UserInRoomSerializer(serializers.ModelSerializer):

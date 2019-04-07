@@ -1,10 +1,10 @@
 <template>
-  <li class="question mdl-list__item mdl-list__item--three-line">
+  <li class="question mdl-list__item mdl-list__item--three-line link">
     <span class="mdl-list__item-primary-content">
       <span class="mdl-list__item-avatar img who" :title="question.owner.username"
             v-bind:style="'background-image: url('+question.owner.avatar_image+')'">
       </span>
-      <p class="what block-with-text" :title="bodyH" v-html="bodyH">
+      <p class="what block-with-text" v-html="bodyH">
       </p>
       <span class="mdl-list__item-text-body when">
         <span v-if='question.last_editor' :title="question.updated_at">
@@ -19,7 +19,7 @@
     <span class="mdl-list__item-secondary-content answers">
       <span :title="$t('post.proposed_answers')">
         <table>
-          <tr><td class="answers-count count">{{question.answers_count}}</td></tr>
+          <tr><td class="answers-count count">{{question.answers.length}}</td></tr>
           <tr><td class="answers-count title">{{$t('post.answers')}}</td></tr>
         </table>
       </span>

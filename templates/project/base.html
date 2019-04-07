@@ -107,26 +107,33 @@
     input:-webkit-autofill:active {
       -webkit-box-shadow: 0 0 0 30px white inset;
     }
+    input{
+      outline: 0;
+    }
 
     .mdl-card__supporting-text {
       margin: auto;
     }
 
+    .mdl-tabs__tab-bar {
+      width: 100%;
+    }
+
     .mdl-tabs__tab {
       font-size: calc(7px + .5vw);
       padding: 0 4%;
-    }
-
-    .mdl-tabs__tab > i {
-      display: none;
-    }
-
-    .mdl-tabs__tab {
+      width: 100%;
+      margin: 0 auto;
       display: block;
       position: relative;
       text-decoration: none;
       -webkit-transition: color .2s ease-in-out;
       transition: color .2s ease-in-out;
+    }
+
+    .mdl-tabs__tab > i {
+      display: block;
+      margin-top: 10px;
     }
 
     .mdl-tabs__tab:before {
@@ -157,24 +164,6 @@
     @media all and (min-width: 0) and (max-width: 480px) {
       .mdl-card {
         width: 100%;
-      }
-
-      .mdl-tabs__tab-bar {
-        width: 100%;
-      }
-
-      .mdl-tabs__tab {
-        width: 100%;
-        margin: 0 auto;
-      }
-
-      .mdl-tabs__tab > i {
-        display: block;
-        margin-top: 10px;
-      }
-
-      .mdl-tabs__tab > span {
-        display: none;
       }
     }
   </style>

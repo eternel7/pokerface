@@ -23,10 +23,11 @@
         <div class="mdl-tabs__tab-bar">
           <div v-for="tab in tabs" class="mdl-tabs__tab link"
                v-bind:href="tab.id" v-bind:id="'profile_tab_'+tab.id" v-on:click="tabActive=tab.id"
-               v-bind:class="{'is-active' : (tab.id===tabActive)}">
+               v-bind:class="{'is-active' : (tab.id===tabActive)}"
+               :title="'user.' + tab.Title">
             <i class="material-icons">
               {{tab.icon}}
-            </i><span>{{$t('user.' + tab.Title)}}</span>
+            </i>
           </div>
         </div>
         <div class="mdl-tabs__panel is-active" id="0" v-if="tabActive==='0'">
@@ -42,7 +43,8 @@
           <button id="third-button" v-on:click.prevent="tryDelete"
                   class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white">
             {{$t('user.Delete')}}
-          </button></div>
+          </button>
+        </div>
       </div>
       <div class="mdl-tabs__panel is-active" id="2" v-if="tabActive==='2'">
         <profilePwdUpdate></profilePwdUpdate>
