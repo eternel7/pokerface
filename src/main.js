@@ -63,7 +63,7 @@ function rootDefault () {
       'chatSocket': {},
       'chats': {},
       'questions': {},
-      'user_in_room': []
+      'users_in_room': []
     },
     errors: [],
     searchAvailable: false,

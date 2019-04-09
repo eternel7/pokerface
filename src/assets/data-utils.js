@@ -38,9 +38,37 @@ const DataUtils = (function () {
       })
   }// eslint-disable-next-line
   
+  DataUtils.managePostRequest = function (url, vm, silent, data, onSuccess) {
+    if (!silent) {
+      vm.$root.loading = true
+    }
+    axios.post(url, data, vm.authHeader())
+      .then(function (response) {
+        if (!silent) {
+          vm.$root.loading = false
+        }
+        if (onSuccess) {
+          onSuccess(response)
+        }
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error)
+        if (!silent) {
+          vm.$root.loading = false
+        }
+        vm.errors = []
+        vm.errors.push(error)
+      })
+      .then(function () {
+        // always executed
+        vm.$root.loading = false
+      })
+  }// eslint-disable-next-line
+  
   DataUtils.refreshQuestions = function (vm, silent) {
+    var roomId = vm.$route.params.id
     vm.errors = []
-    let roomId = vm.$route.params.id
     DataUtils.manageGetRequest('/api/chatroomquestions/' + roomId, vm, silent, function (response) {
       if (response.data.questions) {
         vm.$set(vm.$root.store.questions, roomId, response.data.questions)
@@ -52,8 +80,8 @@ const DataUtils = (function () {
   }// eslint-disable-next-line
   
   DataUtils.refreshUsers = function (vm, silent) {
-    vm.errors = []
     let roomId = vm.$route.params.id
+    vm.errors = []
     DataUtils.manageGetRequest('/api/chatroomusers/' + roomId, vm, silent, function (response) {
       if (response.data.users) {
         vm.$set(vm.$root.store, 'users_in_room', response.data.users)
@@ -63,6 +91,25 @@ const DataUtils = (function () {
       }
     })
   }// eslint-disable-next-line
+  
+  DataUtils.acceptAnswer = function (vm, answer, question, user) {
+    let data = {
+      'question': question,
+      'answer': answer
+    }
+    var roomId = vm.$route.params.id
+    vm.errors = []
+    console.log(vm, answer, question, user)
+    DataUtils.managePostRequest('/api/chatroomacceptanswer/', vm, true, data, function (response) {
+      if (response.data.questions) {
+        vm.$set(vm.$root.store.questions, roomId, response.data.questions)
+        vm.forcedisAcceptedAnswer = !vm.forcedisAcceptedAnswer
+      } else {
+        vm.errors = []
+        vm.errors.push({message: response.data.message})
+      }
+    })
+  }
   return DataUtils
 }())
 

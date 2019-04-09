@@ -28,7 +28,8 @@
               class="mdl-menu__item" v-bind:class="{'mdl-menu__item--full-bleed-divider': action.separatorAfter}">
             <span>{{$t('badge_menu.action.' + action.labelId)}}</span>
           </li>
-          <li v-if="!msg.question && action.post" v-for="action in badge_menu_actions" v-on:click="doAction(action.js, msg, action)"
+          <li v-if="!msg.question && action.post" v-for="action in badge_menu_actions"
+              v-on:click="doAction(action.js, msg, action)"
               class="mdl-menu__item" v-bind:class="{'mdl-menu__item--full-bleed-divider': action.separatorAfter,
               'selected-answer' : action.post.post_id===msg.answer_to}">
             <span :title="action.post.body">{{$t('badge_menu.action.' + action.labelId)}} {{action.post.post_id}}</span>
@@ -37,9 +38,9 @@
       </div>
     </div>
     <div v-if="!msg.origin.portrait" class="time">
-      {{msg.date | niceDate}}
+      {{tillNowDate}}
     </div>
-    <div v-else class="time">{{msg.date | niceDate}} - {{msg.origin.username}}</div>
+    <div v-else class="time">{{tillNowDate}} - {{msg.origin.username}}</div>
   </div>
 </template>
 
@@ -47,6 +48,7 @@
   import {authMixin} from '@/auth/authMixin.js'
   import {momentMixin} from '@/assets/momentMixin.js'
   import axios from 'axios'
+  import moment from 'moment'
 
   require('material-design-lite')
 
@@ -66,7 +68,7 @@
   export default {
     name: 'msg-item',
     mixins: [authMixin, momentMixin],
-    props: ['msg', 'user', 'chatroom', 'questions', 'chats'],
+    props: ['msg', 'user', 'chatroom', 'questions', 'chats', 'now'],
     data: function () {
       return {update_version: 0}
     },
@@ -123,6 +125,16 @@
           }
         }
         return entries
+      },
+      tillNowDate: function () {
+        let vm = this
+        let now = new Date(vm.now)
+        let d = new Date(vm.msg.date)
+        if (Math.abs(now.getTime() - d.getTime()) < 1000 * 60 * 60) {
+          return moment(d).fromNow().toLowerCase() + " - " + d.toLocaleTimeString()
+        } else {
+          return moment(d).calendar().toLowerCase()
+        }
       }
     },
     methods: {

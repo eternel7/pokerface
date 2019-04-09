@@ -283,3 +283,72 @@ def chatroom_users(request, room_id, format='json'):
             return JsonResponse({"users": users_in_room.data}, status=status.HTTP_200_OK)
         return JsonResponse({"message": "chatroom.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
     return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@csrf_exempt
+def chat_acceptAnswer(request, format='json'):
+    user = get_user_from_token(get_authorization_header(request))
+    if user:
+        question = request.data['question']
+        if question and 'id' in question:
+            q = Post.objects.filter(id=question['id'])
+            if q.count() == 1:
+                question = q.first()
+        else:
+            return JsonResponse({"message": "chatroom.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
+        
+        room_id = question.room.pk
+        answer = request.data['answer']
+        if answer:
+            remove_answer = True
+            if 'id' in answer:
+                a = Post.objects.filter(id=answer['id'])
+                if a.count() == 1:
+                    answer = a.first()
+                    if answer.answer_to is None or answer.answer_to != question:
+                        return JsonResponse({"message": "chatroom.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
+                    else:
+                        if question.answer == answer:
+                            q.update(answer=None)
+                        else:
+                            remove_answer = False
+                            q.update(answer=answer)
+            
+            questions = stored_questions(room_id)
+            channel_layer = get_channel_layer()
+            try:
+                room = Room.objects.get(pk=room_id)
+            except Room.DoesNotExist:
+                raise ClientError("ROOM_INVALID")
+            if remove_answer:
+                msg = {
+                    "msg": "post.user_remove_answer_to",
+                    "user": user.username,
+                    "question": question.pk}
+            else:
+                msg = {
+                    "msg": "post.accepted_answer_to",
+                    "user": user.username,
+                    "question": question.pk}
+                
+            async_to_sync(channel_layer.group_send)(
+                room.group_name,
+                {
+                    "type": "chat.bot.message",
+                    "room_id": room_id,
+                    "message": msg
+                }
+            )
+            async_to_sync(channel_layer.group_send)(
+                room.group_name,
+                {
+                    "type": "send.data",
+                    "room_id": room_id,
+                    "class": "questions",
+                    "data": questions.data
+                }
+            )
+            return JsonResponse({"questions": questions.data}, status=status.HTTP_200_OK)
+        return JsonResponse({"message": "chatroom.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
+    return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)

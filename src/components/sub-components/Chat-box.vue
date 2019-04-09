@@ -6,6 +6,7 @@
            v-bind:chatroom="chatroom"
            v-bind:msg="msg"
            v-bind:chats="chats"
+           v-bind:now="now"
            v-bind:questions="questions">
       </div>
     </div>
@@ -36,7 +37,8 @@
     data () {
       return {
         scrolling: false,
-        lastScrollTop: 0
+        lastScrollTop: 0,
+        now: Date.now()
       }
     },
     computed: {
@@ -56,6 +58,12 @@
         vm.addManageMessages(vm)
         vm.scrollToLastPosition()
       }
+    },
+    mounted: function () {
+      let vm = this
+      setInterval(function () {
+        vm.$data.now = Date.now()
+      }, 1000)
     },
     methods: {
       scrollToLastPosition () {
@@ -81,7 +89,8 @@
           if (msg instanceof Object && vm) {
             let info = Object.assign({}, msg)
             delete info.msg
-            msg = vm.$t(msg.msg, info)
+            console.log(vm)
+            msg = vm.$root.$t(msg.msg, info)
           }
           vm.chats.push({
             origin: 0,
@@ -118,6 +127,7 @@
       manageMessage: function (msg) {
         let vm = this
         let msgJson = JSON.parse(msg.data)
+        console.log('manageMessage', msgJson)
         if (msgJson.text || msgJson.username === 0) {
           // Bot message
           vm.addChat(msgJson.text || msgJson.message)

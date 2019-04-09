@@ -1,6 +1,7 @@
 <template>
   <li class="answer">
     <qaItem v-bind:item="answer"
+            v-bind:question="question"
             v-bind:user="user"
             v-bind:closable="false"
             v-bind:search="search"></qaItem>
@@ -18,7 +19,7 @@
     name: 'answer-item',
     mixins: [authMixin, momentMixin],
     components: {qaItem},
-    props: ['user', 'answer', 'search'],
+    props: ['user', 'answer', 'search', 'question'],
     data: function () {
       return {
         comments: []

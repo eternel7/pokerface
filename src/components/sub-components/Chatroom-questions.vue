@@ -14,6 +14,7 @@
     <div v-else class="selected-question">
       <QuestionAndAnswers
               v-bind:question="selectedQuestion"
+              v-bind:user="user"
               v-bind:search="search"
               v-on:close="unselectQuestion()"></QuestionAndAnswers>
       <div id="sendmessage">
@@ -50,7 +51,7 @@
     props: ['chatroom', 'user', 'search'],
     data () {
       return {
-        selectedQuestion: undefined,
+        selectedQuestionId: undefined,
         scrolling: false,
         lastScrollTop: 0
       }
@@ -73,6 +74,15 @@
           return unsorted.sort(SortUtils.onUpdated_at)
         }
         return []
+      },
+      selectedQuestion: function () {
+        let vm = this
+        if (vm.selectedQuestionId) {
+          return vm.questions.find(function (row) {
+            return row.id === vm.selectedQuestionId
+          })
+        }
+        return undefined
       }
     },
     created () {
@@ -89,13 +99,14 @@
       },
       displayQuestionForm: function (question) {
         if (question) {
-          this.selectedQuestion = question
+          console.log(question)
+          this.selectedQuestionId = question.id
         } else {
           console.log('question empty form')
         }
       },
       unselectQuestion: function () {
-        this.selectedQuestion = undefined
+        this.selectedQuestionId = undefined
       },
       sendMessage: function (msg) {
         console.log('sendMessage', msg)

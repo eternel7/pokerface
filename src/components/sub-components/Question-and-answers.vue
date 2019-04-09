@@ -2,6 +2,7 @@
   <div class="questionAndAnswer" id="questionAndAnswers">
     <div class="question" id="question">
       <qaItem v-bind:item="question"
+              v-bind:question="undefined"
               v-bind:user="user"
               v-bind:closable="true"
               v-bind:search="search"
@@ -12,6 +13,7 @@
         <ul class="answers-list">
           <li is="AnswerItem" v-for="answer in question.answers"
               v-bind:answer="answer"
+              v-bind:question="question"
               :key="answer.id"
               v-bind:user="user"
               v-bind:search="search"></li>

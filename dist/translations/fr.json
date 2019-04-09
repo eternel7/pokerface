@@ -210,7 +210,8 @@
     "answers": "réponse(s)",
     "created": "créé",
     "updated": "mise à jour",
-    "user_propose_answer_to": "{user} propose une réponse à {question}",
-    "user_remove_answer_to": "{user} retire sa réponse à {question}"
+    "user_propose_answer_to": "{user} propose une réponse à la question #{question}",
+    "accepted_answer_to": "{user} a accepté une réponse à la question #{question}",
+    "user_remove_answer_to": "{user} retire sa réponse à la question #{question}"
   }
 }

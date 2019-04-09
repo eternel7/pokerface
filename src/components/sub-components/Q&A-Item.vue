@@ -4,7 +4,7 @@
       <div class="grid fd-column ai-stretch">
         <i class="material-icons grid--cell post-vote-button link"
            title="This item shows research effort; it is useful and clear" aria-pressed="false"
-           aria-label="up vote" data-selected-classes="fc-theme-primary">
+           aria-label="up vote">
           keyboard_arrow_up
         </i>
         <div class="vote-count"
@@ -13,9 +13,29 @@
         </div>
         <i class="material-icons grid--cell post-vote-button link"
            title="This item does not show any research effort; it is unclear or not useful"
-           aria-pressed="false" aria-label="down vote" data-selected-classes="fc-theme-primary">
+           aria-pressed="false" aria-label="down vote">
           keyboard_arrow_down
         </i>
+        <div v-if="question">
+          <div v-if="question.owner.username === user.username" class="grid--item answer-indicator"
+               v-bind:class="{'accepted-answer-indicator': isAcceptedAnswer}"
+               title="The question owner accepted this as the best answer Jan 10 '12 at 18:16." tabindex="0" role="note"
+               aria-label="accepted" v-on:click="acceptAsCorrectAnswer">
+            <i class="material-icons grid--cell accept-answer link"
+               aria-hidden="true" aria-pressed="false">
+              done
+            </i>
+          </div>
+          <div v-else class="grid--item answer-indicator"
+               v-bind:class="{'accepted-answer-indicator': isAcceptedAnswer}"
+               title="The question owner accepted this as the best answer Jan 10 '12 at 18:16." tabindex="0" role="note"
+               aria-label="accepted">
+            <i class="material-icons grid--cell"
+               aria-hidden="true" aria-pressed="false">
+              done
+            </i>
+          </div>
+        </div>
       </div>
     </div>
     <div class="post-layout--right">
@@ -73,6 +93,7 @@
   import {authMixin} from '@/auth/authMixin.js'
   import {momentMixin} from '@/assets/momentMixin.js'
   import StringUtils from '@/assets/string-utils.js'
+  import DataUtils from '@/assets/data-utils.js'
   import moment from 'moment'
 
   require('material-design-lite')
@@ -80,17 +101,21 @@
   export default {
     name: 'qa-item',
     mixins: [authMixin, momentMixin],
-    props: ['user', 'item', 'search', 'closable'],
+    props: ['user', 'item', 'search', 'closable', 'question'],
     data: function () {
       return {
         addComment: false,
-        comments: []
+        comments: [],
+        forcedisAcceptedAnswer: 0
       }
     },
     created () {
       moment.locale(this.$i18n.locale)
     },
     computed: {
+      isAcceptedAnswer: function () {
+        return (this.item.id === this.question.answer)
+      },
       creation_date: function () {
         return new Date(this.item.created_at)
       },
@@ -129,6 +154,12 @@
             }
           })
         }
+      },
+      acceptAsCorrectAnswer: function () {
+        let vm = this
+        if (vm.question && vm.user.username === vm.question.owner.username) {
+          DataUtils.acceptAnswer(vm, vm.item, vm.question, vm.user)
+        }
       }
     },
     mounted: function () {
@@ -162,6 +193,18 @@
     vertical-align: middle;
   }
 
+  .accepted-answer-indicator {
+    color: #1ecd00 !important;
+    background-color: #fff !important;
+  }
+
+  .answer-indicator {
+    outline: 0;
+    margin-top: 5px;
+    color: #808e95;
+    background-color: #eceff1;
+  }
+
   .post-text {
     background-color: #eceff1;
     text-align: left;
@@ -177,7 +220,7 @@
 
   .close {
     position: absolute;
-    top: 10px;
+    top: 8px;
     right: 5px;
     width: 36px;
     height: 24px;

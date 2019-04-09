@@ -209,7 +209,8 @@
     "answers": "answers",
     "created": "created",
     "updated": "updated",
-    "user_propose_answer_to": "{user} propose an answer to {question}",
-    "user_remove_answer_to": "{user} remove his answer to {question}"
+    "user_propose_answer_to": "{user} propose an answer to question #{question}",
+    "accepted_answer_to": "{user} accepted an answer to question #{question}",
+    "user_remove_answer_to": "{user} remove his answer to question #{question}"
   }
 }
