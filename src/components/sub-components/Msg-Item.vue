@@ -131,7 +131,7 @@
         let now = new Date(vm.now)
         let d = new Date(vm.msg.date)
         if (Math.abs(now.getTime() - d.getTime()) < 1000 * 60 * 60) {
-          return moment(d).fromNow().toLowerCase() + " - " + d.toLocaleTimeString()
+          return moment(d).fromNow().toLowerCase() + ' - ' + d.toLocaleTimeString()
         } else {
           return moment(d).calendar().toLowerCase()
         }

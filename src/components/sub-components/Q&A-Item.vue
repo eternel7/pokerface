@@ -17,11 +17,11 @@
           keyboard_arrow_down
         </i>
         <div v-if="question">
-          <div v-if="question.owner.username === user.username" class="grid--item answer-indicator"
+          <div v-if="question.owner.username === user.username" class="grid--item answer-indicator link"
                v-bind:class="{'accepted-answer-indicator': isAcceptedAnswer}"
                title="The question owner accepted this as the best answer Jan 10 '12 at 18:16." tabindex="0" role="note"
                aria-label="accepted" v-on:click="acceptAsCorrectAnswer">
-            <i class="material-icons grid--cell accept-answer link"
+            <i class="material-icons grid--cell accept-answer"
                aria-hidden="true" aria-pressed="false">
               done
             </i>
@@ -183,6 +183,10 @@
     text-align: center;
   }
 
+  .post-vote-button:hover {
+    color: rgb(255, 64, 129);
+  }
+
   .vote-count {
     color: #808e95;
     font-size: 25px;
@@ -198,11 +202,21 @@
     background-color: #fff !important;
   }
 
+  .accepted-answer-indicator:hover {
+    color: #808e95 !important;
+  }
+
   .answer-indicator {
+    transition: 500ms background-color;
     outline: 0;
     margin-top: 5px;
     color: #808e95;
     background-color: #eceff1;
+  }
+
+  .answer-indicator:hover {
+    color: rgb(255, 64, 129);
+    background-color: #fff;
   }
 
   .post-text {
@@ -224,6 +238,10 @@
     right: 5px;
     width: 36px;
     height: 24px;
+  }
+
+  .close:hover {
+    color: rgb(255, 64, 129);
   }
 
   .last-editor {

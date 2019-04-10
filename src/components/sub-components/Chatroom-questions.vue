@@ -99,7 +99,6 @@
       },
       displayQuestionForm: function (question) {
         if (question) {
-          console.log(question)
           this.selectedQuestionId = question.id
         } else {
           console.log('question empty form')

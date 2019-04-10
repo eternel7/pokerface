@@ -259,14 +259,17 @@
   #search-expandable {
     position: absolute;
     color: white;
-    top: -10px;
+    top: -14px;
     right: 10px;
     height: 24px;
     cursor: pointer;
     z-index: 2;
     max-width: 40%;
   }
-
+  #search-expandable i {
+    padding: 2px;
+    border-radius: 50%;
+  }
   .chat-header-button {
     background-color: rgba(88, 88, 88, 0.54);
   }
