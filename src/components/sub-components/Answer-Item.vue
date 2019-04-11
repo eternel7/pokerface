@@ -5,6 +5,7 @@
             v-bind:user="user"
             v-bind:closable="false"
             v-bind:search="search"></qaItem>
+    <hr/>
   </li>
 </template>
 
@@ -31,10 +32,15 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
   .answer {
-    border-bottom: solid 1px #e4e4e4;
-    padding-bottom: 5px;
     list-style: none;
     padding-left: 0;
   }
 
+  .answer hr {
+    width: 95%;
+    margin-top: 5px;
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 5px;
+  }
 </style>

@@ -99,11 +99,27 @@ const DataUtils = (function () {
     }
     var roomId = vm.$route.params.id
     vm.errors = []
-    console.log(vm, answer, question, user)
     DataUtils.managePostRequest('/api/chatroomacceptanswer/', vm, true, data, function (response) {
       if (response.data.questions) {
         vm.$set(vm.$root.store.questions, roomId, response.data.questions)
-        vm.forcedisAcceptedAnswer = !vm.forcedisAcceptedAnswer
+      } else {
+        vm.errors = []
+        vm.errors.push({message: response.data.message})
+      }
+    })
+  }// eslint-disable-next-line
+  
+  DataUtils.sendAnswer = function (vm, answer, question, resetfield) {
+    let data = {
+      'question': question,
+      'answer': answer
+    }
+    var roomId = vm.$route.params.id
+    vm.errors = []
+    DataUtils.managePostRequest('/api/chatroomaddanswer/', vm, true, data, function (response) {
+      if (response.data.questions) {
+        vm.$set(vm.$root.store.questions, roomId, response.data.questions)
+        vm.$data[resetfield] = ''
       } else {
         vm.errors = []
         vm.errors.push({message: response.data.message})

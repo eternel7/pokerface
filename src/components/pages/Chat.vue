@@ -206,7 +206,7 @@
     background: #fff;
     height: 100%;
     width: 100%;
-    max-width: 700px;
+    max-width: 1000px;
   }
 
   #chatroomprofile {

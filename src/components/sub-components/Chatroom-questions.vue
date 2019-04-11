@@ -12,15 +12,19 @@
       </li>
     </ul>
     <div v-else class="selected-question">
+      <i class="material-icons link close" @click="unselectQuestion">
+        close
+      </i>
       <QuestionAndAnswers
               v-bind:question="selectedQuestion"
               v-bind:user="user"
               v-bind:search="search"
-              v-on:close="unselectQuestion()"></QuestionAndAnswers>
-      <div id="sendmessage">
+              v-bind:answered="answered"></QuestionAndAnswers>
+      <div v-if="!selectedQuestion.answer" id="sendmessage">
       <textarea type="text" ref="message" required placeholder="Propose an answer"
-                @keyup.ctrl.enter="sendMessage"></textarea>
-        <span id="send" @click="sendMessage">
+                v-model="message"
+                @keyup.ctrl.enter="sendAnswer"></textarea>
+        <span id="send" @click="sendAnswer">
         <button id="sendButton" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--colored">
           <i class="material-icons">send</i>
         </button>
@@ -53,7 +57,8 @@
       return {
         selectedQuestionId: undefined,
         scrolling: false,
-        lastScrollTop: 0
+        lastScrollTop: 0,
+        message: ''
       }
     },
     computed: {
@@ -83,6 +88,9 @@
           })
         }
         return undefined
+      },
+      answered: function () {
+        return (this.selectedQuestion && this.selectedQuestion.answer)
       }
     },
     created () {
@@ -107,8 +115,9 @@
       unselectQuestion: function () {
         this.selectedQuestionId = undefined
       },
-      sendMessage: function (msg) {
-        console.log('sendMessage', msg)
+      sendAnswer: function () {
+        let vm = this
+        DataUtils.sendAnswer(vm, vm.message, vm.selectedQuestion, 'message')
       }
     }
   }
@@ -125,7 +134,21 @@
     background: #fff;
     height: calc(92vh - 50px);
     width: 100%;
-    max-width: 700px;
+  }
+
+  .close {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.5);
+    top: 8px;
+    right: 8px;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    z-index: 1;
+  }
+
+  .close:hover {
+    color: rgb(255, 64, 129);
   }
 
   .list {

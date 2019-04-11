@@ -89,7 +89,6 @@
           if (msg instanceof Object && vm) {
             let info = Object.assign({}, msg)
             delete info.msg
-            console.log(vm)
             msg = vm.$root.$t(msg.msg, info)
           }
           vm.chats.push({
@@ -224,13 +223,12 @@
     margin-right: auto;
     background: #fff;
     width: 100%;
-    max-width: 700px;
   }
 
   #chat-messages {
     position: relative;
     height: 80%;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
     padding-right: 20px;
     border-bottom: solid 1px #e4e4e4;

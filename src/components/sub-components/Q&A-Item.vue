@@ -2,7 +2,7 @@
   <div class="post-layout">
     <div class="post-layout--left">
       <div class="grid fd-column ai-stretch">
-        <i class="material-icons grid--cell post-vote-button link"
+        <i class="material-icons grid--cell post-vote-button link unselectable"
            title="This item shows research effort; it is useful and clear" aria-pressed="false"
            aria-label="up vote">
           keyboard_arrow_up
@@ -11,13 +11,13 @@
              itemprop="upvoteCount">
           {{item.vote_count}}
         </div>
-        <i class="material-icons grid--cell post-vote-button link"
+        <i class="material-icons grid--cell post-vote-button link unselectable"
            title="This item does not show any research effort; it is unclear or not useful"
            aria-pressed="false" aria-label="down vote">
           keyboard_arrow_down
         </i>
         <div v-if="question">
-          <div v-if="question.owner.username === user.username" class="grid--item answer-indicator link"
+          <div v-if="question.owner.username === user.username" class="grid--item answer-indicator link unselectable"
                v-bind:class="{'accepted-answer-indicator': isAcceptedAnswer}"
                title="The question owner accepted this as the best answer Jan 10 '12 at 18:16." tabindex="0" role="note"
                aria-label="accepted" v-on:click="acceptAsCorrectAnswer">
@@ -26,8 +26,7 @@
               done
             </i>
           </div>
-          <div v-else class="grid--item answer-indicator"
-               v-bind:class="{'accepted-answer-indicator': isAcceptedAnswer}"
+          <div v-else-if="isAcceptedAnswer" class="grid--item answer-indicator unselectable accepted-answer-indicator"
                title="The question owner accepted this as the best answer Jan 10 '12 at 18:16." tabindex="0" role="note"
                aria-label="accepted">
             <i class="material-icons grid--cell"
@@ -40,9 +39,6 @@
     </div>
     <div class="post-layout--right">
       <div class="post-text">
-        <i v-if="closable" class="material-icons link close" @click="close()">
-          close
-        </i>
         <div class="text" itemprop="text" v-html="item.body"></div>
       </div>
       <div v-if='item.last_editor' class="last-editor text">
@@ -101,7 +97,7 @@
   export default {
     name: 'qa-item',
     mixins: [authMixin, momentMixin],
-    props: ['user', 'item', 'search', 'closable', 'question'],
+    props: ['user', 'item', 'search', 'question'],
     data: function () {
       return {
         addComment: false,
@@ -138,9 +134,6 @@
         componentHandler.upgradeDom()
         // eslint-disable-next-line
         componentHandler.upgradeAllRegistered()
-      },
-      close: function () {
-        this.$emit('close')
       },
       toggleAddComment: function () {
         let vm = this
@@ -214,13 +207,12 @@
     background-color: #eceff1;
   }
 
-  .answer-indicator:hover {
+  .answer-indicator.link:hover {
     color: rgb(255, 64, 129);
     background-color: #fff;
   }
 
   .post-text {
-    background-color: #eceff1;
     text-align: left;
     padding: 5px;
     margin: 0 5px 10px 0;
@@ -232,26 +224,16 @@
     width: calc(100% - 10px);
   }
 
-  .close {
-    position: absolute;
-    top: 8px;
-    right: 5px;
-    width: 36px;
-    height: 24px;
-  }
-
-  .close:hover {
-    color: rgb(255, 64, 129);
-  }
-
   .last-editor {
     color: #808e95 !important;
     float: left;
+    text-align: left;
     margin: 0 0 10px 0;
   }
 
   .post-footer {
     position: relative;
+    clear: left;
   }
 
   .post-menu {
@@ -327,9 +309,10 @@
   }
 
   .comment-input-field {
+    float: left;
     padding-top: 0;
     padding-bottom: 0;
-    width: 95%;
+    width: 90%;
   }
 
   .comment-input-field > label {

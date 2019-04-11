@@ -1,7 +1,9 @@
 <template>
   <div v-if="chatroom" id="chatroomview">
     <ul v-if="sortedUsersInRoom" id="connected" class="mdl-list list">
-      <li is="ConnectedUserInRoom" v-for="u in sortedUsersInRoom" :key="u.user_obj.username" v-bind:userInRoom="u">
+      <li is="ConnectedUserInRoom" v-for="u in sortedUsersInRoom"
+          :key="u.user_obj.username"
+          v-bind:userInRoom="u">
       </li>
     </ul>
   </div>
@@ -59,7 +61,6 @@
     background: #fff;
     height: calc(92vh - 50px);
     width: 100%;
-    max-width: 700px;
   }
 
   .list {

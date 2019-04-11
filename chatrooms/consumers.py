@@ -330,7 +330,8 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "post_id": event["post_id"]
             },
         ))
-        await asyncio.ensure_future(self.chat_bot_parse(event))
+        if not 'no_bot' in event:
+            await asyncio.ensure_future(self.chat_bot_parse(event))
     
     async def bot_message(self, message, event):
         await asyncio.ensure_future(self.send_json(
