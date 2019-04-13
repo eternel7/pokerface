@@ -16,7 +16,7 @@
       <div :id="'badge_menu'+unique_id"
            v-bind:class="{ 'mdl-menu--bottom-right': msg.origin===1, 'mdl-menu--bottom-left': msg.origin!==1}">
         <div class="bubble">
-          {{msg.message}}
+          {{message}}
         </div>
         <div v-if="msg.origin===1" class="link mdl-badge mdl-badge--overlap badge-menu"
              v-bind:data-badge="badge_icon">
@@ -135,6 +135,14 @@
         } else {
           return moment(d).calendar().toLowerCase()
         }
+      },
+      message: function () {
+        if (this.msg.message instanceof Object) {
+          let info = Object.assign({}, this.msg.message)
+          delete info.msg
+          return this.$root.$t(this.msg.message.msg, info)
+        }
+        return this.msg.message
       }
     },
     methods: {

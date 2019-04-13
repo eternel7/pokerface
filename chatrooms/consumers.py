@@ -352,7 +352,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "message": event["message"],
             },
         ))
-    
+
     async def send_data(self, event):
         await asyncio.ensure_future(self.send_json(
             {
@@ -361,6 +361,16 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "username": 0,
                 "class": event["class"],
                 "data": event["data"],
+            },
+        ))
+
+    async def send_info(self, event):
+        await asyncio.ensure_future(self.send_json(
+            {
+                "msg_type": settings.MSG_TYPE_INFO,
+                "room": event["room_id"],
+                "username": 0,
+                "message": event["message"],
             },
         ))
     

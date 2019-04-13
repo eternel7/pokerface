@@ -66,6 +66,14 @@ const DataUtils = (function () {
       })
   }// eslint-disable-next-line
   
+  DataUtils.updateDataRoomStore = function (vm, storePlace, roomId, data) {
+    if (roomId) {
+      vm.$set(vm.$root.store[storePlace], roomId, data)
+    } else {
+      vm.$set(vm.$root.store, storePlace, data)
+    }
+  }// eslint-disable-next-line
+  
   DataUtils.refreshQuestions = function (vm, silent) {
     var roomId = vm.$route.params.id
     vm.errors = []

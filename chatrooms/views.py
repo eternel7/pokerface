@@ -321,6 +321,7 @@ def chat_acceptAnswer(request, format='json'):
                 room = Room.objects.get(pk=room_id)
             except Room.DoesNotExist:
                 raise ClientError("ROOM_INVALID")
+            
             if remove_answer:
                 msg = {
                     "msg": "post.user_remove_answer_to",
@@ -335,7 +336,7 @@ def chat_acceptAnswer(request, format='json'):
             async_to_sync(channel_layer.group_send)(
                 room.group_name,
                 {
-                    "type": "chat.bot.message",
+                    "type": "send.info",
                     "room_id": room_id,
                     "message": msg
                 }
@@ -394,12 +395,12 @@ def chat_addAnswer(request, format='json'):
                 async_to_sync(channel_layer.group_send)(
                     room.group_name,
                     {
-                        "type": "chat.message",
+                        "type": "send.info",
                         "room_id": room_id,
-                        "no_bot": True,
-                        "post_id": saved_answer.pk,
-                        "username": user.username,
-                        "message": saved_answer.body
+                        "message": {
+                            "username" : user.username,
+                            "answer_to": question.id
+                        }
                     }
                 )
                 async_to_sync(channel_layer.group_send)(

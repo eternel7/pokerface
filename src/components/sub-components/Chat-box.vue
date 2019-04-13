@@ -26,6 +26,7 @@
 <script>
   import ReconnectingWebSocket from 'reconnecting-websocket'
   import MsgItem from '@/components/sub-components/Msg-item'
+  import DataUtils from '@/assets/data-utils.js'
   import {authMixin} from '@/auth/authMixin.js'
   import Animate from '@/assets/animate-utils.js'
 
@@ -86,11 +87,6 @@
       addChat: function (msg, user, id) {
         let vm = this
         if (msg && !user) {
-          if (msg instanceof Object && vm) {
-            let info = Object.assign({}, msg)
-            delete info.msg
-            msg = vm.$root.$t(msg.msg, info)
-          }
           vm.chats.push({
             origin: 0,
             message: msg,
@@ -127,9 +123,17 @@
         let vm = this
         let msgJson = JSON.parse(msg.data)
         console.log('manageMessage', msgJson)
-        if (msgJson.text || msgJson.username === 0) {
-          // Bot message
-          vm.addChat(msgJson.text || msgJson.message)
+        if (msgJson.username === 0) {
+          if (msgJson.msg_type === 0) {
+            // Bot message
+            vm.addChat(msgJson.message)
+          } else if (msgJson.msg_type === 6) {
+            DataUtils.updateDataRoomStore(vm, msgJson.class, msgJson.room, msgJson.data)
+          } else if (msgJson.msg_type === 7) {
+            let info = Object.assign({}, msgJson.message)
+            delete info.msg
+            vm.$root.showSnackbar(vm.$root.$t(msgJson.message.msg, info))
+          }
         } else {
           if (msgJson.username !== vm.user.username) {
             if (msgJson.msg_type === 0) {

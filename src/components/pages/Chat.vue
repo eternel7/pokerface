@@ -35,17 +35,20 @@
                    v-bind:search="search"></ChatBox>
         </div>
         <div class="mdl-tabs__panel is-active" id="1" v-if="tabActive==='1'">
-          <ChatroomUsers v-bind:chatroom="chatroom"
-                         v-bind:user="user"
-                         v-bind:search="search"></ChatroomUsers>
+          <ChatroomQuestions v-bind:chatroom="chatroom"
+                             v-bind:user="user"
+                             v-bind:search="search"></ChatroomQuestions>
         </div>
         <div class="mdl-tabs__panel is-active" id="2" v-if="tabActive==='2'">
+          <div>Hello world!</div>
           <ChatroomQuestions v-bind:chatroom="chatroom"
                              v-bind:user="user"
                              v-bind:search="search"></ChatroomQuestions>
         </div>
         <div class="mdl-tabs__panel is-active" id="3" v-if="tabActive==='3'">
-          <div>Hello world!</div>
+          <ChatroomUsers v-bind:chatroom="chatroom"
+                         v-bind:user="user"
+                         v-bind:search="search"></ChatroomUsers>
         </div>
         <div class="mdl-tabs__panel is-active" id="4" v-if="tabActive==='4'">
           <div>Hello world!</div>
@@ -82,18 +85,18 @@
           },
           {
             id: '1',
-            Title: 'TabUsers',
-            icon: 'people'
-          },
-          {
-            id: '2',
             Title: 'TabQuestions',
             icon: 'contact_support'
           },
           {
-            id: '3',
+            id: '2',
             Title: 'TabAnswers',
             icon: 'question_answer'
+          },
+          {
+            id: '3',
+            Title: 'TabUsers',
+            icon: 'people'
           },
           {
             id: '4',
@@ -162,9 +165,6 @@
         this.$router.push({name: 'Home'})
       },
       clickOnTab: function (tabId) {
-        if (tabId === '5') {
-          this.backHome()
-        }
         this.tabActive = tabId
       },
       startReconnectingWebSocket () {
@@ -266,10 +266,12 @@
     z-index: 2;
     max-width: 40%;
   }
+
   #search-expandable i {
     padding: 2px;
     border-radius: 50%;
   }
+
   .chat-header-button {
     background-color: rgba(88, 88, 88, 0.54);
   }

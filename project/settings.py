@@ -103,6 +103,7 @@ MSG_TYPE_MUTED = 3  # For just OK information that doesn't bother users
 MSG_TYPE_ENTER = 4  # For just OK information that doesn't bother users
 MSG_TYPE_LEAVE = 5  # For just OK information that doesn't bother users
 MSG_TYPE_DATA = 6  # For update of shared data
+MSG_TYPE_INFO = 7  # For info of action of users
 
 MESSAGE_TYPES_CHOICES = (
     (MSG_TYPE_MESSAGE, 'MESSAGE'),
@@ -112,6 +113,7 @@ MESSAGE_TYPES_CHOICES = (
     (MSG_TYPE_ENTER, 'ENTER'),
     (MSG_TYPE_LEAVE, 'LEAVE'),
     (MSG_TYPE_DATA, 'DATA'),
+    (MSG_TYPE_INFO, 'INFO'),
 )
 
 MESSAGE_TYPES_LIST = [
@@ -122,6 +124,7 @@ MESSAGE_TYPES_LIST = [
     MSG_TYPE_ENTER,
     MSG_TYPE_LEAVE,
     MSG_TYPE_DATA,
+    MSG_TYPE_INFO,
 ]
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
