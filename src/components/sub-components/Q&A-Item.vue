@@ -2,6 +2,7 @@
   <div class="post-layout">
     <div class="post-layout--left">
       <div class="grid fd-column ai-stretch">
+        <div class="id-item">#{{item.id}}</div>
         <i class="material-icons grid--cell post-vote-button link unselectable"
            title="This item shows research effort; it is useful and clear" aria-pressed="false"
            aria-label="up vote">
@@ -164,6 +165,11 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  .id-item {
+    font-size: 13px;
+    font-weight: 400;
+    color: #808e95;
+  }
 
   .post-vote-button {
     width: 40px;
@@ -195,7 +201,7 @@
     background-color: #fff !important;
   }
 
-  .accepted-answer-indicator:hover {
+  .accepted-answer-indicator.link:hover {
     color: #808e95 !important;
   }
 

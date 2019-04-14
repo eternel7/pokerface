@@ -326,12 +326,14 @@ def chat_acceptAnswer(request, format='json'):
                 msg = {
                     "msg": "post.user_remove_answer_to",
                     "user": user.username,
-                    "question": question.pk}
+                    "question": question.pk
+                }
             else:
                 msg = {
                     "msg": "post.accepted_answer_to",
                     "user": user.username,
-                    "question": question.pk}
+                    "question": question.pk
+                }
                 
             async_to_sync(channel_layer.group_send)(
                 room.group_name,
@@ -360,15 +362,16 @@ def chat_acceptAnswer(request, format='json'):
 def chat_addAnswer(request, format='json'):
     user = get_user_from_token(get_authorization_header(request))
     if user:
+        q = None
         question = request.data['question']
         if question and 'id' in question:
             q = Post.objects.filter(id=question['id'])
             if q.count() == 1:
-                question = q.first()
+                q = q.first()
         else:
             return JsonResponse({"message": "chatroom.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
         
-        room_id = question.room.pk
+        room_id = q.room.pk
         answer = request.data['answer']
         if answer:
             data = {
@@ -377,7 +380,7 @@ def chat_addAnswer(request, format='json'):
                 "owner": user.pk,
                 "room": room_id,
                 "type": 2,
-                "answer_to": question.id
+                "answer_to": q.pk
             }
             saved_answer = False
             serializer = PostSerializer(data=data)
@@ -398,8 +401,9 @@ def chat_addAnswer(request, format='json'):
                         "type": "send.info",
                         "room_id": room_id,
                         "message": {
-                            "username" : user.username,
-                            "answer_to": question.id
+                            "msg": "post.user_propose_answer_to",
+                            "user": user.username,
+                            "question": q.pk
                         }
                     }
                 )
