@@ -87,4 +87,4 @@ def findClosestText(text, texts_to_compare, lang):
     if req_tfidf == 0:
         return None
     else:
-        return texts_to_compare[idx]
+        return {"text": texts_to_compare[idx], "score": req_tfidf}

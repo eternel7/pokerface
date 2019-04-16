@@ -9,6 +9,7 @@ from channels.db import database_sync_to_async
 import asyncio
 from .exceptions import ClientError
 from .utils import get_room_or_error
+from unidecode import unidecode
 from chatrooms.nlp import findClosestText
 
 defaultImage = "/static/img/icons/apple-touch-icon-76x76.png"
@@ -153,17 +154,16 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         if post.pk:
             return post.pk
         return post
-
+    
     @database_sync_to_async
     def get_all_validated_questions_texts(self):
         return Post.objects.filter(type=1).exclude(answer__isnull=True).values_list('body', flat=True)
-
+    
     @database_sync_to_async
     def get_first_answer_text_to_question(self, question):
         q = Post.objects.filter(body=question).exclude(answer__isnull=True)
         if q.count() > 0:
             return q[0].answer.body
-    
     
     async def join_room(self, room_id):
         """
@@ -355,18 +355,17 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         Called when someone has messaged our chat.
         One of the bot answers
         """
-        # tokenize the pattern
-        user_entry = event['message'].lower()
-        """
-        f = open('static/chat.txt', 'r', errors='ignore')
-        raw = f.read()
-        raw = raw.lower()
-        """
+        # no accent
+        user_entry = unidecode(event['message'])
+        # not case sensitive
+        user_entry = user_entry.lower()
         questions = await self.get_all_validated_questions_texts()
         if questions.count() > 0:
             closest = findClosestText(user_entry, list(questions), 'english')
             if not closest:
                 await self.bot_message("I am sorry! I don't understand you", event)
             else:
-                response = await self.get_first_answer_text_to_question(closest)
-                await self.bot_message(response, event)
+                print(user_entry, closest)
+                if closest["score"] >= 0.8:
+                    response = await self.get_first_answer_text_to_question(closest["text"])
+                    await self.bot_message(response, event)
