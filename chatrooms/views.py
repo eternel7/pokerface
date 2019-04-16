@@ -1,7 +1,6 @@
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework import status
-from datetime import datetime, timedelta
 from accounts.models import get_user_from_token
 from rest_framework.authentication import get_authorization_header
 from django.http import JsonResponse
@@ -362,7 +361,6 @@ def chat_acceptAnswer(request, format='json'):
 def chat_addAnswer(request, format='json'):
     user = get_user_from_token(get_authorization_header(request))
     if user:
-        q = None
         question = request.data['question']
         if question and 'id' in question:
             q = Post.objects.filter(id=question['id'])
@@ -373,7 +371,7 @@ def chat_addAnswer(request, format='json'):
         
         room_id = q.room.pk
         answer = request.data['answer']
-        if answer:
+        if answer and q:
             data = {
                 "body": answer,
                 "last_editor": user.pk,

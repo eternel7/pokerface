@@ -2,7 +2,9 @@ from django.db import models
 import re
 import PyPDF2
 import threading
+import json
 from django.contrib.auth.models import User
+from chatrooms.nlp import textToKeys
 
 
 class Room(models.Model):
@@ -92,6 +94,7 @@ class Post(models.Model):
     """
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='room_posts')
     body = models.TextField(default='')
+    body_key = models.TextField(default='')
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_posts')
     type = models.IntegerField(default=0)
     answer = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True,
@@ -104,9 +107,26 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     vote_count = 0
     
+    def set_body_key(self, text, *args, **kwargs):
+        keys = textToKeys(text, 'french')
+        if keys and self.pk:
+            Post.objects.filter(pk=self.pk).update(body_key=json.dumps(keys))
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # Call the "real" save() method.
+        t = threading.Thread(target=self.set_body_key, args=(self.body,))
+        t.daemon = True
+        t.start()
+    
     def __str__(self):
         return "<Post: {} - {} - {} >".format(self.owner.__str__(), self.room.__str__(),
-                                          (self.body[:8] + '..') if len(self.body) > 10 else self.body)
+                                              (self.body[:8] + '..') if len(self.body) > 10 else self.body)
+    
+    class Meta:
+        indexes = [
+            models.Index(fields=['room', ]),
+            models.Index(fields=['body_key', ]),
+        ]
 
 
 class UserInRoom(models.Model):
@@ -115,9 +135,9 @@ class UserInRoom(models.Model):
     """
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='room_users')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_rooms')
-
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
     def __str__(self):
         return "<UserInRoom {}: {} - {} >".format(self.pk, self.user.__str__(), self.room.__str__())

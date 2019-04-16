@@ -2,51 +2,16 @@ from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.models import User
-from chatrooms.models import UserInRoom
+from chatrooms.models import UserInRoom, Post
 from chatrooms.serializers import UserInRoomSerializer
 from chatrooms.views import create_or_update_post
 from channels.db import database_sync_to_async
 import asyncio
 from .exceptions import ClientError
 from .utils import get_room_or_error
-import nltk
-import string
-
-# import gensim.downloader as gensim
-
-# download the model and return as object ready for use
-# model_gensim_wiki = gensim.load("glove-wiki-gigaword-100")
+from chatrooms.nlp import findClosestText
 
 defaultImage = "/static/img/icons/apple-touch-icon-76x76.png"
-
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt')
-try:
-    nltk.data.find('corpora/stopwords')
-except LookupError:
-    nltk.download('stopwords')
-try:
-    nltk.data.find('corpora/wordnet')
-except LookupError:
-    nltk.download('wordnet')
-
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
-
-lemmer = nltk.stem.WordNetLemmatizer()
-
-
-def LemTokens(tokens):
-    return [lemmer.lemmatize(token) for token in tokens]
-
-
-remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
-
-
-def LemNormalize(text):
-    return LemTokens(nltk.word_tokenize(text.lower().translate(remove_punct_dict)))
 
 
 class ChatConsumer(AsyncJsonWebsocketConsumer):
@@ -188,6 +153,17 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         if post.pk:
             return post.pk
         return post
+
+    @database_sync_to_async
+    def get_all_validated_questions_texts(self):
+        return Post.objects.filter(type=1).exclude(answer__isnull=True).values_list('body', flat=True)
+
+    @database_sync_to_async
+    def get_first_answer_text_to_question(self, question):
+        q = Post.objects.filter(body=question).exclude(answer__isnull=True)
+        if q.count() > 0:
+            return q[0].answer.body
+    
     
     async def join_room(self, room_id):
         """
@@ -352,7 +328,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "message": event["message"],
             },
         ))
-
+    
     async def send_data(self, event):
         await asyncio.ensure_future(self.send_json(
             {
@@ -363,7 +339,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "data": event["data"],
             },
         ))
-
+    
     async def send_info(self, event):
         await asyncio.ensure_future(self.send_json(
             {
@@ -381,19 +357,16 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         """
         # tokenize the pattern
         user_entry = event['message'].lower()
+        """
         f = open('static/chat.txt', 'r', errors='ignore')
         raw = f.read()
         raw = raw.lower()
-        sent_tokens = nltk.sent_tokenize(raw)  # converts to list of sentences
-        sent_tokens.append(user_entry)
-        TfidfVec = TfidfVectorizer(tokenizer=LemNormalize, stop_words='english')
-        tfidf = TfidfVec.fit_transform(sent_tokens)
-        vals = cosine_similarity(tfidf[-1], tfidf)
-        idx = vals.argsort()[0][-2]
-        flat = vals.flatten()
-        flat.sort()
-        req_tfidf = flat[-2]
-        if (req_tfidf == 0):
-            await self.bot_message("I am sorry! I don't understand you", event)
-        else:
-            await self.bot_message(sent_tokens[idx], event)
+        """
+        questions = await self.get_all_validated_questions_texts()
+        if questions.count() > 0:
+            closest = findClosestText(user_entry, list(questions), 'english')
+            if not closest:
+                await self.bot_message("I am sorry! I don't understand you", event)
+            else:
+                response = await self.get_first_answer_text_to_question(closest)
+                await self.bot_message(response, event)
