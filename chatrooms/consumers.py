@@ -58,7 +58,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 # Leave the room
                 await self.leave_room(self.room_id)
             elif command == "send":
-                await self.send_room(self.room_id, content["message"])
+                await self.send_room(self.room_id, content["message"], content["lang"])
             elif not command:
                 pass
         except ClientError as e:
@@ -117,7 +117,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 data = serializer.save()
                 if data:
                     return data
-            print(serializer.errors)
+            print("add_or_update_user_in_room_db", serializer.errors)
             return False
         else:
             now = timezone.now()
@@ -232,7 +232,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             self.channel_name,
         )
     
-    async def send_room(self, room_id, message):
+    async def send_room(self, room_id, message, lang):
         """
         Called by receive_json when someone sends a message to a room.
         """
@@ -255,7 +255,8 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "room_id": room_id,
                 "username": self.scope["user"].username,
                 "message": message,
-                "post_id": post_id
+                "post_id": post_id,
+                "lang": lang
             }
         )
     
@@ -306,7 +307,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "post_id": event["post_id"]
             },
         ))
-        if not 'no_bot' in event:
+        if 'no_bot' not in event:
             await asyncio.ensure_future(self.chat_bot_parse(event))
     
     async def bot_message(self, message, event):
@@ -359,13 +360,17 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         user_entry = unidecode(event['message'])
         # not case sensitive
         user_entry = user_entry.lower()
+        await asyncio.ensure_future(self.closest_to_answered_question(user_entry, event))
+    
+    async def closest_to_answered_question(self, user_entry, event):
         questions = await self.get_all_validated_questions_texts()
         if questions.count() > 0:
-            closest = findClosestText(user_entry, list(questions), 'english')
+            closest = findClosestText(user_entry, list(questions))
             if not closest:
-                await self.bot_message("I am sorry! I don't understand you", event)
+                await self.bot_message("I am sorry, I don't have any information on: \"" + event["message"] + "\"",
+                                       event)
             else:
-                print(user_entry, closest)
+                print(event['message'], user_entry, closest)
                 if closest["score"] >= 0.8:
                     response = await self.get_first_answer_text_to_question(closest["text"])
                     await self.bot_message(response, event)

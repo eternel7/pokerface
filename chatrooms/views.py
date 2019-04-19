@@ -249,10 +249,11 @@ def chat_updateAnswer(request, format='json'):
                     "msg": "post.user_remove_answer_to",
                     "user": user.username,
                     "question": question.pk}
+                
             async_to_sync(channel_layer.group_send)(
                 room.group_name,
                 {
-                    "type": "chat.bot.message",
+                    "type": "send.info",
                     "room_id": room_id,
                     "message": msg
                 }
@@ -262,7 +263,7 @@ def chat_updateAnswer(request, format='json'):
                 {
                     "type": "send.data",
                     "room_id": room_id,
-                    "class": "post",
+                    "class": "questions",
                     "data": questions.data
                 }
             )

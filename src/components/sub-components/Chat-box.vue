@@ -70,7 +70,7 @@
       scrollToLastPosition () {
         let vm = this
         setTimeout(function () {
-          vm.$nextTick(vm.scrollDown(-1, true))
+          vm.$nextTick(vm.scrollDown(600, true))
         }, 100)
       },
       addManageMessages: function (vm) {
@@ -149,14 +149,15 @@
         }
       },
       scrollDown: function (time, forced) {
+        console.log('scrollDown')
         let vm = this
         if (vm.scrolling === false) {
+          console.log('scrollDown real')
           let chat = document.getElementById('chat-messages')
           if (chat && (vm.lastScrollTop - 5 <= chat.scrollTop || forced)) {
-            vm.scrolling = true
             vm.$nextTick(function () {
               setTimeout(function () {
-                let bubblesBottoms = [].slice.call(document.querySelectorAll('.left > .time'))
+                let bubblesBottoms = [].slice.call(document.querySelectorAll('.messages > .time'))
                 if (bubblesBottoms && chat) {
                   let timeDIVHeight = 20
                   let nextY = bubblesBottoms.reduce(function (max, val) {
@@ -165,12 +166,16 @@
                   }, 0)
                   nextY = nextY - chat.offsetTop - chat.offsetHeight + timeDIVHeight
                   if (nextY > 0) {
+                    vm.scrolling = true
                     time = time || 600
+                    console.log('scrollDown real real')
                     Animate.scrollToPos(chat, nextY, time)
+                    setTimeout(function () {
+                      vm.scrolling = false
+                    }, time + 500)
                     vm.lastScrollTop = nextY
                   }
                 }
-                vm.scrolling = false
               }, 500)
             })
           }
@@ -182,19 +187,17 @@
         if (msg.value && msg.value.length > 0) {
           let txt = msg.value
           txt = txt.trim()
-          vm.chats.push({
+          let sendMsg = {
             origin: 1,
             command: 'send',
             message: txt,
             date: new Date(),
-            question: false
-          })
-          vm.$nextTick(vm.tryGetResponse({
-            origin: 1,
-            command: 'send',
-            message: txt,
-            date: new Date()
-          }))
+            lang: vm.$root.$i18n.locale
+          }
+          vm.$nextTick(vm.tryGetResponse(sendMsg))
+          sendMsg['question'] = false
+          vm.chats.push(sendMsg)
+          vm.$nextTick(vm.scrollToLastPosition())
           msg.value = ''
           msg.focus()
         }

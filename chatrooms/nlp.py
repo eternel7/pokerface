@@ -4,6 +4,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
+from unidecode import unidecode
 
 # import gensim.downloader as gensim
 
@@ -41,6 +42,13 @@ wn.ensure_loaded()
 freqs = nltk.FreqDist(w for w in wn.words())
 
 
+def cleanText(t):
+    # no accent
+    t = unidecode(t)
+    # not case sensitive
+    return t.lower()
+    
+
 def textToKeys(text, lang):
     # tokenize the pattern
     words = nltk.word_tokenize(text.lower().translate(remove_punct_dict))
@@ -48,7 +56,7 @@ def textToKeys(text, lang):
     all_words = words[:]  # creating a copy of the words list
     words_filtered = words[:]  # creating a copy of the words list
     # remove stop words
-    stop_words = stopwords.words('english')
+    stop_words = stopwords.words(lang)
     for word in words:
         if word in stop_words:
             words_filtered.remove(word)
@@ -75,10 +83,13 @@ def textToKeys(text, lang):
     return final_words
 
 
-def findClosestText(text, texts_to_compare, lang):
-    texts_to_compare.append(text)
-    TfidfVec = TfidfVectorizer(tokenizer=lemNormalize, stop_words=lang)
-    tfidf = TfidfVec.fit_transform(texts_to_compare)
+def findClosestText(text, texts_to_compare):
+    texts_to_compare_clean = []
+    for t in texts_to_compare:
+        texts_to_compare_clean.append(cleanText(t))
+    texts_to_compare_clean.append(text)
+    TfidfVec = TfidfVectorizer(tokenizer=lemNormalize)
+    tfidf = TfidfVec.fit_transform(texts_to_compare_clean)
     vals = cosine_similarity(tfidf[-1], tfidf)
     idx = vals.argsort()[0][-2]
     flat = vals.flatten()
