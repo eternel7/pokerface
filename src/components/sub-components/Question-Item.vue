@@ -67,7 +67,7 @@
         return new Date(this.question.updated_at)
       },
       bodyH: function () {
-        let text = '<span style="font-size: 13px; font-weight: 400; color: #808e95;">#' + this.question.id + '</span> - '
+        let text = '<span class="id-item">#' + this.question.id + '</span> - '
         text += Search.highlight(StringUtils.htmlToText(this.question.body), this.search)
         return text
       }

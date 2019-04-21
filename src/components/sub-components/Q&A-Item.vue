@@ -165,12 +165,6 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .id-item {
-    font-size: 13px;
-    font-weight: 400;
-    color: #808e95;
-  }
-
   .post-vote-button {
     width: 40px;
     height: 40px;
