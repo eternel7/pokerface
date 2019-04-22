@@ -9,8 +9,8 @@ from channels.db import database_sync_to_async
 import asyncio
 from .exceptions import ClientError
 from .utils import get_room_or_error
-from unidecode import unidecode
-from chatrooms.nlp import findClosestText
+from chatrooms.nlp import findClosestText, cleanText, textToKeys
+import json
 
 defaultImage = "/static/img/icons/apple-touch-icon-76x76.png"
 
@@ -139,7 +139,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         return False
     
     @database_sync_to_async
-    def add_or_update_post_in_room_db(self, room_id, username, message, type_num=1, post_id=None):
+    def add_or_update_post_in_room_db(self, room_id, username, message, type_num=1, post_id=None, lang="french"):
         user = ChatConsumer.getuser(username)
         data = {
             "message": message,
@@ -149,7 +149,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         if post_id:
             data.post_id = post_id
         
-        post = create_or_update_post(user, data)
+        post = create_or_update_post(user, data, lang)
         
         if post.pk:
             return post.pk
@@ -160,10 +160,32 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         return Post.objects.filter(type=1).exclude(answer__isnull=True).values_list('body', flat=True)
     
     @database_sync_to_async
+    def get_all_validated_questions_keys(self):
+        return Post.objects.filter(type=1).exclude(answer__isnull=True).values_list('body_key', flat=True)
+    
+    @database_sync_to_async
+    def get_first_validated_question_for_keys(self, textkeys):
+        q = Post.objects.filter(body_key=textkeys, type=1).exclude(answer__isnull=True)
+        if q.count() > 0:
+            return q[0].body
+    
+    @database_sync_to_async
     def get_first_answer_text_to_question(self, question):
         q = Post.objects.filter(body=question).exclude(answer__isnull=True)
         if q.count() > 0:
             return q[0].answer.body
+    
+    @database_sync_to_async
+    def get_first_answer_text_to_question_keys(self, textkeys):
+        q = Post.objects.filter(body_key=textkeys).exclude(answer__isnull=True)
+        if q.count() > 0:
+            return q[0].answer.body
+    
+    @database_sync_to_async
+    def update_all_keys(self, lang):
+        posts = Post.objects.exclude(answer__isnull=True)
+        for p in posts:
+            Post.objects.filter(pk=p.pk).update(body_key=json.dumps(textToKeys(p.body, 'french')))
     
     async def join_room(self, room_id):
         """
@@ -246,7 +268,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         await asyncio.ensure_future(self.add_or_update_user_in_room_db(room_id, self.scope["user"].username))
         
         # Store post in DB to set it post_id
-        post_id = await self.add_or_update_post_in_room_db(room_id, self.scope["user"].username, message)
+        post_id = await self.add_or_update_post_in_room_db(room_id, self.scope["user"].username, message, 1, None, lang)
         
         await self.channel_layer.group_send(
             room.group_name,
@@ -304,7 +326,8 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                 "username": event["username"],
                 "portrait": avatar_image,
                 "message": event["message"],
-                "post_id": event["post_id"]
+                "post_id": event["post_id"],
+                "lang": event["lang"]
             },
         ))
         if 'no_bot' not in event:
@@ -356,21 +379,57 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         Called when someone has messaged our chat.
         One of the bot answers
         """
-        # no accent
-        user_entry = unidecode(event['message'])
-        # not case sensitive
-        user_entry = user_entry.lower()
-        await asyncio.ensure_future(self.closest_to_answered_question(user_entry, event))
+        user_entry = event['message']
+        first_try = await asyncio.ensure_future(self.closest_to_answered_question(user_entry, event))
+        if not first_try:
+            await asyncio.ensure_future(self.text_to_keys_question(user_entry, event))
     
     async def closest_to_answered_question(self, user_entry, event):
+        text = cleanText(user_entry)
         questions = await self.get_all_validated_questions_texts()
         if questions.count() > 0:
-            closest = findClosestText(user_entry, list(questions))
-            if not closest:
-                await self.bot_message("I am sorry, I don't have any information on: \"" + event["message"] + "\"",
-                                       event)
-            else:
-                print(event['message'], user_entry, closest)
+            closest = findClosestText(text, list(questions))
+            if closest:
+                print('closest_to_answered_question', event['message'], text, closest)
                 if closest["score"] >= 0.8:
                     response = await self.get_first_answer_text_to_question(closest["text"])
                     await self.bot_message(response, event)
+                    return True
+        return None
+    
+    async def text_to_keys_question(self, user_entry, event):
+        text = cleanText(user_entry)
+        post_keys = textToKeys(text, event['lang'])
+        print('text_to_keys_question', event['message'], user_entry, post_keys)
+        if len(post_keys) > 0:
+            response = await self.get_first_answer_text_to_question_keys(json.dumps(post_keys))
+            if not response:
+                questions = await self.get_all_validated_questions_keys()
+                if questions.count() > 0:
+                    closest = findClosestText(text, list(questions))
+                    if not closest:
+                        await self.bot_message(
+                            "I am sorry, I don't have any information on: \"" + event["message"] + "\"",
+                            event)
+                    else:
+                        print(event['message'], user_entry, closest)
+                        if closest["score"] >= 0.8:
+                            response = await self.get_first_answer_text_to_question(closest["text"])
+                            await self.bot_message(response, event)
+                            return True
+                        else:
+                            # propose rephrase
+                            question = await self.get_first_validated_question_for_keys(closest["text"])
+                            if question:
+                                msg = {
+                                    "msg": "post.similar_question",
+                                    "question": question,
+                                    "user_question": user_entry
+                                }
+                                await self.chat_bot_message({
+                                    "message": msg,
+                                    "room_id": event["room_id"]
+                                })
+            
+            await self.bot_message(response, event)
+            return True

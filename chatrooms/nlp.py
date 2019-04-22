@@ -25,13 +25,17 @@ try:
     nltk.data.find('corpora/wordnet')
 except LookupError:
     nltk.download('wordnet')
+try:
+    nltk.data.find('corpora/omw')
+except LookupError:
+    nltk.download('omw')
 
 
 def lemTokens(tokens):
     return [nltk.stem.WordNetLemmatizer().lemmatize(token) for token in tokens]
 
 
-remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
+remove_punct_dict = dict((ord(punct), " ") for punct in string.punctuation)
 
 
 def lemNormalize(text):
@@ -39,19 +43,24 @@ def lemNormalize(text):
 
 
 wn.ensure_loaded()
-freqs = nltk.FreqDist(w for w in wn.words())
+freqs = {}
+freqs['english'] = nltk.FreqDist(w for w in wn.words())
+freqs['french'] = nltk.FreqDist(w for w in wn.words(lang='fra'))
 
 
 def cleanText(t):
     # no accent
-    t = unidecode(t)
+    txt = unidecode(t)
     # not case sensitive
-    return t.lower()
-    
+    txt = txt.lower()
+    # no punctuation
+    return txt.translate(remove_punct_dict)
+
 
 def textToKeys(text, lang):
+    lang = 'english' if lang != 'fr' else 'french'
     # tokenize the pattern
-    words = nltk.word_tokenize(text.lower().translate(remove_punct_dict))
+    words = nltk.word_tokenize(cleanText(text))
     words = [w for w in words if w.isalpha()]
     all_words = words[:]  # creating a copy of the words list
     words_filtered = words[:]  # creating a copy of the words list
@@ -75,10 +84,12 @@ def textToKeys(text, lang):
         for syn in wn.synsets(word):
             for s in syn.lemmas():
                 syn_n = s.name()
-                if freqs[syn_n] > freq:
-                    chosen_one = syn_n
-        if freqs[chosen_one] > 0:
+                if freqs[lang][syn_n] > freq:
+                    chosen_one = cleanText(syn_n)
+                    freq = freqs[lang][syn_n]
+        if freqs[lang][chosen_one] > 0:
             final_words.append(chosen_one)
+
     final_words.sort()
     return final_words
 

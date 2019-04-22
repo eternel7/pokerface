@@ -10,9 +10,10 @@ from chatrooms.serializers import QuestionSerializer
 from channels.layers import get_channel_layer
 from .exceptions import ClientError
 from asgiref.sync import async_to_sync
+from chatrooms.nlp import textToKeys
 
 
-def create_or_update_post(user, post_dict):
+def create_or_update_post(user, post_dict, lang):
     post_data = dict(post_dict)
     if 'post_id' in post_data:
         # update of existing post
@@ -33,6 +34,7 @@ def create_or_update_post(user, post_dict):
                 except AttributeError:
                     print('No attribute ' + key + ' on Post')
             post.save()
+            Post.objects.filter(pk=post.pk).update(body_key=textToKeys(post.body, lang))
             return post
     else:
         data = {
@@ -44,6 +46,7 @@ def create_or_update_post(user, post_dict):
         if serializer.is_valid(raise_exception=False):
             post = serializer.save()
             if post:
+                Post.objects.filter(pk=post.pk).update(body_key=textToKeys(post.body, lang))
                 return post
         return serializer.errors
     return False
@@ -161,7 +164,7 @@ def chat_question(request, format='json'):
     if user:
         request.data['type'] = 1 if request.data['question'] else 2
         del request.data['question']
-        post = create_or_update_post(user, request.data)
+        post = create_or_update_post(user, request.data, request.data['lang'])
         if post.pk:
             questions = stored_questions(request.data['room'])
             return JsonResponse({"post": PostSerializer(post).data, "questions": questions.data},

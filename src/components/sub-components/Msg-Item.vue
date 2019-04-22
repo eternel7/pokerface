@@ -168,6 +168,7 @@
         msg.question = !msg.question
         if (msg.question === true || msg.post_id) {
           msg.room = vm.$route.params.id
+          msg.lang = vm.$root.$i18n.locale
           axios.post('/api/chatroomquestion/', msg, vm.authHeader())
             .then(function (response) {
               // handle success
@@ -206,7 +207,8 @@
         let QandA = {
           question: question,
           answer: answer,
-          room: vm.$route.params.id
+          room: vm.$route.params.id,
+          lang: vm.$root.$i18n.locale
         }
         axios.post('/api/chatroomsetanswer/', QandA, vm.authHeader())
           .then(function (response) {

@@ -107,17 +107,6 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     vote_count = 0
     
-    def set_body_key(self, text, *args, **kwargs):
-        keys = textToKeys(text, 'french')
-        if keys and self.pk:
-            Post.objects.filter(pk=self.pk).update(body_key=json.dumps(keys))
-    
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)  # Call the "real" save() method.
-        t = threading.Thread(target=self.set_body_key, args=(self.body,))
-        t.daemon = True
-        t.start()
-    
     def __str__(self):
         return "<Post: {} - {} - {} >".format(self.owner.__str__(), self.room.__str__(),
                                               (self.body[:8] + '..') if len(self.body) > 10 else self.body)
@@ -125,6 +114,7 @@ class Post(models.Model):
     class Meta:
         indexes = [
             models.Index(fields=['room', ]),
+            models.Index(fields=['type', ]),
             models.Index(fields=['body_key', ]),
         ]
 
