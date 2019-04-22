@@ -424,12 +424,18 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                                 msg = {
                                     "msg": "post.similar_question",
                                     "question": question,
-                                    "user_question": user_entry
+                                    "user_question": user_entry,
+                                    "send_back": {
+                                        "yes": 'true',
+                                        "no": 'true'
+                                    },
+                                    "post_id": event["post_id"]
                                 }
                                 await self.chat_bot_message({
                                     "message": msg,
                                     "room_id": event["room_id"]
                                 })
             
-            await self.bot_message(response, event)
-            return True
+            if response:
+                await self.bot_message(response, event)
+                return True

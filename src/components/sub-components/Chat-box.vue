@@ -124,7 +124,7 @@
         let msgJson = JSON.parse(msg.data)
         console.log('manageMessage', msgJson)
         if (msgJson.username === 0) {
-          if (msgJson.msg_type === 0) {
+          if (msgJson.msg_type === 0 && msgJson.message) {
             // Bot message
             vm.addChat(msgJson.message)
           } else if (msgJson.msg_type === 6) {
@@ -152,7 +152,6 @@
         console.log('scrollDown')
         let vm = this
         if (vm.scrolling === false) {
-          console.log('scrollDown real')
           let chat = document.getElementById('chat-messages')
           if (chat && (vm.lastScrollTop - 5 <= chat.scrollTop || forced)) {
             vm.$nextTick(function () {
@@ -172,7 +171,7 @@
                     Animate.scrollToPos(chat, nextY, time)
                     setTimeout(function () {
                       vm.scrolling = false
-                    }, time + 500)
+                    }, time + 600)
                     vm.lastScrollTop = nextY
                   }
                 }

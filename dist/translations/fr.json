@@ -213,6 +213,16 @@
     "user_propose_answer_to": "{user} propose une réponse à la question #{question}",
     "accepted_answer_to": "{user} a accepté une réponse à la question #{question}",
     "user_remove_answer_to": "{user} retire sa réponse à la question #{question}",
-    "similar_question": "Est-ce que \"{question}\" correspond a votre question: \"{user_question}\"?"
+    "similar_question": "Est-ce que \"{question}\" correspond a votre question: \"{user_question}\"?",
+    "send_back": {
+      "Yes": "Oui",
+      "No": "Non",
+      "input": {
+        "Button": "Répondre"
+      },
+      "textarea": {
+        "Button": "Répondre"
+      }
+    }
   }
 }
