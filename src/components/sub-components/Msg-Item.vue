@@ -25,7 +25,8 @@
             v-bind:class="{ 'mdl-menu--bottom-right': msg.origin===1, 'mdl-menu--bottom-left': msg.origin!==1}"
             :for="'badge_menu'+unique_id" :data-mdl-for="'badge_menu'+unique_id">
           <li v-for="action in badge_menu_actions" v-on:click="doAction(action.js, msg, action)" v-if="!action.post"
-              class="mdl-menu__item" v-bind:class="{'mdl-menu__item--full-bleed-divider': action.separatorAfter}">
+              :class="['mdl-menu__item','action_menu_' + action.labelId,
+              {'mdl-menu__item--full-bleed-divider': action.separatorAfter, 'action_menu_question' : msg.question}]">
             <span>{{$t('badge_menu.action.' + action.labelId)}}</span>
           </li>
           <li v-if="!msg.question && action.post" v-for="action in badge_menu_actions"
@@ -77,6 +78,7 @@
 <script>
   import {authMixin} from '@/auth/authMixin.js'
   import {momentMixin} from '@/assets/momentMixin.js'
+  import DataUtils from '@/assets/data-utils.js'
   import axios from 'axios'
   import moment from 'moment'
 
@@ -200,38 +202,7 @@
         let vm = this
         msg.question = !msg.question
         if (msg.question === true || msg.post_id) {
-          msg.room = vm.$route.params.id
-          msg.lang = vm.$root.$i18n.locale
-          axios.post('/api/chatroomquestion/', msg, vm.authHeader())
-            .then(function (response) {
-              // handle success
-              vm.$root.loading = false
-              if (response.data.post) {
-                if (msg.question) {
-                  vm.$root.showSnackbar(vm.$i18n.t('post.savedAsQuestion'))
-                } else {
-                  vm.$root.showSnackbar(vm.$i18n.t('post.notAQuestionAnymore'))
-                }
-                if (response.data.questions && vm.$root.questions instanceof Object) {
-                  vm.$set(vm.$root.questions, vm.$route.params.id, response.data.questions)
-                }
-              } else {
-                vm.errors = []
-                vm.errors.push({message: response.data.message})
-              }
-            })
-            .catch(function (error) {
-              // handle error
-              console.log(error)
-              vm.$root.loading = false
-              vm.errors = []
-              vm.errors.push(error)
-            })
-            .then(function () {
-              // always executed
-              vm.$root.loading = false
-              vm.$nextTick(vm.updatemdl())
-            })
+          DataUtils.updateQuestionState(vm, msg)
         }
       },
       setAnswer: function (answer, question) {
@@ -293,7 +264,7 @@
     background-color: #dbe3f9;
   }
 
-  .selected-answer {
+  .selected-answer .action_menu_question.action_menu_isAQuestion {
     background-color: #69f0ae;
   }
 

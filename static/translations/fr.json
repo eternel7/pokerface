@@ -197,7 +197,7 @@
   "badge_menu": {
     "action": {
       "editMsg": "Modifier",
-      "isAQuestion": "Est-ce une question?",
+      "isAQuestion": "Est une question",
       "AnswerTo": "Réponse à"
     }
   },

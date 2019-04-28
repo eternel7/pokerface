@@ -134,6 +134,29 @@ const DataUtils = (function () {
       }
     })
   }
+  DataUtils.updateQuestionState = function (vm, msg) {
+    vm.errors = []
+    msg.room = vm.$route.params.id
+    msg.lang = vm.$root.$i18n.locale
+    console.log('DataUtils.updateQuestionState')
+    DataUtils.managePostRequest('/api/chatroomquestion/', vm, true, msg, function (response) {
+      if (response.data.post) {
+        if (msg.question) {
+          vm.$root.showSnackbar(vm.$i18n.t('post.savedAsQuestion'))
+        } else {
+          vm.$root.showSnackbar(vm.$i18n.t('post.notAQuestionAnymore'))
+        }
+        if (response.data.questions && vm.$root.questions instanceof Object) {
+          DataUtils.updateDataRoomStore(vm, 'questions', msg.room, response.data.questions)
+        }
+        vm.$nextTick(vm.updatemdl())
+      } else {
+        vm.errors = []
+        vm.errors.push({message: response.data.message})
+      }
+    })
+  }// eslint-disable-next-line
+  
   return DataUtils
 }())
 
