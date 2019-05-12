@@ -6,6 +6,8 @@ from chatrooms.models import UserInRoom, Post
 from chatrooms.serializers import UserInRoomSerializer
 from chatrooms.views import create_or_update_post
 from channels.db import database_sync_to_async
+from chatrooms.queries import get_answer_text_to_question, get_first_answer_text_to_question_keys
+from chatrooms.queries import get_all_validated_questions_texts, get_all_validated_questions_keys
 import asyncio
 from .exceptions import ClientError
 from .utils import get_room_or_error
@@ -157,11 +159,11 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     
     @database_sync_to_async
     def get_all_validated_questions_texts(self):
-        return Post.objects.filter(type=1).exclude(answer__isnull=True).values_list('body', flat=True)
+        return get_all_validated_questions_texts()
     
     @database_sync_to_async
     def get_all_validated_questions_keys(self):
-        return Post.objects.filter(type=1).exclude(answer__isnull=True).values_list('body_key', flat=True)
+        return get_all_validated_questions_keys()
     
     @database_sync_to_async
     def get_first_validated_question_for_keys(self, textkeys):
@@ -171,15 +173,18 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     
     @database_sync_to_async
     def get_first_answer_text_to_question(self, question):
-        q = Post.objects.filter(body=question).exclude(answer__isnull=True)
-        if q.count() > 0:
-            return q[0].answer.body
+        response = get_answer_text_to_question(question)
+        if response:
+            return response
+        return None
     
     @database_sync_to_async
     def get_first_answer_text_to_question_keys(self, textkeys):
-        q = Post.objects.filter(body_key=textkeys).exclude(answer__isnull=True)
-        if q.count() > 0:
-            return q[0].answer.body
+        response = get_first_answer_text_to_question_keys(textkeys)
+        print("response", response, textkeys)
+        if response:
+            return response
+        return None
     
     @database_sync_to_async
     def update_all_keys(self, lang):
@@ -402,7 +407,8 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         post_keys = textToKeys(text, event['lang'])
         print('text_to_keys_question', event['message'], user_entry, post_keys)
         if len(post_keys) > 0:
-            response = await self.get_first_answer_text_to_question_keys(json.dumps(post_keys))
+            response = await self.get_first_answer_text_to_question_keys(post_keys)
+            print('response', response)
             if not response:
                 questions = await self.get_all_validated_questions_keys()
                 if questions.count() > 0:
@@ -411,6 +417,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                         await self.bot_message(
                             "I am sorry, I don't have any information on: \"" + event["message"] + "\"",
                             event)
+                        return True
                     else:
                         print(event['message'], user_entry, closest)
                         if closest["score"] >= 0.8:
@@ -435,6 +442,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
                                     "message": msg,
                                     "room_id": event["room_id"]
                                 })
+                                return True
             
             if response:
                 await self.bot_message(response, event)

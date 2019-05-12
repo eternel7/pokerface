@@ -39,6 +39,10 @@
       </div>
     </div>
     <div class="user_quick_response" v-if="msg.message && msg.message.send_back">
+      <span v-if="msg.message.send_back.done"
+            @click="sendBack('!')">
+        {{$t('post.send_back.thanks_for_reply')}}
+      </span>
       <button v-if="msg.message.send_back.yes" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
               @click="sendBack(true)">
         {{$t('post.send_back.Yes')}}
@@ -79,7 +83,6 @@
   import {authMixin} from '@/auth/authMixin.js'
   import {momentMixin} from '@/assets/momentMixin.js'
   import DataUtils from '@/assets/data-utils.js'
-  import axios from 'axios'
   import moment from 'moment'
 
   require('material-design-lite')
@@ -196,7 +199,18 @@
         }
       },
       sendBack: function (answer) {
-        console.log(answer, this.msg.message)
+        let vm = this
+        console.log(answer)
+        if (answer !== '!') {
+          let sendBackAnswer = {
+            client_id: vm.unique_id,
+            answer: answer,
+            msg: vm.msg.message
+          }
+          DataUtils.sendBackAnswerToBot(vm, sendBackAnswer)
+        }
+        // hide send back button on client side
+        vm.msg.message.send_back = null
       },
       updateQuestion: function (msg) {
         let vm = this
@@ -207,46 +221,8 @@
       },
       setAnswer: function (answer, question) {
         let vm = this
-        answer.room = vm.$route.params.id
-        let QandA = {
-          question: question,
-          answer: answer,
-          room: vm.$route.params.id,
-          lang: vm.$root.$i18n.locale
-        }
-        axios.post('/api/chatroomsetanswer/', QandA, vm.authHeader())
-          .then(function (response) {
-            // handle success
-            vm.$root.loading = false
-            if (response.data.answer) {
-              vm.$set(answer, 'answer_to', response.data.answer.answer_to)
-              vm.$set(answer, 'type', response.data.answer.type)
-              vm.$set(answer, 'post_id', response.data.answer.post_id)
-              if (response.data.answer.answer_to) {
-                vm.$root.showSnackbar(vm.$i18n.t('post.questionAnswered'))
-              } else {
-                vm.$root.showSnackbar(vm.$i18n.t('post.answerRejected'))
-              }
-              if (response.data.questions && vm.$root.questions instanceof Object) {
-                vm.$set(vm.$root.questions, vm.$route.params.id, response.data.questions)
-              }
-            } else {
-              vm.errors = []
-              vm.errors.push({message: response.data.message})
-            }
-          })
-          .catch(function (error) {
-            // handle error
-            console.log(error)
-            vm.$root.loading = false
-            vm.errors = []
-            vm.errors.push(error)
-          })
-          .then(function () {
-            // always executed
-            vm.$root.loading = false
-            vm.$nextTick(vm.updatemdl())
-          })
+        DataUtils.setAnswer(vm, answer, question)
+        vm.$nextTick(vm.updatemdl())
       }
     },
     mounted: function () {

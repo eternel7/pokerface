@@ -6,11 +6,13 @@ from rest_framework.authentication import get_authorization_header
 from django.http import JsonResponse
 from chatrooms.models import Room, Post, UserInRoom
 from chatrooms.serializers import RoomSerializer, DataSerializer, PostSerializer, UserInRoomReadSerializer
-from chatrooms.serializers import QuestionSerializer
+from chatrooms.serializers import QuestionSerializer, ChatSynSerializer
 from channels.layers import get_channel_layer
+from chatrooms.queries import get_answer_text_to_question
 from .exceptions import ClientError
 from asgiref.sync import async_to_sync
 from chatrooms.nlp import textToKeys
+import json
 
 
 def create_or_update_post(user, post_dict, lang):
@@ -46,6 +48,7 @@ def create_or_update_post(user, post_dict, lang):
         if serializer.is_valid(raise_exception=False):
             post = serializer.save()
             if post:
+                print("updating body_key", post.body, "for lang", lang, "keys", textToKeys(post.body, lang))
                 Post.objects.filter(pk=post.pk).update(body_key=textToKeys(post.body, lang))
                 return post
         return serializer.errors
@@ -252,7 +255,7 @@ def chat_updateAnswer(request, format='json'):
                     "msg": "post.user_remove_answer_to",
                     "user": user.username,
                     "question": question.pk}
-                
+            
             async_to_sync(channel_layer.group_send)(
                 room.group_name,
                 {
@@ -337,7 +340,7 @@ def chat_acceptAnswer(request, format='json'):
                     "user": user.username,
                     "question": question.pk
                 }
-                
+            
             async_to_sync(channel_layer.group_send)(
                 room.group_name,
                 {
@@ -388,7 +391,7 @@ def chat_addAnswer(request, format='json'):
             serializer = PostSerializer(data=data)
             if serializer.is_valid(raise_exception=True):
                 saved_answer = serializer.save()
-                
+            
             questions = stored_questions(room_id)
             channel_layer = get_channel_layer()
             try:
@@ -420,5 +423,72 @@ def chat_addAnswer(request, format='json'):
                 )
                 return JsonResponse({"questions": questions.data}, status=status.HTTP_200_OK)
             return JsonResponse({"message": "chatroom.enableToSaveAnswer"}, status=status.HTTP_200_OK)
+        return JsonResponse({"message": "chatroom.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
+    return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@csrf_exempt
+def chat_answerToBot(request, format='json'):
+    user = get_user_from_token(get_authorization_header(request))
+    if user:
+        answer = request.data['answer']
+        room_id = request.data['room']
+        lang = request.data['lang']
+        client_id = request.data['msg']
+        msg = request.data['msg']
+        if room_id and lang and client_id and msg and 'send_back' in msg:
+            body_key = json.dumps(textToKeys(msg['question'], lang))
+            body_key_syn = json.dumps(textToKeys(msg['user_question'], lang))
+            data = {
+                "room": room_id,
+                "user": user.pk,
+                "body_key": body_key,
+                "body_key_syn": body_key_syn,
+                "synonym": answer
+            }
+            serializer = ChatSynSerializer(data=data)
+            if serializer.is_valid(raise_exception=False):
+                print("serializer errors", serializer.errors)
+                data_saved = serializer.save()
+                if data_saved:
+                    print("data_saved")
+            
+            channel_layer = get_channel_layer()
+            try:
+                room = Room.objects.get(pk=room_id)
+            except Room.DoesNotExist:
+                raise ClientError("ROOM_INVALID")
+            
+            if answer:
+                print("question", msg['question'])
+                response = get_answer_text_to_question(msg['question'])
+                if response:
+                    print("response", response)
+                    async_to_sync(channel_layer.group_send)(
+                        room.group_name,
+                        {
+                            "type": "chat.bot.message",
+                            "room_id": room_id,
+                            "message": response
+                        }
+                    )
+            # What ever the answer is we get rid of the answer tool on all clients
+            msg['send_back'] = None
+            msg['update_id_field'] = 'post_id'
+            msg['update_id'] = msg['post_id']
+            msg['update_field'] = 'send_back'
+            msg['update_parent_field'] = 'message'
+            
+            async_to_sync(channel_layer.group_send)(
+                room.group_name,
+                {
+                    "type": "send.data",
+                    "room_id": room_id,
+                    "class": "chats",
+                    "data": msg
+                }
+            )
+            return JsonResponse({"msg": msg}, status=status.HTTP_200_OK)
         return JsonResponse({"message": "chatroom.invalidRequestDataGiven"}, status=status.HTTP_200_OK)
     return JsonResponse({"message": "user.nonConnected"}, status=status.HTTP_200_OK)

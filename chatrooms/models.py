@@ -2,9 +2,7 @@ from django.db import models
 import re
 import PyPDF2
 import threading
-import json
 from django.contrib.auth.models import User
-from chatrooms.nlp import textToKeys
 
 
 class Room(models.Model):
@@ -131,3 +129,24 @@ class UserInRoom(models.Model):
     
     def __str__(self):
         return "<UserInRoom {}: {} - {} >".format(self.pk, self.user.__str__(), self.room.__str__())
+
+
+class ChatSyn(models.Model):
+    """
+    A user connected to a room
+    """
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='room_synonyms')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_synonyms')
+    body_key = models.TextField(default='')
+    body_key_syn = models.TextField(default='')
+    synonym = models.BooleanField(default=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return "<ChatSyn {}-{}: {} - {} >".format(self.pk, self.synonym,
+                                               (self.body_key[:10] + '..') if len(self.body_key) > 14 else
+                                               self.body_key,
+                                               (self.body_key_syn[:10] + '..') if len(self.body_key_syn) > 14 else
+                                               self.body_key_syn)

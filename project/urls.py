@@ -45,6 +45,7 @@ urlpatterns = [
     re_path(r'^api/chatroomsetanswer/', chatrooms_views.chat_updateAnswer, name='postChatUpdateAnswer'),
     re_path(r'^api/chatroomacceptanswer/', chatrooms_views.chat_acceptAnswer, name='postChatAcceptAnswer'),
     re_path(r'^api/chatroomaddanswer/', chatrooms_views.chat_addAnswer, name='postChatAddAnswer'),
+    re_path(r'^api/chatroomanswerbot/', chatrooms_views.chat_answerToBot, name='postChatAnswerToBot'),
     re_path(r'^api/chatroomusers/(?P<room_id>\w{0,50})$', chatrooms_views.chatroom_users, name='getChatroomUsers'),
     re_path(r'^$', HomePageView.as_view(), name='home'),
     re_path(r'^index.html', HomePageView.as_view(), name='home'),

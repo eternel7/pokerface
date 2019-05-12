@@ -5,6 +5,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 from nltk.corpus import stopwords
 from nltk.corpus import wordnet as wn
 from unidecode import unidecode
+import json
+from chatrooms.queries import get_key_synonyms
 
 # import gensim.downloader as gensim
 
@@ -89,8 +91,13 @@ def textToKeys(text, lang):
                     freq = freqs[lang][syn_n]
         if freqs[lang][chosen_one] > 0:
             final_words.append(chosen_one)
-
+    
     final_words.sort()
+    # search for user validated synonyms
+    syn_keys = get_key_synonyms(json.dumps(final_words))
+    if syn_keys:
+        return json.loads(syn_keys)
+    
     return final_words
 
 

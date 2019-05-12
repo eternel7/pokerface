@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from chatrooms.models import Room, Data, Post, UserInRoom
+from chatrooms.models import Room, Data, Post, UserInRoom, ChatSyn
 from django.contrib.auth.models import User
 
 
@@ -145,3 +145,21 @@ class UserInRoomReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserInRoom
         fields = ('id', 'user_obj', 'room', 'created_at', 'updated_at')
+
+
+class ChatSynSerializer(serializers.ModelSerializer):
+    user = serializers.PrimaryKeyRelatedField(allow_null=False,
+                                              allow_empty=False,
+                                              read_only=False,
+                                              queryset=User.objects.all())
+    room = serializers.PrimaryKeyRelatedField(required=True,
+                                              read_only=False,
+                                              queryset=Room.objects.all())
+    body_key = serializers.CharField(required=True)
+    body_key_syn = serializers.CharField(required=True)
+    synonym = serializers.BooleanField(required=True)
+    
+    class Meta:
+        model = ChatSyn
+        fields = ('id', 'user', 'room', 'synonym', 'body_key', 'body_key_syn',
+                  'created_at', 'updated_at')
