@@ -15,7 +15,7 @@
                     required="required" v-model.trim="description"></textarea>
           <label class="mdl-textfield__label" for="description">{{$t('room.Description')}}</label>
         </div>
-        <div class="link" v-on:click="askForAnImage($event, 'filePortraitInput')"
+        <div class="link" v-on:click="askForAnImage($event, 'filePortraitInput')" id="PlaceForFilePortraitInput"
              v-on:dragover.prevent="onDragOver" v-on:drop.prevent="onDrop($event, 'portrait', 'fileImageInput')">
           <img v-if="portrait" id="portrait" v-bind:src="portrait" width="40px">
           <input hidden='hidden' type='file' id='filePortraitInput' ref='filePortraitInput'
@@ -23,7 +23,7 @@
                  accept="image/*">
           <p class="center-align">{{$t('room.ClickOrDropToAddAPortrait')}}</p>
         </div>
-        <div class="link" v-on:click="askForAnImage($event, 'fileImageInput')"
+        <div class="link" v-on:click="askForAnImage($event, 'fileImageInput')" id="PlaceForFileImageInput"
              v-on:dragover.prevent="onDragOver" v-on:drop.prevent="onDrop($event, 'image', 'fileImageInput')">
           <img v-if="image" id="image" v-bind:src="image" width="80%">
           <input hidden='hidden' type='file' id='fileImageInput' ref='fileImageInput'
@@ -93,7 +93,7 @@
       <div v-else-if="$root.loading===false">
         <h4 class="solo">{{$t('room.NoWorkplace')}}</h4>
         <p>
-          <button tabindex="0" type="button"
+          <button tabindex="0" type="button" id="solo_displayRoomForm"
                   class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent mdl-color-text--white"
                   @click="displayRoomForm">{{$t('room.CreateOne')}}
           </button>
@@ -101,7 +101,7 @@
       </div>
       <h4 class="solo" v-else>{{$t('room.LookingForAWorkplace')}}</h4>
     </transition>
-    <button tabindex="30" type="button"
+    <button tabindex="30" type="button" id="fab_displayRoomForm"
             class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--fab mdl-button--colored"
             @click="displayRoomForm">
       <i class="material-icons">add</i>
