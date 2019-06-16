@@ -1,5 +1,6 @@
 <template>
-  <div id="message" class="messages" v-bind:class="{ 'right': msg.origin===1, 'left': msg.origin!==1}">
+  <div id="message" class="messages" v-bind:class="{ 'right': msg.origin===1, 'left': msg.origin!==1,
+            'a-question': msg.question}">
     <div class="img-and-bubble">
       <span v-if="msg.origin===1"
             class="mdl-list__item-avatar img"
@@ -14,7 +15,8 @@
             v-bind:style="'background-image: url('+msg.origin.portrait+')'">
       </span>
       <div :id="'badge_menu'+unique_id"
-           v-bind:class="{ 'mdl-menu--bottom-right': msg.origin===1, 'mdl-menu--bottom-left': msg.origin!==1}">
+           v-bind:class="{ 'mdl-menu--bottom-right': msg.origin===1, 'mdl-menu--bottom-left': msg.origin!==1,
+            'a-question': msg.question}">
         <div class="bubble">
           {{message}}
         </div>
@@ -22,7 +24,8 @@
              v-bind:data-badge="badge_icon">
         </div>
         <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect"
-            v-bind:class="{ 'mdl-menu--bottom-right': msg.origin===1, 'mdl-menu--bottom-left': msg.origin!==1}"
+            v-bind:class="{ 'mdl-menu--bottom-right': msg.origin===1, 'mdl-menu--bottom-left': msg.origin!==1,
+            'a-question': msg.question}"
             :for="'badge_menu'+unique_id" :data-mdl-for="'badge_menu'+unique_id">
           <li v-for="action in badge_menu_actions" v-on:click="doAction(action.js, msg, action)" v-if="!action.post"
               :class="['mdl-menu__item','action_menu_' + action.labelId,
@@ -31,7 +34,7 @@
           </li>
           <li v-if="!msg.question && action.post" v-for="action in badge_menu_actions"
               v-on:click="doAction(action.js, msg, action)"
-              class="mdl-menu__item" v-bind:class="{'mdl-menu__item--full-bleed-divider': action.separatorAfter,
+              class="mdl-menu__item action_menu_isAnAction" v-bind:class="{'mdl-menu__item--full-bleed-divider': action.separatorAfter,
               'selected-answer' : action.post.post_id===msg.answer_to}">
             <span :title="action.post.body">{{$t('badge_menu.action.' + action.labelId)}} {{action.post.post_id}}</span>
           </li>
@@ -74,7 +77,6 @@
     <div v-if="!msg.origin.portrait" class="time">
       {{tillNowDate}}
     </div>
-
     <div v-else class="time">{{tillNowDate}} - {{msg.origin.username}}</div>
   </div>
 </template>
