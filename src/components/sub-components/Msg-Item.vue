@@ -46,11 +46,11 @@
             @click="sendBack('!')">
         {{$t('post.send_back.thanks_for_reply')}}
       </span>
-      <button v-if="msg.message.send_back.yes" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+      <button v-if="msg.message.send_back.yes" class="yes mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
               @click="sendBack(true)">
         {{$t('post.send_back.Yes')}}
       </button>
-      <button v-if="msg.message.send_back.no" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+      <button v-if="msg.message.send_back.no" class="no mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
               @click="sendBack(false)">
         {{$t('post.send_back.No')}}
       </button>
@@ -59,17 +59,17 @@
         <label class="mdl-textfield__label" for="send_back_input">{{$t('post.send_back_placeholder.' +
           msg.message.send_back.input.placeholder)}}</label>
       </div>
-      <button v-if="msg.message.send_back.input" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+      <button v-if="msg.message.send_back.input" class="send-back-input mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
               @click="sendBack('input')">
         {{$t('post.send_back.input.Button')}}
       </button>
-      <div v-if="msg.message.send_back.textarea" class="mdl-textfield mdl-js-textfield">
+      <div v-if="msg.message.send_back.textarea" class=" mdl-textfield mdl-js-textfield">
         <textarea class="mdl-textfield__input" type="text" rows="3" id="send_back_textarea"></textarea>
         <label class="mdl-textfield__label" for="send_back_textarea">{{$t('post.send_back_placeholder.' +
           msg.message.send_back.textarea.placeholder)}}</label>
       </div>
       <button v-if="msg.message.send_back.textarea"
-              class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
+              class="send-back-textarea mdl-button mdl-js-button mdl-button--raised mdl-button--colored"
               @click="sendBack('textarea')">
         {{$t('post.send_back.textarea.Button')}}
       </button>

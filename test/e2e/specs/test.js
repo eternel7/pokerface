@@ -93,11 +93,7 @@ module.exports = {
       .assert.elementCount('#chat_tab_0.is-active', 1)
       .end()
   },
-  /*Sign up, go to room (shouldn't be empty) get into 'label' room and
-  * post something and make it remembered by system
-  * post a question, answer, post similar question and add it to synonyms and
-  * post last question. Good answer should be display*/
-  "Post a question, answer, post similar question and add it to synonyms and post last question. Good answer should be display": function (browser) {
+  'Post a question, answer, post same question. Good answer should be display': function (browser) {
     const devServer = browser.globals.devServerURL
     browser
       .url(devServer)
@@ -115,14 +111,14 @@ module.exports = {
       .assert.elementCount('#chat_tab_0.is-active', 1)
       .waitForElementVisible('.messages.left', 5000)
       .assert.elementCount('.messages.left', 1)
-      .setValue('div#sendmessage>textarea', "Quel est l'âge du capitaine?")
+      .setValue('div#sendmessage>textarea', 'Quel est l\'âge du capitaine?')
       .click('div#send')
       .waitForElementVisible('.messages.right', 500)
       .assert.elementCount('.messages.right', 1)
       .click('div.messages.right')
       .waitForElementVisible('div.mdl-menu__container.is-visible>ul>li.mdl-menu__item.action_menu_isAQuestion', 1000)
       .click('div.mdl-menu__container.is-visible>ul>li.mdl-menu__item.action_menu_isAQuestion')
-      .setValue('div#sendmessage>textarea', "Le capitaine a 51 ans.")
+      .setValue('div#sendmessage>textarea', 'Le capitaine a 51 ans.')
       .click('div#send')
       .waitForElementVisible('.messages.right:not(.a-question)', 500)
       .click('div.messages.right:not(.a-question)')
@@ -135,10 +131,39 @@ module.exports = {
       .click('div.grid--item.answer-indicator.link.unselectable')
       .click('#chat_tab_0')
       .waitForElementVisible('.messages.right:not(.a-question)', 500)
-      .setValue('div#sendmessage>textarea', "Quel est l'âge du capitaine?")
+      .setValue('div#sendmessage>textarea', 'Quel est l\'âge du capitaine?')
       .click('div#send')
       .waitForElementVisible('.messages.left:not(.a-question)', 500)
-      .pause(20000)
+      .end()
+  },
+  'Post a question, answer, post similar question and add it to synonyms and post last question. Good answer should be display': function (browser) {
+    const devServer = browser.globals.devServerURL
+    browser
+      .url(devServer)
+      .waitForElementVisible('#app-content', 1500)
+      .click('button#closeCookieConsent')
+      .assert.containsText('h2.card__title.mdl-card__title-text', 'Connexion')
+      .assert.elementCount('input#email', 1)
+      .setValue('input#email', 'masse.david.07@gmail.com')
+      .setValue('input#password', 'masse.david.07@gmail.com')
+      .click('button#main-button')
+      .waitForElementVisible('div.mdl-list__item-primary-content', 1500)
+      .assert.elementCount('div.mdl-list__item-primary-content', 1)
+      .click('div.mdl-list__item-primary-content')
+      .waitForElementVisible('#chat_tab_0.is-active', 1500)
+      .assert.elementCount('#chat_tab_0.is-active', 1)
+      .waitForElementVisible('.messages.left', 5000)
+      .assert.elementCount('.messages.left', 1)
+      .setValue('div#sendmessage>textarea', 'Quel âge a le capitaine?')
+      .click('div#send')
+      .waitForElementVisible('.messages.right', 500)
+      .assert.elementCount('.messages.right', 1)
+      .pause(500)
+      .assert.elementCount('.messages.left', 2)
+      .assert.elementCount('div.user_quick_response>button.yes', 1)
+      .click('div.user_quick_response>button.yes')
+      .pause(500)
+      .assert.elementCount('.messages.left', 3)
       .end()
   }
 }
