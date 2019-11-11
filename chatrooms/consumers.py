@@ -1,4 +1,7 @@
+import os
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
+import pandas as pd
+from cdqa.pipeline.cdqa_sklearn import QAPipeline
 from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -8,6 +11,7 @@ from chatrooms.views import create_or_update_post
 from channels.db import database_sync_to_async
 from chatrooms.queries import get_answer_text_to_question, get_first_answer_text_to_question_keys
 from chatrooms.queries import get_all_validated_questions_texts, get_all_validated_questions_keys
+from chatrooms.queries import get_data_text_to_fit
 import asyncio
 from .exceptions import ClientError
 from .utils import get_room_or_error
@@ -385,6 +389,10 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         One of the bot answers
         """
         user_entry = event['message']
+        # dirname = os.path.dirname(__file__)
+        data_txt = get_data_text_to_fit().values_list('raw_text', flat=True)
+        print('data_txt', data_txt)
+        #new_pipeline = QAPipeline(reader=os.path.join(dirname, './models/bert_qa_vCPU-sklearn.joblib'))
         first_try = await asyncio.ensure_future(self.closest_to_answered_question(user_entry, event))
         if not first_try:
             await asyncio.ensure_future(self.text_to_keys_question(user_entry, event))
