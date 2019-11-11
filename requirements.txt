@@ -116,8 +116,8 @@ ujson==1.35
 Unidecode==1.0.23
 urllib3==1.23
 user-agents==1.1.0
-virtualenv==16.0.0
-virtualenv-clone==0.3.0
+# virtualenv==16.0.0
+# virtualenv-clone==0.3.0
 wasabi==0.2.1
 Werkzeug==0.14.1
 wrapt==1.10.11
