@@ -8,7 +8,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('chatrooms', '0003_data_pdf_text'),
+        ('chatrooms', '0003_data_raw_text'),
     ]
     
     operations = [

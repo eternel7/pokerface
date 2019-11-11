@@ -1,4 +1,4 @@
-from chatrooms.models import Post, ChatSyn
+from chatrooms.models import Post, ChatSyn, Data
 
 
 def get_all_validated_questions_texts():
@@ -35,3 +35,7 @@ def get_key_false_synonyms(textkeys):
     if keys.count() > 0:
         return keys[0].body_key
     return None
+
+
+def get_data_text_to_fit():
+    return Data.objects.filter(raw_text__isnull=False)

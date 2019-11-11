@@ -63,6 +63,7 @@ module.exports = {
   },
   'Sign up, go to room (should be empty) and create a room': function (browser) {
     const devServer = browser.globals.devServerURL
+    const path = require('path')
     browser
       .url(devServer)
       .waitForElementVisible('#app-content', 1500)
@@ -81,9 +82,9 @@ module.exports = {
       .setValue('input#label', 'label')
       .setValue('textarea#description', 'description')
       .assert.elementCount('div#PlaceForFilePortraitInput', 1)
-      .setValue('input#filePortraitInput', require('path').resolve(__dirname + '/../uploads/anonymous.jpg'))
+      .setValue('input#filePortraitInput', path.join(__dirname, '/../uploads/anonymous.jpg'))
       .pause(500)
-      .setValue('input#fileImageInput', require('path').resolve(__dirname + '/../uploads/anonymous.jpg'))
+      .setValue('input#fileImageInput', path.join(__dirname, '/../uploads/anonymous.jpg'))
       .pause(500)
       .click('button#OkDialog')
       .pause(1500)

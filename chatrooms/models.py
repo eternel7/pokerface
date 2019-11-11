@@ -44,35 +44,54 @@ class Data(models.Model):
     label = models.CharField(max_length=255)
     description = models.CharField(max_length=4000)
     raw_data = models.FileField(upload_to=generate_path)
-    pdf_text = models.TextField(default='')
+    raw_text = models.TextField(default='')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
     room = models.ForeignKey(Room, related_name='datasets', on_delete=models.CASCADE)
     
+    def text_cleanup(self, text):
+        text = text.lower()
+        text = text.strip(' \t\n\r')
+        return text
+
     def analyse_pdf(self, file_name, *args, **kwargs):
         pdfFileObj = open(self.raw_data.path, 'rb')
         pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
         numPages = pdfReader.numPages
         print('Analysing', file_name)
-        pdf_text = ""
+        raw_text = ""
         for np in range(numPages):
             pageObj = pdfReader.getPage(np)
             text = pageObj.extractText()
-            text = text.lower()
-            text = text.strip(' \t\n\r')
+            text = self.text_cleanup(text)
             if text not in ['', '\n']:
-                pdf_text += text
+                raw_text += text
             print('Reading page n°', np, ' on ', numPages)
-        if pdf_text not in [None, '']:
-            self.pdf_text = pdf_text
+        if raw_text not in [None, '']:
+            self.raw_text = raw_text
+            self.save()
+
+    def analyse_txt(self, file_name, *args, **kwargs):
+        raw_text = ""
+        with open(self.raw_data.path, 'r') as file:
+            data = file.read().replace('\n', '')
+            text = self.text_cleanup(data)
+            if text not in ['', '\n']:
+                raw_text += text
+        if raw_text not in [None, '']:
+            self.raw_text = raw_text
             self.save()
     
     def save(self, *args, **kwargs):
         file_name = self.raw_data.name
         super().save(*args, **kwargs)  # Call the "real" save() method.
-        if self.pdf_text in [None, ''] and file_name.endswith('.pdf'):
+        if self.raw_text in [None, ''] and file_name.endswith('.pdf'):
             t = threading.Thread(target=self.analyse_pdf, args=file_name)
+            t.daemon = True
+            t.start()
+        if self.raw_text in [None, ''] and file_name.endswith('.txt'):
+            t = threading.Thread(target=self.analyse_txt, args=file_name)
             t.daemon = True
             t.start()
     
