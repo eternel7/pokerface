@@ -13,6 +13,7 @@ certifi==2018.4.16
 cffi==1.11.5
 channels==2.1.6
 chardet==3.0.4
+Click==7.0
 cloudpickle==0.6.1
 colorama==0.4.1
 coloredlogs==10.0
@@ -50,11 +51,15 @@ humanfriendly==4.17
 hyperlink==18.0.0
 idna==2.7
 incremental==17.5.0
+itsdangerous==1.1.0
+Jinja2==2.10.1
 jmespath==0.9.3
+joblib==0.13.2
 jsonschema==2.6.0
 kiwisolver==1.0.1
 klein==17.10.0
 Markdown==2.6.10
+MarkupSafe==1.1.1
 mathparse==0.1.2
 matplotlib==2.2.3
 msgpack==0.5.6
@@ -64,13 +69,15 @@ murmurhash==1.0.1
 nltk==3.4
 numpy==1.16.4
 oauthlib==2.1.0
+pandas==0.25.0
 packaging==18.0
 pathlib==1.0.1
 pika==0.11.2
-# Pillow==6.1.0
+Pillow==6.1.0
 pipenv==2018.7.1
 plac==0.9.6
 preshed==2.0.1
+prettytable==0.7.2
 psycopg2==2.7.5
 pycparser==2.19
 PyHamcrest==1.9.0
@@ -104,6 +111,7 @@ social-auth-core==1.7.0
 SQLAlchemy==1.2.14
 srsly==0.0.7
 thinc==7.0.8
+tika==1.19
 toolz==0.9.0
 # torch==1.1.0
 # torchvision==0.3.0
@@ -120,5 +128,6 @@ virtualenv==16.0.0
 virtualenv-clone==0.3.0
 wasabi==0.2.1
 Werkzeug==0.14.1
+wget==3.2
 wrapt==1.10.11
 zope.interface==4.6.0
