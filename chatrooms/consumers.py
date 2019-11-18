@@ -1,7 +1,7 @@
 import os
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 import pandas as pd
-from cdqa.pipeline.cdqa_sklearn import QAPipeline
+# from cdqa.pipeline.cdqa_sklearn import QAPipeline
 from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.models import User
