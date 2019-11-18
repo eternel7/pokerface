@@ -75,7 +75,7 @@ psycopg2==2.7.5
 pycparser==2.19
 PyHamcrest==1.9.0
 PyJWT==1.6.4
-pymongo==3.7.2
+# pymongo==3.7.2
 pyparsing==2.3.0
 PyPDF2==1.26.0
 pyreadline==2.1
