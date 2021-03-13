@@ -118,7 +118,6 @@ toolz==0.9.0
 tqdm==4.28.1
 Twisted==18.9.0
 txaio==18.8.1
-typing==3.6.6
 ua-parser==0.8.0
 ujson==1.35
 Unidecode==1.0.23
