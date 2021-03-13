@@ -129,4 +129,3 @@ wasabi==0.2.1
 Werkzeug==0.14.1
 wget==3.2
 wrapt==1.10.11
-zope.interface==4.6.0
