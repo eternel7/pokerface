@@ -35,7 +35,7 @@
     "webpack-bundle-tracker": "^0.4.3",
     "webpack-dev-server": "^2.11.5",
     "webpack-merge": "^4.1.0",
-    "ws": "^6.1.2",
+    "ws": "^7.4.6",
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
